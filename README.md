@@ -126,36 +126,6 @@ psql -U postgres -c "CREATE DATABASE gamevault;"
 
 ✅ Uygulama başlatıldığında veritabanı senkronize edilecektir.
 
----
-
-## 📦 Kurulum
-
-### Adım Adım Kurulum
-
-#### Backend Kurulumu
-```bash
-# Proje dizinine gidin
-cd backend
-
-# Bağımlılıkları yükleyin
-npm install
-
-# .env dosyası oluşturun
-cp .env.example .env
-
-# Development sunucusunu başlatın
-npm run start:dev
-```
-
-**Mevcut Komutlar:**
-```bash
-npm run start:dev      # Development mode (hot reload ile)
-npm run build          # Production build oluştur
-npm start              # Production mode'de çalıştır
-```
-
----
-
 ## 🔧 Konfigürasyon
 
 ### Backend Environment Variables
@@ -361,54 +331,6 @@ Veritabanı tasarımı, tabloları, ilişkileri ve örnek SQL queries için: **[
 - `ProductType` - ACCOUNT, KEY
 - `OrderStatus` - PENDING, COMPLETED, CANCELLED
 
----
-
-## 🧪 Test Etme
-
-### Swagger UI ile API Test
-1. **http://localhost:3000/api** adresine gidin
-2. Endpoint'i genişletin
-3. **"Try it out"** butonuna tıklayın
-4. Parametreleri doldurun
-5. **"Execute"** yapın
-
-### cURL ile API Test
-
-```bash
-# 1. Kullanıcı Kaydı
-curl -X POST http://localhost:3000/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "username": "testuser",
-    "password": "SecurePass123!"
-  }'
-
-# 2. Oturum Açma
-curl -X POST http://localhost:3000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "password": "SecurePass123!"
-  }'
-
-# 3. Ürünleri Getir
-curl -X GET http://localhost:3000/products \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-
-# 4. Sipariş Oluştur
-curl -X POST http://localhost:3000/orders \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "items": [
-      {"productId": 1, "quantity": 1}
-    ]
-  }'
-```
-
----
-
 ## 🐛 Hata Ayıklama
 
 ### Yaygın Sorunlar ve Çözümleri
@@ -509,7 +431,7 @@ Daha fazla bilgi için bkz: [LICENSE](./LICENSE)
 
 ## 👤 Yazar
 
-**Hector** - Full Stack Developer
+**mozybali** 
 
 - 🔗 GitHub: [@mozybali](https://github.com/mozybali)
 - 📧 Email: [İletişim bilgisi ekleyin]
