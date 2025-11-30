@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './order.entity';
+import { OrderItem } from './order-item.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from '../common/enums/order-status.enum';
 import { ProductsService } from '../products/products.service';
@@ -20,7 +21,7 @@ export class OrdersService {
     }
 
     let totalPrice = 0;
-    const orderItems = [];
+    const orderItems: Partial<OrderItem>[] = [];
 
     for (const item of dto.items) {
       const product = await this.productsService.findOne(item.productId);

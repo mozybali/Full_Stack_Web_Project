@@ -13,7 +13,9 @@ export const useProductStore = create((set, get) => ({
       const response = await productsApi.getAll();
       set({ products: response.data });
     } catch (err) {
-      set({ error: err.message });
+      const errorMsg = err.response?.data?.message || err.message || 'Ürünler yüklenemedi';
+      set({ error: errorMsg });
+      throw err;
     } finally {
       set({ loading: false });
     }
@@ -25,7 +27,9 @@ export const useProductStore = create((set, get) => ({
       const response = await productsApi.getById(id);
       set({ currentProduct: response.data });
     } catch (err) {
-      set({ error: err.message });
+      const errorMsg = err.response?.data?.message || err.message || 'Ürün yüklenemedi';
+      set({ error: errorMsg });
+      throw err;
     } finally {
       set({ loading: false });
     }
@@ -40,7 +44,8 @@ export const useProductStore = create((set, get) => ({
       }));
       return response.data;
     } catch (err) {
-      set({ error: err.message });
+      const errorMsg = err.response?.data?.message || err.message || 'Ürün oluşturulamadı';
+      set({ error: errorMsg });
       throw err;
     } finally {
       set({ loading: false });
@@ -58,7 +63,8 @@ export const useProductStore = create((set, get) => ({
       }));
       return response.data;
     } catch (err) {
-      set({ error: err.message });
+      const errorMsg = err.response?.data?.message || err.message || 'Ürün güncellenemedi';
+      set({ error: errorMsg });
       throw err;
     } finally {
       set({ loading: false });
@@ -73,7 +79,8 @@ export const useProductStore = create((set, get) => ({
         products: state.products.filter((p) => p.id !== id),
       }));
     } catch (err) {
-      set({ error: err.message });
+      const errorMsg = err.response?.data?.message || err.message || 'Ürün silinemedi';
+      set({ error: errorMsg });
       throw err;
     } finally {
       set({ loading: false });

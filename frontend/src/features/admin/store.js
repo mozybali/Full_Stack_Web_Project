@@ -13,7 +13,9 @@ export const useGameStore = create((set, get) => ({
       const response = await gamesApi.getAll();
       set({ games: response.data });
     } catch (err) {
-      set({ error: err.message });
+      const errorMsg = err.response?.data?.message || err.message || 'Oyunlar yüklenemedi';
+      set({ error: errorMsg });
+      throw err;
     } finally {
       set({ loading: false });
     }
@@ -40,12 +42,13 @@ export const useGameStore = create((set, get) => ({
       }));
       return response.data;
     } catch (err) {
-      set({ error: err.message });
+      const errorMsg = err.response?.data?.message || err.message || 'Oyun oluşturulamadı';
+      set({ error: errorMsg });
       throw err;
     } finally {
       set({ loading: false });
     }
-  },
+  }
 
   updateGame: async (id, data) => {
     set({ loading: true, error: null });
@@ -58,7 +61,8 @@ export const useGameStore = create((set, get) => ({
       }));
       return response.data;
     } catch (err) {
-      set({ error: err.message });
+      const errorMsg = err.response?.data?.message || err.message || 'Oyun güncellenemedi';
+      set({ error: errorMsg });
       throw err;
     } finally {
       set({ loading: false });

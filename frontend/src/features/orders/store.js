@@ -13,7 +13,9 @@ export const useOrderStore = create((set, get) => ({
       const response = await ordersApi.getMyOrders();
       set({ orders: response.data });
     } catch (err) {
-      set({ error: err.message });
+      const errorMsg = err.response?.data?.message || err.message || 'Siparişler yüklenemedi';
+      set({ error: errorMsg });
+      throw err;
     } finally {
       set({ loading: false });
     }
@@ -25,7 +27,9 @@ export const useOrderStore = create((set, get) => ({
       const response = await ordersApi.getAll();
       set({ orders: response.data });
     } catch (err) {
-      set({ error: err.message });
+      const errorMsg = err.response?.data?.message || err.message || 'Siparişler yüklenemedi';
+      set({ error: errorMsg });
+      throw err;
     } finally {
       set({ loading: false });
     }

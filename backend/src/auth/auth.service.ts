@@ -4,6 +4,10 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 
+/**
+ * Kimlik doğrulama servisi
+ * Kullanıcı kaydı, giriş ve JWT token oluşturma işlemlerini yönetir
+ */
 @Injectable()
 export class AuthService {
   constructor(
@@ -11,8 +15,15 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  /**
+   * Yeni kullanıcı kaydı
+   * @param dto - Email, kullanıcı adı ve şifre bilgileri
+   * @returns JWT token ve kullanıcı bilgileri
+   */
   async register(dto: RegisterDto) {
+    // Şifreyi 10 salt ile hash'le
     const passwordHash = await bcrypt.hash(dto.password, 10);
+    // Varsayılan BUYER rolü ile kullanıcı oluştur
     const user = await this.usersService.createWithDefaultRole({
       email: dto.email,
       username: dto.username,
@@ -21,22 +32,43 @@ export class AuthService {
     return this.buildToken(user);
   }
 
+  /**
+   * Kullanıcı doğrulama
+   * @param email - Kullanıcı email'i
+   * @param password - Kullanıcı şifresi
+   * @returns Doğrulanmış kullanıcı nesnesi
+   * @throws UnauthorizedException - Geçersiz kimlik bilgileri
+   */
   async validateUser(email: string, password: string) {
+    // Email'e göre kullanıcıyı bul
     const user = await this.usersService.findByEmail(email);
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user) throw new UnauthorizedException('Geçersiz kimlik bilgileri');
 
+    // Şifre ile hash'i karşılaştır
     const match = await bcrypt.compare(password, user.passwordHash);
-    if (!match) throw new UnauthorizedException('Invalid credentials');
+    if (!match) throw new UnauthorizedException('Geçersiz kimlik bilgileri');
 
     return user;
   }
 
+  /**
+   * Oturum açma
+   * @param email - Kullanıcı email'i
+   * @param password - Kullanıcı şifresi
+   * @returns JWT token ve kullanıcı bilgileri
+   */
   async login(email: string, password: string) {
     const user = await this.validateUser(email, password);
     return this.buildToken(user);
   }
 
+  /**
+   * JWT token oluştur
+   * @param user - Kullanıcı nesnesi
+   * @returns JWT token ve kullanıcı bilgileri
+   */
   private buildToken(user: any) {
+    // JWT payload'ı (kullanıcı ID'si ve rolleri)
     const payload = { sub: user.id, roles: user.roles.map((r) => r.name) };
     return {
       accessToken: this.jwtService.sign(payload),
