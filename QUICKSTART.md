@@ -54,90 +54,6 @@ CREATE DATABASE gamevault;
 
 ## 🔧 Adım 2: Backend Kurulumu (2 dakika)
 
-### Proje Dizinine Gidin
-
-```bash
-cd /Users/hector/Desktop/web_proje/backend
-```
-
-### Environment Setup
-
-```bash
-# .env dosyası oluşturun
-cp .env.example .env
-
-# Varsayılan ayarlar yeterlidir, yapılandırma tamamlanır
-```
-
-### Bağımlılıkları Yükleyin
-
-```bash
-npm install
-```
-
-### Backend'i Başlatın
-
-```bash
-npm run start:dev
-```
-
-**Beklenen Output:**
-```
-[NestFactory] Starting Nest application...
-[InstanceLoader] AppModule dependencies initialized...
-[NestMicroservice] NestJS v11.0.0 started successfully
-Listening on port 3000
-
-Swagger documentation is available at http://localhost:3000/api
-```
-
-✅ Backend çalışıyor! [http://localhost:3000](http://localhost:3000)
-
----
-
-## ⚛️ Adım 3: Frontend Kurulumu (1 dakika)
-
-### Yeni Terminal Açın ve Frontend Dizinine Gidin
-
-```bash
-cd /Users/hector/Desktop/web_proje/frontend
-```
-
-### Bağımlılıkları Yükleyin
-
-```bash
-npm install
-```
-
-### Frontend'i Başlatın
-
-```bash
-npm run dev
-```
-
-**Beklenen Output:**
-```
-VITE v5.0.0 ready in 234 ms
-
-➜  Local:   http://localhost:5173/
-➜  press h to show help
-```
-
-✅ Frontend çalışıyor! [http://localhost:5173](http://localhost:5173)
-
----
-
-## ✅ Hepsi Hazır!
-
-### Çalışan Servisler
-
-| Servis | URL | Açıklama |
-|--------|-----|----------|
-| **Frontend** | http://localhost:5173 | React app |
-| **Backend API** | http://localhost:3000 | NestJS server |
-| **Swagger Docs** | http://localhost:3000/api | API documentation |
-| **Database** | localhost:5432 | PostgreSQL |
-
 ---
 
 ## 🧪 Hızlı Test
@@ -174,11 +90,9 @@ Expected response:
 }
 ```
 
-### 3. Frontend'i Ziyaret Et
+### 3. Backend'i Ziyaret Et
 
-- [http://localhost:5173](http://localhost:5173) adresine gidin
-- Sayfayı yükleyin
-- Giriş/Kayıt sayfasını görün
+- [http://localhost:3000/api](http://localhost:3000/api) - Swagger API Dokümantasyonu
 
 ✅ Her şey çalışıyor!
 
@@ -186,16 +100,7 @@ Expected response:
 
 ## 🛑 Sorun Giderme
 
-### Port Zaten Kullanımda
-```bash
-# macOS/Linux
-lsof -ti:3000 | xargs kill -9  # Port 3000
-lsof -ti:5173 | xargs kill -9  # Port 5173
-
-# Windows
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F
-```
+### Port 3000 Zaten Kullanımda
 
 ### Database Bağlantı Hatası
 ```bash
@@ -237,11 +142,7 @@ Artık proje çalışıyor! Devamında:
    - [http://localhost:3000/api](http://localhost:3000/api) - Swagger UI
    - [BACKEND_API.md](./BACKEND_API.md) - Detaylı API doc
 
-3. **Frontend'i Anla**
-   - [FRONTEND_GUIDE.md](./FRONTEND_GUIDE.md) - React component'leri
-   - [src/](./frontend/src/) - Kaynak kodları
-
-4. **Database'i Araştır**
+3. **Database'i Araştır**
    - [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md) - Veritabanı tasarımı
    - pgAdmin veya DBeaver ile tabloları inceleyin
 

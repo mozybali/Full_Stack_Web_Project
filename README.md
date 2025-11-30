@@ -4,10 +4,8 @@
 
 [![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![NestJS](https://img.shields.io/badge/NestJS-v11.0-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
-[![React](https://img.shields.io/badge/React-v18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v12+-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
 **Oyun hesapları ve oyun anahtarları satın almak/satmak için eksiksiz bir marketplace platformu.**
 
@@ -80,14 +78,6 @@
 | Teknoloji | Versiyon | Kullanım |
 |-----------|----------|---------|
 | **React** | 18.3+ | UI kütüphanesi |
-| **Vite** | 5.0+ | Build tool ve dev server |
-| **TypeScript** | 5.0+ | Statik tiplemeli JavaScript |
-| **React Router** | 6+ | Routing |
-| **Zustand** | 4.5+ | State management |
-| **Axios** | 1.7+ | HTTP client |
-| **Tailwind CSS** | 3.4+ | Styling |
-| **PostCSS** | - | CSS processing |
-
 ### DevOps
 | Araç | Kullanım |
 |------|---------|
@@ -129,19 +119,7 @@ npm run start:dev
 Backend şu adrese bağlanacak: **http://localhost:3000**
 Swagger API dokümantasyonu: **http://localhost:3000/api**
 
-### 3️⃣ Frontend Kurulumu (Yeni Terminal)
-```bash
-cd frontend
-
-# Bağımlılıkları yükle
-npm install
-
-# Development sunucusunu başlat
-npm run dev
-```
-Frontend şu adrese bağlanacak: **http://localhost:5173**
-
-### 4️⃣ Database Kurulumu
+### 3️⃣ Database Kurulumu
 ```bash
 # PostgreSQL'e bağlan
 psql -U postgres
@@ -184,26 +162,6 @@ npm test               # Testleri çalıştır
 npm run lint           # Linting kontrol et
 ```
 
-#### Frontend Kurulumu
-```bash
-# Frontend dizinine gidin
-cd frontend
-
-# Bağımlılıkları yükleyin
-npm install
-
-# Development sunucusunu başlatın
-npm run dev
-```
-
-**Mevcut Komutlar:**
-```bash
-npm run dev            # Development server
-npm run build          # Production build
-npm run preview        # Build'i preview et
-npm run lint           # Linting kontrol et
-```
-
 ---
 
 ## 🔧 Konfigürasyon
@@ -237,30 +195,6 @@ DB_LOGGING=false
 DB_SYNCHRONIZE=true
 ```
 
-### Frontend Environment Variables
-
-`.env.example` dosyasından `.env` dosyasını oluşturun:
-
-```env
-# ====================================
-# API Configuration
-# ====================================
-VITE_API_URL=http://localhost:3000
-VITE_API_TIMEOUT=10000
-
-# ====================================
-# Application Information
-# ====================================
-VITE_APP_NAME=GameVault
-VITE_APP_VERSION=1.0.0
-
-# ====================================
-# Features
-# ====================================
-VITE_ENABLE_ADMIN_PANEL=true
-VITE_ENABLE_SELLER_DASHBOARD=true
-```
-
 ---
 
 ## 💻 Geliştirme
@@ -274,13 +208,6 @@ npm run start:dev
 # Swagger: http://localhost:3000/api
 ```
 
-**Terminal 2 - Frontend:**
-```bash
-cd frontend
-npm run dev
-# App: http://localhost:5173
-```
-
 ### Kullanıcı Rolleri
 
 | Rol | İzinler |
@@ -292,9 +219,8 @@ npm run dev
 ### Geliştirme Yaparken İpuçları
 
 1. **Backend değişiklikleri otomatik yüklenir** (`npm run start:dev` kullanıyorsanız)
-2. **Frontend değişiklikleri otomatik yüklenir** (`npm run dev` kullanıyorsanız)
-3. **API dokümantasyonunu kontrol et**: http://localhost:3000/api
-4. **Hata mesajlarını kontrol et**: Browser console ve server logs
+2. **API dokümantasyonunu kontrol et**: http://localhost:3000/api
+3. **Hata mesajlarını kontrol et**: Server logs
 
 ---
 
@@ -357,71 +283,6 @@ web_proje/
 │   ├── package.json
 │   ├── tsconfig.json
 │   ├── nest-cli.json
-│   └── .env.example
-│
-├── frontend/                         # React Frontend
-│   ├── src/
-│   │   ├── App.jsx                   # Root component
-│   │   ├── main.jsx                  # Entry point
-│   │   ├── router.jsx                # Route definitions
-│   │   ├── index.css                 # Global styles
-│   │   │
-│   │   ├── api/                      # API Integration
-│   │   │   ├── client.js             # Axios instance
-│   │   │   ├── constants.js          # API endpoints
-│   │   │   └── *Api.js               # API modules
-│   │   │
-│   │   ├── common/                   # Shared Resources
-│   │   │   ├── components/           # Reusable components
-│   │   │   │   ├── ErrorBoundary.jsx
-│   │   │   │   ├── GlobalLoader.jsx
-│   │   │   │   └── NotificationCenter.jsx
-│   │   │   ├── context/              # Context providers
-│   │   │   │   └── ErrorContext.jsx
-│   │   │   ├── hooks/                # Custom hooks
-│   │   │   │   ├── useAsync.js
-│   │   │   │   ├── useFetch.js
-│   │   │   │   └── useProducts.js
-│   │   │   ├── stores/               # Zustand stores
-│   │   │   │   ├── useUIStore.js
-│   │   │   │   └── index.js
-│   │   │   └── ui/                   # UI components
-│   │   │       ├── Button.jsx
-│   │   │       ├── Input.jsx
-│   │   │       ├── Card.jsx
-│   │   │       └── Modal.jsx
-│   │   │
-│   │   ├── components/               # Page components
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── ProductCard.jsx
-│   │   │   └── ProtectedRoute.jsx
-│   │   │
-│   │   ├── features/                 # Feature modules
-│   │   │   ├── auth/                 # Authentication
-│   │   │   │   ├── LoginPage.jsx
-│   │   │   │   ├── RegisterPage.jsx
-│   │   │   │   └── useAuthStore.js
-│   │   │   ├── catalog/              # Product catalog
-│   │   │   │   ├── HomePage.jsx
-│   │   │   │   ├── ProductDetailPage.jsx
-│   │   │   │   └── store.js
-│   │   │   ├── orders/               # Orders
-│   │   │   │   ├── CartPage.jsx
-│   │   │   │   ├── OrdersPage.jsx
-│   │   │   │   └── store.js
-│   │   │   └── admin/                # Admin panel
-│   │   │       ├── AdminDashboard.jsx
-│   │   │       ├── UserManagementPage.jsx
-│   │   │       └── ProductManagementPage.jsx
-│   │   │
-│   │   └── layouts/                  # Layout components
-│   │       ├── MainLayout.jsx
-│   │       └── DashboardLayout.jsx
-│   │
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   ├── postcss.config.js
 │   └── .env.example
 │
 ├── README.md                         # Bu dosya
@@ -654,7 +515,6 @@ curl -X POST http://localhost:3000/orders \
 - 📖 [BACKEND_API.md](./BACKEND_API.md) - Backend API detayları
 - 📖 [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md) - Database tasarımı
 - 📖 [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - Geliştirme rehberi
-- 📖 [FRONTEND_GUIDE.md](./FRONTEND_GUIDE.md) - Frontend rehberi
 
 ### Öğrenme Kaynakları
 - [JWT Nedir?](https://jwt.io/)
