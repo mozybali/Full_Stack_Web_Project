@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Patch, Delete, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { GamesService } from './games.service';
 import { CreateGameDto, UpdateGameDto } from './dto/create-game.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 
 // Oyun kataloğu yönetimi ile ilgili tüm endpoint'ler
 @ApiTags('Oyunlar')
@@ -45,7 +47,8 @@ export class GamesController {
    * Yeni oyun oluştur (Admin)
    */
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Yeni oyun oluştur' })
   @ApiResponse({
@@ -64,7 +67,8 @@ export class GamesController {
    * Oyun bilgilerini güncelle
    */
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Oyun bilgilerini güncelle' })
   @ApiResponse({
@@ -80,10 +84,31 @@ export class GamesController {
   }
 
   /**
+   * Oyun bilgilerini kısmen güncelle (PATCH)
+   */
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: 'Oyun bilgilerini kısmen güncelle' })
+  @ApiResponse({
+    status: 200,
+    description: 'Oyun başarıyla güncellendi',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Oyun bulunamadı',
+  })
+  updatePartial(@Param('id') id: string, @Body() dto: UpdateGameDto) {
+    return this.gamesService.update(+id, dto);
+  }
+
+  /**
    * Oyunu sil
    */
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Oyunu sil' })
   @ApiResponse({

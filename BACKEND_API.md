@@ -10,7 +10,7 @@
 - [Oyun Yönetimi](#oyun-yönetimi)
 - [Rol Yönetimi](#rol-yönetimi)
 - [Hata Kodları](#hata-kodları)
-- [Rate Limiting](#rate-limiting)
+- [Database Şeması](#database-şeması)
 
 ## 🔐 Genel Bakış
 
@@ -756,16 +756,11 @@ limit: number (default: 50)
 
 ---
 
-## 🚦 Rate Limiting
+## 🗄️ Database Şeması
 
-(Yakında uygulanacak)
+Veritabanı tasarımı, tüm tablolar, ilişkiler, constraint'ler ve örnek SQL queries için:
 
-Geçici olarak rate limiting yoktur. Üretim ortamında aşağıdaki limitler uygulanacaktır:
-
-- **Auth endpoints**: 5 istek/dakika per IP
-- **Public endpoints**: 100 istek/dakika per IP
-- **Protected endpoints**: 50 istek/dakika per user
-- **Admin endpoints**: 20 istek/dakika per user
+👉 **[DATABASE.md](./DATABASE.md)** dosyasına bakın.
 
 ---
 
@@ -789,5 +784,5 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGVzIjpbIkJVWUVSIl0sImlhdCI
 
 ---
 
-**Son Güncelleme**: 30 Kasım 2025
+**Son Güncelleme**: 1 Aralık 2025
 

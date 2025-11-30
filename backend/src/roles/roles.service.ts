@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from './role.entity';
+import { CreateRoleDto, UpdateRoleDto } from './dto/create-role.dto';
 
 /**
  * Rol yönetimi servisi
@@ -56,5 +57,67 @@ export class RolesService {
    */
   findByName(name: string) {
     return this.rolesRepo.findOne({ where: { name } });
+  }
+
+  /**
+   * Yeni rol oluştur
+   * @param dto - Rol oluşturma DTO'su
+   * @returns Oluşturulan rol
+   */
+  async create(dto: CreateRoleDto) {
+    const exists = await this.findByName(dto.name);
+    if (exists) {
+      throw new ConflictException(`${dto.name} adında bir rol zaten mevcut`);
+    }
+
+    const role = this.rolesRepo.create(dto);
+    return this.rolesRepo.save(role);
+  }
+
+  /**
+   * Rol bilgilerini güncelle
+   * @param id - Rol ID'si
+   * @param dto - Rol güncelleme DTO'su
+   * @returns Güncellenen rol
+   */
+  async update(id: number, dto: UpdateRoleDto) {
+    const role = await this.findOne(id);
+
+    if (!role) {
+      throw new NotFoundException(`Rol ${id} bulunamadı`);
+    }
+
+    // Rol adını güncelliyorsak, benzersizlik kontrolü yap
+    if (dto.name && dto.name !== role.name) {
+      const exists = await this.findByName(dto.name);
+      if (exists) {
+        throw new ConflictException(`${dto.name} adında bir rol zaten mevcut`);
+      }
+    }
+
+    await this.rolesRepo.update(id, dto);
+    return this.findOne(id);
+  }
+
+  /**
+   * Rolü sil
+   * @param id - Silinecek rol ID'si
+   * @returns Silme işlemi başarılı mı
+   */
+  async remove(id: number) {
+    const role = await this.findOne(id);
+
+    if (!role) {
+      throw new NotFoundException(`Rol ${id} bulunamadı`);
+    }
+
+    // Varsayılan roller silinemez (güvenlik için)
+    const defaultRoles = ['ADMIN', 'SELLER', 'BUYER'];
+    if (defaultRoles.includes(role.name)) {
+      throw new ConflictException(`${role.name} varsayılan bir rol olduğu için silinemez`);
+    }
+
+    await this.rolesRepo.delete(id);
+    return { deleted: true };
   }
 }

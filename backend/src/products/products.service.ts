@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
@@ -56,9 +56,21 @@ export class ProductsService {
    * Ürün bilgilerini güncelle
    * @param id - Ürün ID'si
    * @param dto - Ürün güncelleme DTO'su
+   * @param userId - İsteği yapan kullanıcı ID'si (yetki kontrolü için)
    * @returns Güncellenen ürün
    */
-  async update(id: number, dto: UpdateProductDto) {
+  async update(id: number, dto: UpdateProductDto, userId?: number) {
+    const product = await this.findOne(id);
+    
+    if (!product) {
+      throw new NotFoundException(`Ürün ${id} bulunamadı`);
+    }
+
+    // Satıcı kendi ürününü güncelleyebilir veya admin güncelleyebilir
+    if (userId && product.seller.id !== userId) {
+      throw new ForbiddenException('Sadece ürün sahibi bu ürünü güncelleyebilir');
+    }
+
     await this.productsRepo.update(id, dto);
     return this.findOne(id);
   }

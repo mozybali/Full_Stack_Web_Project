@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Patch, Delete, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto, UpdateProductDto } from './dto/create-product.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 
 // Ürün yönetimi ile ilgili tüm endpoint'ler
 @ApiTags('Ürünler')
@@ -45,7 +47,8 @@ export class ProductsController {
    * Yeni ürün oluştur (Satıcı ve Admin'e özel)
    */
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('SELLER', 'ADMIN')
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Yeni ürün oluştur' })
   @ApiResponse({
@@ -64,7 +67,8 @@ export class ProductsController {
    * Ürün bilgilerini güncelle
    */
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('SELLER', 'ADMIN')
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Ürün bilgilerini güncelle' })
   @ApiResponse({
@@ -75,15 +79,36 @@ export class ProductsController {
     status: 404,
     description: 'Ürün bulunamadı',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
-    return this.productsService.update(+id, dto);
+  update(@Param('id') id: string, @Body() dto: UpdateProductDto, @Request() req: any) {
+    return this.productsService.update(+id, dto, req.user.sub);
+  }
+
+  /**
+   * Ürün bilgilerini kısmen güncelle (PATCH)
+   */
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('SELLER', 'ADMIN')
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: 'Ürün bilgilerini kısmen güncelle' })
+  @ApiResponse({
+    status: 200,
+    description: 'Ürün başarıyla güncellendi',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Ürün bulunamadı',
+  })
+  updatePartial(@Param('id') id: string, @Body() dto: UpdateProductDto, @Request() req: any) {
+    return this.productsService.update(+id, dto, req.user.sub);
   }
 
   /**
    * Ürünü sil
    */
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('SELLER', 'ADMIN')
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Ürünü sil' })
   @ApiResponse({

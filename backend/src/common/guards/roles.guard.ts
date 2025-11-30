@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 
@@ -24,6 +24,18 @@ export class RolesGuard implements CanActivate {
 
     // Request'ten kullanıcıyı al ve rollerini kontrol et
     const { user } = context.switchToHttp().getRequest();
-    return requiredRoles.some((role) => user?.roles?.includes(role));
+    
+    if (!user || !user.roles) {
+      throw new ForbiddenException('Kullanıcı bilgileri bulunamadı');
+    }
+
+    const hasRole = requiredRoles.some((role) => user.roles?.includes(role));
+    
+    if (!hasRole) {
+      throw new ForbiddenException(`Bu işlem için gerekli roller: ${requiredRoles.join(', ')}`);
+    }
+
+    return true;
   }
 }
+

@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 /**
  * Kullanıcı yönetimi servisi
@@ -65,7 +66,53 @@ export class UsersService {
    * @returns Silme işlemi başarılı mı
    */
   async remove(id: number) {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`Kullanıcı ${id} bulunamadı`);
+    }
+    
     await this.usersRepo.delete(id);
     return { deleted: true };
+  }
+
+  /**
+   * Kullanıcı bilgilerini güncelle
+   * @param id - Güncellenecek kullanıcı ID'si
+   * @param dto - Güncelleme DTO'su
+   * @param user - İsteği yapan kullanıcı (yetki kontrolü için)
+   * @returns Güncellenen kullanıcı
+   */
+  async update(id: number, dto: UpdateUserDto, user?: any) {
+    const existingUser = await this.findOne(id);
+
+    if (!existingUser) {
+      throw new NotFoundException(`Kullanıcı ${id} bulunamadı`);
+    }
+
+    // Sadece kendi profilini güncelleyebilir veya admin güncelleyebilir
+    if (user && existingUser.id !== user.sub && !user.roles?.includes('ADMIN')) {
+      throw new ForbiddenException('Sadece kendi profilinizi güncelleyebilirsiniz');
+    }
+
+    // Email benzersizlik kontrolü
+    if (dto.email && dto.email !== existingUser.email) {
+      const emailExists = await this.findByEmail(dto.email);
+      if (emailExists) {
+        throw new ConflictException('Bu email adresi zaten kullanılıyor');
+      }
+    }
+
+    // Username benzersizlik kontrolü
+    if (dto.username && dto.username !== existingUser.username) {
+      const usernameExists = await this.usersRepo.findOne({
+        where: { username: dto.username },
+      });
+      if (usernameExists) {
+        throw new ConflictException('Bu kullanıcı adı zaten kullanılıyor');
+      }
+    }
+
+    await this.usersRepo.update(id, dto);
+    return this.findOne(id);
   }
 }

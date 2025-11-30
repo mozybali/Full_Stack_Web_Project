@@ -1,9 +1,9 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './order.entity';
 import { OrderItem } from './order-item.entity';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, UpdateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from '../common/enums/order-status.enum';
 import { ProductsService } from '../products/products.service';
 
@@ -85,12 +85,41 @@ export class OrdersService {
   /**
    * ID'ye göre sipariş bul
    * @param id - Sipariş ID'si
+   * @param user - İsteği yapan kullanıcı (yetki kontrolü için)
    * @returns Sipariş detayları
    */
-  findOne(id: number) {
-    return this.ordersRepo.findOne({
+  async findOne(id: number, user?: any) {
+    const order = await this.ordersRepo.findOne({
       where: { id },
       relations: ['buyer', 'items', 'items.product'],
     });
+
+    if (!order) {
+      throw new NotFoundException(`Sipariş ${id} bulunamadı`);
+    }
+
+    // Sadece kendi siparişini görebilir veya admin tüm siparişleri görebilir
+    if (user && order.buyer.id !== user.sub && !user.roles?.includes('ADMIN')) {
+      throw new ForbiddenException('Bu siparişi görüntülemek için yetkiniz yok');
+    }
+
+    return order;
+  }
+
+  /**
+   * Sipariş durumunu güncelle (Admin)
+   * @param id - Sipariş ID'si
+   * @param dto - Güncelleme DTO'su
+   * @returns Güncellenen sipariş
+   */
+  async updateStatus(id: number, dto: UpdateOrderDto) {
+    const order = await this.ordersRepo.findOne({ where: { id } });
+
+    if (!order) {
+      throw new NotFoundException(`Sipariş ${id} bulunamadı`);
+    }
+
+    await this.ordersRepo.update(id, { status: dto.status });
+    return this.findOne(id);
   }
 }

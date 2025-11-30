@@ -116,17 +116,15 @@ Backend şu adrese bağlanacak: **http://localhost:3000**
 Swagger API dokümantasyonu: **http://localhost:3000/api**
 
 ### 3️⃣ Database Kurulumu
+
+TypeORM otomatik olarak tüm tabloları oluşturacaktır. Detaylı veritabanı kurulumu için: [📖 DATABASE.md](./DATABASE.md)
+
 ```bash
-# PostgreSQL'e bağlan
-psql -U postgres
-
-# Database oluştur
-CREATE DATABASE gamevault;
-
-# Çık
-\q
+# PostgreSQL'e bağlan ve database oluştur
+psql -U postgres -c "CREATE DATABASE gamevault;"
 ```
-TypeORM otomatik olarak tabloları oluşturacaktır.
+
+✅ Uygulama başlatıldığında veritabanı senkronize edilecektir.
 
 ---
 
@@ -154,8 +152,6 @@ npm run start:dev
 npm run start:dev      # Development mode (hot reload ile)
 npm run build          # Production build oluştur
 npm start              # Production mode'de çalıştır
-npm test               # Testleri çalıştır
-npm run lint           # Linting kontrol et
 ```
 
 ---
@@ -253,6 +249,7 @@ web_proje/
 │   │   │   ├── orders.controller.ts
 │   │   │   ├── orders.service.ts
 │   │   │   ├── order.entity.ts
+│   │   │   ├── order-item.entity.ts
 │   │   │   └── dto/
 │   │   │
 │   │   ├── games/                    # Games Module
@@ -264,13 +261,14 @@ web_proje/
 │   │   ├── roles/                    # Roles Module
 │   │   │   ├── roles.controller.ts
 │   │   │   ├── roles.service.ts
-│   │   │   └── role.entity.ts
+│   │   │   ├── role.entity.ts
+│   │   │   └── dto/
 │   │   │
 │   │   ├── common/                   # Shared Module
 │   │   │   ├── decorators/           # Custom decorators
 │   │   │   ├── guards/               # Authentication guards
 │   │   │   ├── filters/              # Exception filters
-│   │   │   ├── enums/                # Enums (OrderStatus, etc)
+│   │   │   ├── enums/                # Enums (OrderStatus, ProductType)
 │   │   │   └── utils/                # Utility functions
 │   │   │
 │   │   └── config/                   # Configuration
@@ -281,12 +279,12 @@ web_proje/
 │   ├── nest-cli.json
 │   └── .env.example
 │
-├── README.md                         # Bu dosya
-├── QUICKSTART.md                     # Hızlı başlangıç rehberi
-├── BACKEND_API.md                    # Backend API dokümantasyonu
-├── DATABASE_SCHEMA.md                # Database şeması
-├── DEVELOPMENT_GUIDE.md              # Geliştirme rehberi
-└── .gitignore                        # Git ignore kuralları
+├── README.md                         # 📘 Bu dosya
+├── BACKEND_API.md                    # 📖 Backend API dokümantasyonu
+├── DATABASE.md                       # 🗄️ Database kurulumu ve şeması
+├── .env.local                        # Environment variables (local)
+├── .gitignore                        # Git ignore kuralları
+└── .git/                             # Git repository
 ```
 
 ---
@@ -346,86 +344,22 @@ DELETE /roles/:id              # Rol sil [Admin]
 
 ## 🗄️ Database Şeması
 
-### Entity Diyagramı
+Veritabanı tasarımı, tabloları, ilişkileri ve örnek SQL queries için: **[🗄️ DATABASE.md](./DATABASE.md)**
 
-```
-┌─────────────────┐
-│     users       │
-├─────────────────┤
-│ id (PK)         │
-│ email           │
-│ username        │
-│ passwordHash    │
-│ createdAt       │
-│ updatedAt       │
-└────────┬────────┘
-         │ M:N
-         │
-    ┌────▼────┐
-    │user_roles
-    └────┬────┘
-         │ M:N
-         │
-┌────────▼────────┐
-│      roles      │
-├─────────────────┤
-│ id (PK)         │
-│ name            │
-│ description     │
-└─────────────────┘
+### Hızlı Özet
 
-┌─────────────────┐
-│     products    │
-├─────────────────┤
-│ id (PK)         │
-│ title           │
-│ description     │
-│ type (ENUM)     │
-│ price           │
-│ stock           │
-│ seller_id (FK)  │──────┐
-│ game_id (FK)    │      │
-│ createdAt       │      │
-│ updatedAt       │      │
-└─────────────────┘      │
-         │               │
-         │ M:1           │
-         │               │
-┌────────▼────────────┐  │
-│      orders         │  │
-├─────────────────────┤  │
-│ id (PK)             │  │
-│ buyer_id (FK) ──────┼──┘
-│ status (ENUM)       │
-│ totalPrice          │
-│ createdAt           │
-│ updatedAt           │
-└────────┬────────────┘
-         │
-         │ M:1
-         │
-┌────────▼────────────┐
-│   order_items       │
-├─────────────────────┤
-│ id (PK)             │
-│ order_id (FK)       │
-│ product_id (FK)     │
-│ quantity            │
-│ unitPrice           │
-└─────────────────────┘
+**7 Ana Tablo:**
+- `users` - Kullanıcılar
+- `roles` - Roller (BUYER, SELLER, ADMIN)
+- `user_roles` - Kullanıcı-Rol ilişkisi (M:N)
+- `games` - Oyunlar
+- `products` - Satılan ürünler (hesaplar & anahtarlar)
+- `orders` - Siparişler
+- `order_items` - Sipariş satırları
 
-┌─────────────────┐
-│     games       │
-├─────────────────┤
-│ id (PK)         │
-│ name            │
-│ platform        │
-│ genre           │
-│ releaseDate     │
-│ createdAt       │
-│ updatedAt       │
-└─────────────────┘
-```
+**3 Enum Tipi:**
+- `ProductType` - ACCOUNT, KEY
+- `OrderStatus` - PENDING, COMPLETED, CANCELLED
 
 ---
 
@@ -504,10 +438,9 @@ curl -X POST http://localhost:3000/orders \
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
 ### Proje Dökümentasyonu
-- 📖 [QUICKSTART.md](./QUICKSTART.md) - 5 dakikalık başlangıç
 - 📖 [BACKEND_API.md](./BACKEND_API.md) - Backend API detayları
-- 📖 [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md) - Database tasarımı
-- 📖 [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - Geliştirme rehberi
+- 🗄️ [DATABASE.md](./DATABASE.md) - Database kurulumu ve şeması
+- 📖 [README.md](./README.md) - Bu dosya
 
 ### Öğrenme Kaynakları
 - [JWT Nedir?](https://jwt.io/)

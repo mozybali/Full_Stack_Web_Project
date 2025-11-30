@@ -3,6 +3,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 /**
  * Uygulamayı bootstrap et
@@ -28,6 +29,9 @@ async function bootstrap() {
 
   // Global hata filtre'sini ekle
   app.useGlobalFilters(new AllExceptionsFilter());
+
+  // Global response interceptor'ı ekle
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   // Swagger API Dokümantasyonu Konfigürasyonu
   const config = new DocumentBuilder()
@@ -61,3 +65,4 @@ async function bootstrap() {
 
 // Bootstrap işlevini çalıştır
 bootstrap();
+

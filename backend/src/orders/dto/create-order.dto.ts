@@ -1,6 +1,7 @@
-import { IsNumber, IsArray, ValidateNested, Min } from 'class-validator';
+import { IsNumber, IsArray, ValidateNested, Min, IsEnum, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { OrderStatus } from '../../common/enums/order-status.enum';
 
 export class CreateOrderItemDto {
   @ApiProperty({
@@ -28,4 +29,16 @@ export class CreateOrderDto {
   @ValidateNested({ each: true })
   @Type(() => CreateOrderItemDto)
   items: CreateOrderItemDto[];
+}
+
+export class UpdateOrderDto {
+  @ApiProperty({
+    enum: OrderStatus,
+    example: OrderStatus.COMPLETED,
+    description: 'Yeni sipariş durumu',
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(OrderStatus)
+  status?: OrderStatus;
 }
