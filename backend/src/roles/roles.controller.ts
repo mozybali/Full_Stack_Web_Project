@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Patch, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesService } from './roles.service';
 import { CreateRoleDto, UpdateRoleDto } from './dto/create-role.dto';
@@ -78,23 +78,7 @@ export class RolesController {
     return this.rolesService.update(+id, dto);
   }
 
-  /**
-   * Rol bilgilerini kısmen güncelle (PATCH - Admin)
-   */
-  @Patch(':id')
-  @Roles('ADMIN')
-  @ApiOperation({ summary: 'Rol bilgilerini kısmen güncelle' })
-  @ApiResponse({
-    status: 200,
-    description: 'Rol başarıyla güncellendi',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Rol bulunamadı',
-  })
-  updatePartial(@Param('id') id: string, @Body() dto: UpdateRoleDto) {
-    return this.rolesService.update(+id, dto);
-  }
+
 
   /**
    * Rolü sil (Admin)

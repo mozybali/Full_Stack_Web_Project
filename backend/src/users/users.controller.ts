@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete, UseGuards, Body, Put, Patch, Req } from '@nestjs/common';
+import { Controller, Get, Param, Delete, UseGuards, Body, Put, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -66,22 +66,7 @@ export class UsersController {
     return this.usersService.update(+id, dto, req.user);
   }
 
-  /**
-   * Kullanıcı bilgilerini kısmen güncelle (PATCH - Kendi profili veya Admin)
-   */
-  @Patch(':id')
-  @ApiOperation({ summary: 'Kullanıcı bilgilerini kısmen güncelle' })
-  @ApiResponse({
-    status: 200,
-    description: 'Kullanıcı başarıyla güncellendi',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Kullanıcı bulunamadı',
-  })
-  updatePartial(@Param('id') id: string, @Body() dto: UpdateUserDto, @Req() req: any) {
-    return this.usersService.update(+id, dto, req.user);
-  }
+
 
   /**
    * Kullanıcıyı sil (Admin)

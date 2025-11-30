@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Patch, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { GamesService } from './games.service';
 import { CreateGameDto, UpdateGameDto } from './dto/create-game.dto';
@@ -83,25 +83,7 @@ export class GamesController {
     return this.gamesService.update(+id, dto);
   }
 
-  /**
-   * Oyun bilgilerini kısmen güncelle (PATCH)
-   */
-  @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
-  @ApiBearerAuth('JWT')
-  @ApiOperation({ summary: 'Oyun bilgilerini kısmen güncelle' })
-  @ApiResponse({
-    status: 200,
-    description: 'Oyun başarıyla güncellendi',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Oyun bulunamadı',
-  })
-  updatePartial(@Param('id') id: string, @Body() dto: UpdateGameDto) {
-    return this.gamesService.update(+id, dto);
-  }
+
 
   /**
    * Oyunu sil

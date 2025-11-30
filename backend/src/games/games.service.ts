@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Game } from './game.entity';
-import { CreateGameDto } from './dto/create-game.dto';
-import { UpdateGameDto } from './dto/create-game.dto';
+import { CreateGameDto, UpdateGameDto } from './dto/create-game.dto';
 
 /**
  * Oyun yönetimi servisi

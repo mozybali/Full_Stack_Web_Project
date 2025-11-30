@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Patch, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto, UpdateProductDto } from './dto/create-product.dto';
@@ -83,25 +83,7 @@ export class ProductsController {
     return this.productsService.update(+id, dto, req.user.sub);
   }
 
-  /**
-   * Ürün bilgilerini kısmen güncelle (PATCH)
-   */
-  @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('SELLER', 'ADMIN')
-  @ApiBearerAuth('JWT')
-  @ApiOperation({ summary: 'Ürün bilgilerini kısmen güncelle' })
-  @ApiResponse({
-    status: 200,
-    description: 'Ürün başarıyla güncellendi',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Ürün bulunamadı',
-  })
-  updatePartial(@Param('id') id: string, @Body() dto: UpdateProductDto, @Request() req: any) {
-    return this.productsService.update(+id, dto, req.user.sub);
-  }
+
 
   /**
    * Ürünü sil
