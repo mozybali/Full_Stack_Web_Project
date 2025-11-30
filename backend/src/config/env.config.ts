@@ -19,7 +19,7 @@ export const env = () => ({
     user: process.env.DB_USER || 'postgres',
     // Veritabanı şifresi (varsayılan: postgres)
     pass: process.env.DB_PASSWORD || 'postgres',
-    // Veritabanı adı (varsayılan: gamerlink)
-    name: process.env.DB_NAME || 'gamerlink'
+    // Veritabanı adı (varsayılan: gamevault)
+    name: process.env.DB_NAME || 'gamevault'
   }
 });

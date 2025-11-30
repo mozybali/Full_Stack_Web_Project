@@ -7,6 +7,10 @@ import {
   Logger,
 } from '@nestjs/common';
 
+/**
+ * Genel Hata Filtresi
+ * Tüm yakalanmayan hataları yakalar ve standardlaştırılmış yanıt gönderir
+ */
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
@@ -17,7 +21,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Internal server error';
+    let message = 'Sunucu hatası oluştu';
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();

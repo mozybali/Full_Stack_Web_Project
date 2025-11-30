@@ -79,17 +79,20 @@ export class GamesController {
     return this.gamesService.update(+id, dto);
   }
 
+  /**
+   * Oyunu sil
+   */
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT')
-  @ApiOperation({ summary: 'Delete game' })
+  @ApiOperation({ summary: 'Oyunu sil' })
   @ApiResponse({
     status: 200,
-    description: 'Game deleted successfully',
+    description: 'Oyun başarıyla silindi',
   })
   @ApiResponse({
     status: 404,
-    description: 'Game not found',
+    description: 'Oyun bulunamadı',
   })
   remove(@Param('id') id: string) {
     return this.gamesService.remove(+id);

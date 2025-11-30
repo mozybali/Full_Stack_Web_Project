@@ -12,6 +12,10 @@ import { Role } from '../roles/role.entity';
 import { Product } from '../products/product.entity';
 import { Order } from '../orders/order.entity';
 
+/**
+ * Kullanıcı Entity'si
+ * Sistem kullanıcılarının bilgilerini tutmak için kullanılır
+ */
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
@@ -32,6 +36,7 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  // Kullanıcının sahip olduğu roller
   @ManyToMany(() => Role, (role) => role.users, { eager: true })
   @JoinTable({
     name: 'user_roles',
@@ -40,9 +45,11 @@ export class User {
   })
   roles: Role[];
 
+  // Kullanıcının satışa sunduğu ürünler
   @OneToMany(() => Product, (product) => product.seller)
   products: Product[];
 
+  // Kullanıcının satın aldığı siparişler
   @OneToMany(() => Order, (order) => order.buyer)
   orders: Order[];
 }

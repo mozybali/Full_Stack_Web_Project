@@ -10,6 +10,10 @@ import { ProductType } from '../common/enums/product-type.enum';
 import { User } from '../users/user.entity';
 import { Game } from '../games/game.entity';
 
+/**
+ * Ürün Entity'si
+ * Market'te satılan ürünleri (oyun hesapları ve anahtarları) tutmak için kullanılır
+ */
 @Entity('products')
 export class Product {
   @PrimaryGeneratedColumn()
@@ -36,9 +40,11 @@ export class Product {
   @Column({ default: true })
   isActive: boolean;
 
+  // Ürünü satışa sunan kullanıcı
   @ManyToOne(() => User, (user) => user.products, { eager: true })
   seller: User;
 
+  // Ürünün ilişkili olduğu oyun
   @ManyToOne(() => Game, (game) => game.products, { eager: true })
   game: Game;
 

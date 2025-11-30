@@ -4,21 +4,21 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateGameDto {
   @ApiProperty({
     example: 'Elden Ring',
-    description: 'Game name',
+    description: 'Oyun adı',
   })
   @IsString()
   name: string;
 
   @ApiProperty({
     example: 'PC',
-    description: 'Gaming platform',
+    description: 'Oyunun platformu',
   })
   @IsString()
   platform: string;
 
   @ApiProperty({
     example: 'Action RPG',
-    description: 'Game genre',
+    description: 'Oyun türü',
     required: false,
   })
   @IsOptional()
@@ -29,7 +29,7 @@ export class CreateGameDto {
 export class UpdateGameDto {
   @ApiProperty({
     example: 'Elden Ring',
-    description: 'Game name',
+    description: 'Oyun adı',
     required: false,
   })
   @IsOptional()
@@ -38,7 +38,7 @@ export class UpdateGameDto {
 
   @ApiProperty({
     example: 'PC',
-    description: 'Gaming platform',
+    description: 'Oyunun platformu',
     required: false,
   })
   @IsOptional()
@@ -47,7 +47,7 @@ export class UpdateGameDto {
 
   @ApiProperty({
     example: 'Action RPG',
-    description: 'Game genre',
+    description: 'Oyun türü',
     required: false,
   })
   @IsOptional()

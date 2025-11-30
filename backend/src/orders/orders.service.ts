@@ -7,6 +7,10 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from '../common/enums/order-status.enum';
 import { ProductsService } from '../products/products.service';
 
+/**
+ * Sipariş yönetimi servisi
+ * Sipariş oluşturma ve yönetim işlemlerini gerçekleştirir
+ */
 @Injectable()
 export class OrdersService {
   constructor(
@@ -15,9 +19,15 @@ export class OrdersService {
     private readonly productsService: ProductsService,
   ) {}
 
+  /**
+   * Yeni sipariş oluştur
+   * @param dto - Sipariş oluşturma DTO'su
+   * @param userId - Alıcı kullanıcı ID'si
+   * @returns Oluşturulan sipariş
+   */
   async create(dto: CreateOrderDto, userId: number) {
     if (!dto.items || dto.items.length === 0) {
-      throw new BadRequestException('Order must contain at least one item');
+      throw new BadRequestException('Sipariş en az bir öğe içermesi gereklidir');
     }
 
     let totalPrice = 0;
@@ -26,10 +36,10 @@ export class OrdersService {
     for (const item of dto.items) {
       const product = await this.productsService.findOne(item.productId);
       if (!product) {
-        throw new BadRequestException(`Product ${item.productId} not found`);
+        throw new BadRequestException(`Ürün ${item.productId} bulunamadı`);
       }
       if (product.stock < item.quantity) {
-        throw new BadRequestException(`Insufficient stock for ${product.title}`);
+        throw new BadRequestException(`${product.title} için yeterli stok yok`);
       }
 
       totalPrice += Number(product.price) * item.quantity;
@@ -50,6 +60,11 @@ export class OrdersService {
     return this.ordersRepo.save(order);
   }
 
+  /**
+   * Kullanıcının siparişlerini getir
+   * @param userId - Kullanıcı ID'si
+   * @returns Kullanıcının siparişleri
+   */
   findMy(userId: number) {
     return this.ordersRepo.find({
       where: { buyer: { id: userId } },
@@ -57,12 +72,21 @@ export class OrdersService {
     });
   }
 
+  /**
+   * Tüm siparişleri getir (Admin)
+   * @returns Tüm siparişler
+   */
   findAll() {
     return this.ordersRepo.find({
       relations: ['buyer', 'items', 'items.product'],
     });
   }
 
+  /**
+   * ID'ye göre sipariş bul
+   * @param id - Sipariş ID'si
+   * @returns Sipariş detayları
+   */
   findOne(id: number) {
     return this.ordersRepo.findOne({
       where: { id },

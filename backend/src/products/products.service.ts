@@ -4,6 +4,10 @@ import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateProductDto } from './dto/create-product.dto';
 
+/**
+ * Ürün yönetimi servisi
+ * Ürün oluşturma, güncelleme ve yönetim işlemlerini gerçekleştirir
+ */
 @Injectable()
 export class ProductsService {
   constructor(
@@ -11,12 +15,21 @@ export class ProductsService {
     private readonly productsRepo: Repository<Product>,
   ) {}
 
+  /**
+   * Tüm ürünleri getir
+   * @returns Ürünler listesi
+   */
   findAll() {
     return this.productsRepo.find({
       relations: ['seller', 'game'],
     });
   }
 
+  /**
+   * ID'ye göre ürün bul
+   * @param id - Ürün ID'si
+   * @returns Ürün detayları
+   */
   findOne(id: number) {
     return this.productsRepo.findOne({
       where: { id },
@@ -24,6 +37,12 @@ export class ProductsService {
     });
   }
 
+  /**
+   * Yeni ürün oluştur
+   * @param dto - Ürün oluşturma DTO'su
+   * @param sellerId - Satıcı ID'si
+   * @returns Oluşturulan ürün
+   */
   create(dto: CreateProductDto, sellerId: number) {
     const product = this.productsRepo.create({
       ...dto,
@@ -33,11 +52,22 @@ export class ProductsService {
     return this.productsRepo.save(product);
   }
 
+  /**
+   * Ürün bilgilerini güncelle
+   * @param id - Ürün ID'si
+   * @param dto - Ürün güncelleme DTO'su
+   * @returns Güncellenen ürün
+   */
   async update(id: number, dto: UpdateProductDto) {
     await this.productsRepo.update(id, dto);
     return this.findOne(id);
   }
 
+  /**
+   * Ürünü sil
+   * @param id - Silinecek ürün ID'si
+   * @returns Silme işlemi başarılı mı
+   */
   async remove(id: number) {
     await this.productsRepo.delete(id);
     return { deleted: true };

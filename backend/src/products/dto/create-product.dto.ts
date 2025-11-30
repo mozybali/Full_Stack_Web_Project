@@ -4,15 +4,15 @@ import { ProductType } from '../../common/enums/product-type.enum';
 
 export class CreateProductDto {
   @ApiProperty({
-    example: 'Game Key',
-    description: 'Product title',
+    example: 'Oyun Lisansı',
+    description: 'Ürün başlığı',
   })
   @IsString()
   title: string;
 
   @ApiProperty({
-    example: 'Premium game key with 1 year warranty',
-    description: 'Product description',
+    example: 'Premium oyun lisansı 1 yıl garantili',
+    description: 'Ürün açıklaması',
     required: false,
   })
   @IsOptional()
@@ -22,14 +22,14 @@ export class CreateProductDto {
   @ApiProperty({
     enum: ProductType,
     example: ProductType.KEY,
-    description: 'Product type',
+    description: 'Ürün türü',
   })
   @IsEnum(ProductType)
   type: ProductType;
 
   @ApiProperty({
     example: 29.99,
-    description: 'Product price',
+    description: 'Ürün fiyatı',
   })
   @IsNumber()
   @Min(0)
@@ -37,7 +37,7 @@ export class CreateProductDto {
 
   @ApiProperty({
     example: 100,
-    description: 'Product stock quantity',
+    description: 'Ürün stok miktarı',
   })
   @IsNumber()
   @Min(1)
@@ -45,7 +45,7 @@ export class CreateProductDto {
 
   @ApiProperty({
     example: 1,
-    description: 'Game ID',
+    description: 'Oyun ID',
   })
   @IsNumber()
   gameId: number;
@@ -53,8 +53,8 @@ export class CreateProductDto {
 
 export class UpdateProductDto {
   @ApiProperty({
-    example: 'Game Key',
-    description: 'Product title',
+    example: 'Oyun Lisansı',
+    description: 'Ürün başlığı',
     required: false,
   })
   @IsOptional()
@@ -62,8 +62,8 @@ export class UpdateProductDto {
   title?: string;
 
   @ApiProperty({
-    example: 'Premium game key with 1 year warranty',
-    description: 'Product description',
+    example: 'Premium oyun lisansı 1 yıl garantili',
+    description: 'Ürün açıklaması',
     required: false,
   })
   @IsOptional()
@@ -72,7 +72,7 @@ export class UpdateProductDto {
 
   @ApiProperty({
     example: 29.99,
-    description: 'Product price',
+    description: 'Ürün fiyatı',
     required: false,
   })
   @IsOptional()
@@ -82,7 +82,7 @@ export class UpdateProductDto {
 
   @ApiProperty({
     example: 100,
-    description: 'Product stock quantity',
+    description: 'Ürün stok miktarı',
     required: false,
   })
   @IsOptional()

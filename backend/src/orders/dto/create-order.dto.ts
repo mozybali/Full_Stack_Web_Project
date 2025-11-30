@@ -5,14 +5,14 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateOrderItemDto {
   @ApiProperty({
     example: 1,
-    description: 'Product ID',
+    description: 'Ürün ID',
   })
   @IsNumber()
   productId: number;
 
   @ApiProperty({
     example: 2,
-    description: 'Quantity to order',
+    description: 'Sipariş miktarı',
   })
   @IsNumber()
   @Min(1)
@@ -22,7 +22,7 @@ export class CreateOrderItemDto {
 export class CreateOrderDto {
   @ApiProperty({
     type: [CreateOrderItemDto],
-    description: 'Array of order items',
+    description: 'Sipariş öğelerinin dizisi',
   })
   @IsArray()
   @ValidateNested({ each: true })
