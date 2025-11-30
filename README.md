@@ -1,101 +1,193 @@
-# GameVault - Game Account & Key Marketplace
+# 🎮 GameVault - Game Account & Key Marketplace
 
-[![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)](https://nodejs.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-v11.0-red.svg)](https://nestjs.com/)
-[![React](https://img.shields.io/badge/React-v18.3-blue.svg)](https://react.dev/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v12+-336791.svg)](https://www.postgresql.org/)
+<div align="center">
 
-Oyun hesapları ve oyun anahtarları satın almak/satmak için eksiksiz bir marketplace platformu.
+[![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-v11.0-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![React](https://img.shields.io/badge/React-v18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v12+-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+
+**Oyun hesapları ve oyun anahtarları satın almak/satmak için eksiksiz bir marketplace platformu.**
+
+---
+
+**[🚀 Hızlı Başlangıç](#-hızlı-başlangıç) • [📖 Dokümantasyon](#-ek-kaynaklar) • [🔌 API](#-api-endpoints) • [🤝 Katkıda Bulunma](#-katkıda-bulunma)**
+
+</div>
+
+---
 
 ## 📋 İçindekiler
 
-- [Özellikler](#özellikler)
-- [Teknoloji Stack](#teknoloji-stack)
-- [Kurulum](#kurulum)
-- [Konfigürasyon](#konfigürasyon)
-- [Geliştirme](#geliştirme)
-- [API Endpoints](#api-endpoints)
-- [Proje Yapısı](#proje-yapısı)
-- [Katkıda Bulunma](#katkıda-bulunma)
+- [✨ Özellikler](#-özellikler)
+- [🛠️ Teknoloji Stack](#️-teknoloji-stack)
+- [🚀 Hızlı Başlangıç](#-hızlı-başlangıç)
+- [📦 Kurulum](#-kurulum)
+- [🔧 Konfigürasyon](#-konfigürasyon)
+- [💻 Geliştirme](#-geliştirme)
+- [🏗️ Proje Yapısı](#️-proje-yapısı)
+- [🔌 API Endpoints](#-api-endpoints)
+- [🗄️ Database Şeması](#️-database-şeması)
+- [🐛 Hata Ayıklama](#-hata-ayıklama)
+- [📚 Ek Kaynaklar](#-ek-kaynaklar)
+- [🤝 Katkıda Bulunma](#-katkıda-bulunma)
+- [📄 Lisans](#-lisans)
 
-## 🎯 Özellikler
+---
 
-### Kullanıcı Özellikleri
-- ✅ Kullanıcı kayıt ve oturum açma (JWT-based)
-- ✅ Profil yönetimi
-- ✅ Alışveriş sepeti
-- ✅ Sipariş yönetimi
-- ✅ Satıcı paneli (Ürün ekleme/düzenleme)
+## ✨ Özellikler
 
-### Admin Özellikleri
-- ✅ Kullanıcı yönetimi
-- ✅ Ürün yönetimi
-- ✅ Oyun katalog yönetimi
-- ✅ Sipariş takibi
-- ✅ İstatistikler ve raporlar
+### 👥 Kullanıcı Özellikleri
+- ✅ **Kimlik Doğrulama** - JWT tabanlı güvenli kayıt ve oturum açma
+- ✅ **Profil Yönetimi** - Kullanıcı bilgileri güncelleme
+- ✅ **Alışveriş Sepeti** - Ürünleri sepete ekle/çıkar
+- ✅ **Sipariş Yönetimi** - Siparişleri takip et ve yönet
+- ✅ **Satıcı Paneli** - Ürün ekleme, düzenleme ve silme
 
-### Platform Özellikleri
-- ✅ JWT tabanlı güvenli kimlik doğrulama
-- ✅ Role-Based Access Control (RBAC)
-- ✅ Swagger API dokumentasyonu
-- ✅ Global hata yönetimi
-- ✅ Input validasyonu ve sanitizasyonu
+### 🛡️ Admin Özellikleri
+- ✅ **Kullanıcı Yönetimi** - Kullanıcıları yönet
+- ✅ **Ürün Yönetimi** - Tüm ürünleri yönet
+- ✅ **Oyun Kataloğu** - Oyun bilgileri ekle ve güncelle
+- ✅ **Sipariş Takibi** - Tüm siparişleri izle
+- ✅ **İstatistikler** - Platform istatistikleri ve raporlar
+
+### 🔒 Platform Özellikleri
+- ✅ **JWT Güvenliği** - Güvenli token tabanlı kimlik doğrulama
+- ✅ **RBAC** - Role-Based Access Control (Rol Tabanlı Erişim)
+- ✅ **Swagger API** - İnteraktif API dokumentasyonu
+- ✅ **Global Hata Yönetimi** - Standardlaştırılmış hata yanıtları
+- ✅ **Input Validasyonu** - DTO ve class-validator ile veri doğrulama
+- ✅ **CORS Desteği** - Frontend-Backend iletişimi
+
+---
 
 ## 🛠️ Teknoloji Stack
 
 ### Backend
-- **Runtime**: Node.js 18+
-- **Framework**: NestJS 11.0
-- **ORM**: TypeORM 0.3
-- **Database**: PostgreSQL 12+
-- **Authentication**: JWT + Passport.js
-- **Validation**: class-validator, class-transformer
-- **API Docs**: Swagger/OpenAPI
+| Teknoloji | Versiyon | Kullanım |
+|-----------|----------|---------|
+| **Node.js** | 18+ | Runtime ortamı |
+| **NestJS** | 11.0 | Web framework |
+| **TypeScript** | 5.0+ | Statik tiplemeli dil |
+| **TypeORM** | 0.3 | ORM ve database yönetim |
+| **PostgreSQL** | 12+ | Veritabanı |
+| **Passport.js** | - | Kimlik doğrulama stratejileri |
+| **Swagger** | OpenAPI | API dokümantasyonu |
 
 ### Frontend
-- **Library**: React 18.3
-- **Bundler**: Vite 5.0
-- **Router**: React Router v6
-- **State Management**: Zustand 4.5
-- **HTTP Client**: Axios 1.7
-- **Styling**: Tailwind CSS 3.4
-- **CSS Processor**: PostCSS
+| Teknoloji | Versiyon | Kullanım |
+|-----------|----------|---------|
+| **React** | 18.3+ | UI kütüphanesi |
+| **Vite** | 5.0+ | Build tool ve dev server |
+| **TypeScript** | 5.0+ | Statik tiplemeli JavaScript |
+| **React Router** | 6+ | Routing |
+| **Zustand** | 4.5+ | State management |
+| **Axios** | 1.7+ | HTTP client |
+| **Tailwind CSS** | 3.4+ | Styling |
+| **PostCSS** | - | CSS processing |
 
-### Database
-- **Primary DB**: PostgreSQL 12+
-- **ORM**: TypeORM with TypeScript
+### DevOps
+| Araç | Kullanım |
+|------|---------|
+| **Git** | Version control |
+| **GitHub** | Repository ve collaboration |
+| **npm/yarn** | Package management |
+
+---
+
+## 🚀 Hızlı Başlangıç
+
+### Ön Gereksinimler
+```
+✓ Node.js 18+ (https://nodejs.org/)
+✓ PostgreSQL 12+ (https://www.postgresql.org/)
+✓ Git (https://git-scm.com/)
+✓ npm veya yarn
+```
+
+### 1️⃣ Repository'yi Clone Et
+```bash
+git clone https://github.com/mozybali/Full_Stack_Web_Project.git
+cd Full_Stack_Web_Project
+```
+
+### 2️⃣ Backend Kurulumu
+```bash
+cd backend
+
+# Bağımlılıkları yükle
+npm install
+
+# .env dosyası oluştur
+cp .env.example .env
+
+# Development sunucusunu başlat
+npm run start:dev
+```
+Backend şu adrese bağlanacak: **http://localhost:3000**
+Swagger API dokümantasyonu: **http://localhost:3000/api**
+
+### 3️⃣ Frontend Kurulumu (Yeni Terminal)
+```bash
+cd frontend
+
+# Bağımlılıkları yükle
+npm install
+
+# Development sunucusunu başlat
+npm run dev
+```
+Frontend şu adrese bağlanacak: **http://localhost:5173**
+
+### 4️⃣ Database Kurulumu
+```bash
+# PostgreSQL'e bağlan
+psql -U postgres
+
+# Database oluştur
+CREATE DATABASE gamevault;
+
+# Çık
+\q
+```
+TypeORM otomatik olarak tabloları oluşturacaktır.
+
+---
 
 ## 📦 Kurulum
 
-### Ön Gereksinimler
-- Node.js 18+ ([İndir](https://nodejs.org/))
-- npm 9+ veya yarn
-- PostgreSQL 12+ ([İndir](https://www.postgresql.org/))
-- Git
+### Adım Adım Kurulum
 
-### Backend Kurulumu
-
+#### Backend Kurulumu
 ```bash
 # Proje dizinine gidin
-cd /Users/hector/Desktop/web_proje/backend
+cd backend
 
 # Bağımlılıkları yükleyin
 npm install
 
-# .env dosyası oluşturun (aşağıdaki konfigürasyon bölümüne bakın)
+# .env dosyası oluşturun
 cp .env.example .env
 
-# Database'i başlatın
+# Development sunucusunu başlatın
 npm run start:dev
 ```
 
-Backend varsayılan olarak `http://localhost:3000` adresinde çalışır.
+**Mevcut Komutlar:**
+```bash
+npm run start:dev      # Development mode (hot reload ile)
+npm run build          # Production build oluştur
+npm start              # Production mode'de çalıştır
+npm test               # Testleri çalıştır
+npm run lint           # Linting kontrol et
+```
 
-### Frontend Kurulumu
-
+#### Frontend Kurulumu
 ```bash
 # Frontend dizinine gidin
-cd /Users/hector/Desktop/web_proje/frontend
+cd frontend
 
 # Bağımlılıkları yükleyin
 npm install
@@ -104,230 +196,404 @@ npm install
 npm run dev
 ```
 
-Frontend varsayılan olarak `http://localhost:5173` adresinde çalışır.
+**Mevcut Komutlar:**
+```bash
+npm run dev            # Development server
+npm run build          # Production build
+npm run preview        # Build'i preview et
+npm run lint           # Linting kontrol et
+```
+
+---
 
 ## 🔧 Konfigürasyon
 
-### Backend .env Dosyası
+### Backend Environment Variables
+
+`.env.example` dosyasından `.env` dosyasını oluşturun:
 
 ```env
-# Server
+# ====================================
+# Server Configuration
+# ====================================
 PORT=3000
 NODE_ENV=development
 
-# JWT
+# ====================================
+# JWT Configuration
+# ====================================
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_EXPIRATION=86400
 
-# Database
+# ====================================
+# Database Configuration
+# ====================================
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=postgres
 DB_NAME=gamevault
+DB_LOGGING=false
+DB_SYNCHRONIZE=true
 ```
 
-### PostgreSQL Database Kurulumu
+### Frontend Environment Variables
 
-```bash
-# PostgreSQL CLI'ye bağlanın
-psql -U postgres
+`.env.example` dosyasından `.env` dosyasını oluşturun:
 
-# Database oluşturun
-CREATE DATABASE gamevault;
+```env
+# ====================================
+# API Configuration
+# ====================================
+VITE_API_URL=http://localhost:3000
+VITE_API_TIMEOUT=10000
 
-# Çıkış yapın
-\q
+# ====================================
+# Application Information
+# ====================================
+VITE_APP_NAME=GameVault
+VITE_APP_VERSION=1.0.0
+
+# ====================================
+# Features
+# ====================================
+VITE_ENABLE_ADMIN_PANEL=true
+VITE_ENABLE_SELLER_DASHBOARD=true
 ```
 
-TypeORM tarafından tablolar otomatik olarak oluşturulacaktır (`synchronize: true`).
+---
 
-## 👨‍💻 Geliştirme
+## 💻 Geliştirme
 
-### Proje Başlatma (Her iki uç)
+### Proje Başlatma
 
 **Terminal 1 - Backend:**
 ```bash
 cd backend
 npm run start:dev
-# Swagger docs: http://localhost:3000/api
+# Swagger: http://localhost:3000/api
 ```
 
 **Terminal 2 - Frontend:**
 ```bash
 cd frontend
 npm run dev
-# Uygulama: http://localhost:5173
+# App: http://localhost:5173
 ```
 
 ### Kullanıcı Rolleri
 
 | Rol | İzinler |
 |-----|---------|
-| **BUYER** | Ürün görüntüleme, sepete ekleme, sipariş oluşturma, profil yönetimi |
-| **SELLER** | Ürün ekleme/düzenleme/silme, siparişleri kontrol etme |
-| **ADMIN** | Tüm yönetim işlemleri, kullanıcı yönetimi, sistem ayarları |
+| **BUYER** | Ürün görüntüleme, sepete ekleme, sipariş oluşturma |
+| **SELLER** | Ürün yönetimi (CRUD), kendi siparişlerini görüntüleme |
+| **ADMIN** | Tüm yönetim işlemleri, sistem ayarları |
 
-### Proje Dosya Yapısı
+### Geliştirme Yaparken İpuçları
+
+1. **Backend değişiklikleri otomatik yüklenir** (`npm run start:dev` kullanıyorsanız)
+2. **Frontend değişiklikleri otomatik yüklenir** (`npm run dev` kullanıyorsanız)
+3. **API dokümantasyonunu kontrol et**: http://localhost:3000/api
+4. **Hata mesajlarını kontrol et**: Browser console ve server logs
+
+---
+
+## 🏗️ Proje Yapısı
 
 ```
 web_proje/
-├── backend/
+│
+├── backend/                          # NestJS Backend
 │   ├── src/
-│   │   ├── app.module.ts                 # Ana modül
-│   │   ├── main.ts                       # Başlangıç noktası
-│   │   ├── auth/                         # Kimlik doğrulama
+│   │   ├── app.module.ts             # Root module
+│   │   ├── main.ts                   # Bootstrap
+│   │   │
+│   │   ├── auth/                     # Authentication Module
 │   │   │   ├── auth.controller.ts
 │   │   │   ├── auth.service.ts
 │   │   │   ├── guards/
 │   │   │   ├── strategies/
 │   │   │   └── dto/
-│   │   ├── users/                        # Kullanıcı yönetimi
-│   │   ├── products/                     # Ürün yönetimi
-│   │   ├── orders/                       # Sipariş yönetimi
-│   │   ├── games/                        # Oyun katalog
-│   │   ├── roles/                        # Rol yönetimi
-│   │   ├── common/                       # Paylaşılan utilities
-│   │   │   ├── decorators/
-│   │   │   ├── guards/
-│   │   │   ├── filters/
-│   │   │   ├── enums/
-│   │   │   └── utils/
-│   │   └── config/
+│   │   │
+│   │   ├── users/                    # Users Module
+│   │   │   ├── users.controller.ts
+│   │   │   ├── users.service.ts
+│   │   │   ├── user.entity.ts
+│   │   │   └── dto/
+│   │   │
+│   │   ├── products/                 # Products Module
+│   │   │   ├── products.controller.ts
+│   │   │   ├── products.service.ts
+│   │   │   ├── product.entity.ts
+│   │   │   └── dto/
+│   │   │
+│   │   ├── orders/                   # Orders Module
+│   │   │   ├── orders.controller.ts
+│   │   │   ├── orders.service.ts
+│   │   │   ├── order.entity.ts
+│   │   │   └── dto/
+│   │   │
+│   │   ├── games/                    # Games Module
+│   │   │   ├── games.controller.ts
+│   │   │   ├── games.service.ts
+│   │   │   ├── game.entity.ts
+│   │   │   └── dto/
+│   │   │
+│   │   ├── roles/                    # Roles Module
+│   │   │   ├── roles.controller.ts
+│   │   │   ├── roles.service.ts
+│   │   │   └── role.entity.ts
+│   │   │
+│   │   ├── common/                   # Shared Module
+│   │   │   ├── decorators/           # Custom decorators
+│   │   │   ├── guards/               # Authentication guards
+│   │   │   ├── filters/              # Exception filters
+│   │   │   ├── enums/                # Enums (OrderStatus, etc)
+│   │   │   └── utils/                # Utility functions
+│   │   │
+│   │   └── config/                   # Configuration
+│   │       └── env.config.ts
+│   │
 │   ├── package.json
 │   ├── tsconfig.json
-│   └── nest-cli.json
+│   ├── nest-cli.json
+│   └── .env.example
 │
-├── frontend/
+├── frontend/                         # React Frontend
 │   ├── src/
-│   │   ├── App.jsx                       # Root component
-│   │   ├── main.jsx                      # Entry point
-│   │   ├── router.jsx                    # Route konfigürasyonu
-│   │   ├── api/                          # API client
-│   │   ├── common/
-│   │   │   ├── components/               # Reusable components
-│   │   │   ├── context/                  # Context providers
-│   │   │   ├── hooks/                    # Custom hooks
-│   │   │   ├── stores/                   # Zustand stores
-│   │   │   └── ui/                       # UI components
-│   │   ├── components/                   # Page components
-│   │   ├── features/                     # Feature modules
-│   │   │   ├── auth/
-│   │   │   ├── catalog/
-│   │   │   ├── orders/
-│   │   │   └── admin/
-│   │   └── layouts/                      # Layout components
+│   │   ├── App.jsx                   # Root component
+│   │   ├── main.jsx                  # Entry point
+│   │   ├── router.jsx                # Route definitions
+│   │   ├── index.css                 # Global styles
+│   │   │
+│   │   ├── api/                      # API Integration
+│   │   │   ├── client.js             # Axios instance
+│   │   │   ├── constants.js          # API endpoints
+│   │   │   └── *Api.js               # API modules
+│   │   │
+│   │   ├── common/                   # Shared Resources
+│   │   │   ├── components/           # Reusable components
+│   │   │   │   ├── ErrorBoundary.jsx
+│   │   │   │   ├── GlobalLoader.jsx
+│   │   │   │   └── NotificationCenter.jsx
+│   │   │   ├── context/              # Context providers
+│   │   │   │   └── ErrorContext.jsx
+│   │   │   ├── hooks/                # Custom hooks
+│   │   │   │   ├── useAsync.js
+│   │   │   │   ├── useFetch.js
+│   │   │   │   └── useProducts.js
+│   │   │   ├── stores/               # Zustand stores
+│   │   │   │   ├── useUIStore.js
+│   │   │   │   └── index.js
+│   │   │   └── ui/                   # UI components
+│   │   │       ├── Button.jsx
+│   │   │       ├── Input.jsx
+│   │   │       ├── Card.jsx
+│   │   │       └── Modal.jsx
+│   │   │
+│   │   ├── components/               # Page components
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── ProductCard.jsx
+│   │   │   └── ProtectedRoute.jsx
+│   │   │
+│   │   ├── features/                 # Feature modules
+│   │   │   ├── auth/                 # Authentication
+│   │   │   │   ├── LoginPage.jsx
+│   │   │   │   ├── RegisterPage.jsx
+│   │   │   │   └── useAuthStore.js
+│   │   │   ├── catalog/              # Product catalog
+│   │   │   │   ├── HomePage.jsx
+│   │   │   │   ├── ProductDetailPage.jsx
+│   │   │   │   └── store.js
+│   │   │   ├── orders/               # Orders
+│   │   │   │   ├── CartPage.jsx
+│   │   │   │   ├── OrdersPage.jsx
+│   │   │   │   └── store.js
+│   │   │   └── admin/                # Admin panel
+│   │   │       ├── AdminDashboard.jsx
+│   │   │       ├── UserManagementPage.jsx
+│   │   │       └── ProductManagementPage.jsx
+│   │   │
+│   │   └── layouts/                  # Layout components
+│   │       ├── MainLayout.jsx
+│   │       └── DashboardLayout.jsx
+│   │
 │   ├── package.json
 │   ├── vite.config.js
 │   ├── tailwind.config.js
-│   └── postcss.config.js
+│   ├── postcss.config.js
+│   └── .env.example
 │
-└── README.md
+├── README.md                         # Bu dosya
+├── QUICKSTART.md                     # Hızlı başlangıç rehberi
+├── BACKEND_API.md                    # Backend API dokümantasyonu
+├── DATABASE_SCHEMA.md                # Database şeması
+├── DEVELOPMENT_GUIDE.md              # Geliştirme rehberi
+└── .gitignore                        # Git ignore kuralları
 ```
+
+---
 
 ## 🔌 API Endpoints
 
-### Kimlik Doğrulama
-- `POST /auth/register` - Yeni hesap oluştur
-- `POST /auth/login` - Oturum aç
+### 🔐 Kimlik Doğrulama (Auth)
+```
+POST   /auth/register          # Yeni kullanıcı kaydı
+POST   /auth/login             # Oturum açma
+```
 
-### Kullanıcılar
-- `GET /users` - Tüm kullanıcıları listele (Admin)
-- `GET /users/:id` - Kullanıcı detayı
-- `DELETE /users/:id` - Kullanıcı sil (Admin)
+### 👥 Kullanıcılar (Users)
+```
+GET    /users                  # Tüm kullanıcıları listele [Admin]
+GET    /users/:id              # Kullanıcı detayı
+DELETE /users/:id              # Kullanıcı sil [Admin]
+```
 
-### Ürünler
-- `GET /products` - Ürün listesi
-- `GET /products/:id` - Ürün detayı
-- `POST /products` - Ürün ekle (Seller)
-- `PATCH /products/:id` - Ürün güncelle (Seller/Admin)
-- `DELETE /products/:id` - Ürün sil (Seller/Admin)
+### 🛍️ Ürünler (Products)
+```
+GET    /products               # Tüm ürünleri listele
+GET    /products/:id           # Ürün detayı
+POST   /products               # Yeni ürün oluştur [Seller/Admin]
+PUT    /products/:id           # Ürün güncelle [Seller/Admin]
+DELETE /products/:id           # Ürün sil [Seller/Admin]
+```
 
-### Siparişler
-- `POST /orders` - Sipariş oluştur
-- `GET /orders/my` - Kendi siparişlerim
-- `GET /orders` - Tüm siparişler (Admin)
-- `GET /orders/:id` - Sipariş detayı
+### 📦 Siparişler (Orders)
+```
+POST   /orders                 # Sipariş oluştur
+GET    /orders/my              # Kendi siparişlerimi getir
+GET    /orders                 # Tüm siparişleri getir [Admin]
+GET    /orders/:id             # Sipariş detayı
+```
 
-### Oyunlar
-- `GET /games` - Oyun listesi
-- `POST /games` - Oyun ekle (Admin)
+### 🎮 Oyunlar (Games)
+```
+GET    /games                  # Oyun listesi
+GET    /games/:id              # Oyun detayı
+POST   /games                  # Oyun oluştur [Admin]
+PUT    /games/:id              # Oyun güncelle [Admin]
+DELETE /games/:id              # Oyun sil [Admin]
+```
 
-### Roller
-- `GET /roles` - Rol listesi (Admin)
-- `POST /roles` - Rol oluştur (Admin)
+### 🔑 Roller (Roles)
+```
+GET    /roles                  # Rol listesi [Admin]
+POST   /roles                  # Rol oluştur [Admin]
+PUT    /roles/:id              # Rol güncelle [Admin]
+DELETE /roles/:id              # Rol sil [Admin]
+```
 
-Detaylı API dokumentasyonu: `http://localhost:3000/api`
+📖 **Detaylı API Dokümantasyonu**: http://localhost:3000/api (Swagger UI)
 
-## 📊 Database Şeması
+---
 
-### Ana Tablolar
+## 🗄️ Database Şeması
 
-#### users
-- `id` (PK): Kullanıcı ID
-- `email`: Benzersiz email adresi
-- `username`: Benzersiz kullanıcı adı
-- `passwordHash`: Şifrelenmiş şifre
-- `createdAt`, `updatedAt`: Tarih bilgileri
+### Entity Diyagramı
 
-#### products
-- `id` (PK): Ürün ID
-- `title`: Ürün adı
-- `description`: Açıklama
-- `type`: ENUM (ACCOUNT, KEY)
-- `price`: Fiyat
-- `stock`: Stok miktarı
-- `seller_id` (FK): Satıcı
-- `game_id` (FK): İlgili oyun
+```
+┌─────────────────┐
+│     users       │
+├─────────────────┤
+│ id (PK)         │
+│ email           │
+│ username        │
+│ passwordHash    │
+│ createdAt       │
+│ updatedAt       │
+└────────┬────────┘
+         │ M:N
+         │
+    ┌────▼────┐
+    │user_roles
+    └────┬────┘
+         │ M:N
+         │
+┌────────▼────────┐
+│      roles      │
+├─────────────────┤
+│ id (PK)         │
+│ name            │
+│ description     │
+└─────────────────┘
 
-#### orders
-- `id` (PK): Sipariş ID
-- `buyer_id` (FK): Alıcı
-- `status`: ENUM (PENDING, COMPLETED, CANCELLED)
-- `totalPrice`: Toplam fiyat
-- `createdAt`: Sipariş tarihi
+┌─────────────────┐
+│     products    │
+├─────────────────┤
+│ id (PK)         │
+│ title           │
+│ description     │
+│ type (ENUM)     │
+│ price           │
+│ stock           │
+│ seller_id (FK)  │──────┐
+│ game_id (FK)    │      │
+│ createdAt       │      │
+│ updatedAt       │      │
+└─────────────────┘      │
+         │               │
+         │ M:1           │
+         │               │
+┌────────▼────────────┐  │
+│      orders         │  │
+├─────────────────────┤  │
+│ id (PK)             │  │
+│ buyer_id (FK) ──────┼──┘
+│ status (ENUM)       │
+│ totalPrice          │
+│ createdAt           │
+│ updatedAt           │
+└────────┬────────────┘
+         │
+         │ M:1
+         │
+┌────────▼────────────┐
+│   order_items       │
+├─────────────────────┤
+│ id (PK)             │
+│ order_id (FK)       │
+│ product_id (FK)     │
+│ quantity            │
+│ unitPrice           │
+└─────────────────────┘
 
-#### order_items
-- `id` (PK): Satır ID
-- `order_id` (FK): Sipariş
-- `product_id` (FK): Ürün
-- `quantity`: Miktar
-- `unitPrice`: Birim fiyat
+┌─────────────────┐
+│     games       │
+├─────────────────┤
+│ id (PK)         │
+│ name            │
+│ platform        │
+│ genre           │
+│ releaseDate     │
+│ createdAt       │
+│ updatedAt       │
+└─────────────────┘
+```
 
-#### games
-- `id` (PK): Oyun ID
-- `name`: Oyun adı
-- `platform`: Platform
-- `genre`: Tür
-
-#### roles
-- `id` (PK): Rol ID
-- `name`: Rol adı (BUYER, SELLER, ADMIN)
-- `description`: Açıklama
-
-#### user_roles (Junction Table)
-- `user_id` (FK): Kullanıcı
-- `role_id` (FK): Rol
+---
 
 ## 🧪 Test Etme
 
-### Manual API Testing (Swagger)
-1. `http://localhost:3000/api` adresine gidin
-2. "Try it out" butonuna tıklayın
-3. Parametreleri doldurun ve "Execute" yapın
+### Swagger UI ile API Test
+1. **http://localhost:3000/api** adresine gidin
+2. Endpoint'i genişletin
+3. **"Try it out"** butonuna tıklayın
+4. Parametreleri doldurun
+5. **"Execute"** yapın
 
-### Örnek API Çağrıları
+### cURL ile API Test
 
 ```bash
-# Register
+# 1. Kullanıcı Kaydı
 curl -X POST http://localhost:3000/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "email": "user@example.com",
-    "username": "user123",
+    "username": "testuser",
     "password": "SecurePass123!"
   }'
 
-# Login
+# 2. Oturum Açma
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{
@@ -335,59 +601,151 @@ curl -X POST http://localhost:3000/auth/login \
     "password": "SecurePass123!"
   }'
 
-# Get Products (Bearer token ile)
+# 3. Ürünleri Getir
 curl -X GET http://localhost:3000/products \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN_HERE"
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# 4. Sipariş Oluştur
+curl -X POST http://localhost:3000/orders \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "items": [
+      {"productId": 1, "quantity": 1}
+    ]
+  }'
 ```
+
+---
 
 ## 🐛 Hata Ayıklama
 
-### Yaygın Sorunlar
+### Yaygın Sorunlar ve Çözümleri
 
-**Bağlantı hatası: `Cannot connect to database`**
-```bash
-# PostgreSQL çalışıyor mu kontrol edin
-psql -U postgres -d gamevault
-```
+| Problem | Çözüm |
+|---------|-------|
+| **Port 3000 kullanımda** | `lsof -ti:3000 \| xargs kill -9` |
+| **Port 5173 kullanımda** | `lsof -ti:5173 \| xargs kill -9` |
+| **PostgreSQL bağlantısı başarısız** | `psql -U postgres` ile kontrol edin |
+| **JWT Token hatası** | `.env` dosyasındaki `JWT_SECRET` kontrol edin |
+| **CORS hatası** | `backend/src/main.ts` dosyasında CORS ayarını kontrol edin |
+| **Modüller bulunamadı** | `npm install` komutu çalıştırın |
 
-**Port zaten kullanımda: `EADDRINUSE: address already in use :::3000`**
-```bash
-# Port 3000 kullanan işlemi sonlandırın (macOS)
-lsof -ti:3000 | xargs kill -9
-```
+### Debugging İpuçları
 
-**JWT Token hatası**
-- Token expired: Yeniden login yapın
-- Invalid token: .env dosyasındaki JWT_SECRET'i kontrol edin
+1. **Server Logs**: Terminal çıktılarını kontrol edin
+2. **Browser Console**: F12 → Console sekmesine bakın
+3. **Network Tab**: API çağrılarını ve yanıtlarını inceleyin
+4. **Swagger UI**: http://localhost:3000/api
 
-**CORS hatası**
-- Frontend ve backend CORS ayarlarını kontrol edin
-- `.env` dosyasında doğru frontend URL'si yazılı olduğundan emin olun
+---
 
 ## 📚 Ek Kaynaklar
 
-- [NestJS Dokumentasyonu](https://docs.nestjs.com/)
-- [React Dokumentasyonu](https://react.dev/)
-- [TypeORM Dokumentasyonu](https://typeorm.io/)
-- [JWT Hakkında](https://jwt.io/)
-- [Tailwind CSS](https://tailwindcss.com/)
+### Resmi Dokümantasyon
+- [NestJS Documentation](https://docs.nestjs.com/)
+- [React Documentation](https://react.dev/)
+- [TypeORM Documentation](https://typeorm.io/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+
+### Proje Dökümentasyonu
+- 📖 [QUICKSTART.md](./QUICKSTART.md) - 5 dakikalık başlangıç
+- 📖 [BACKEND_API.md](./BACKEND_API.md) - Backend API detayları
+- 📖 [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md) - Database tasarımı
+- 📖 [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - Geliştirme rehberi
+- 📖 [FRONTEND_GUIDE.md](./FRONTEND_GUIDE.md) - Frontend rehberi
+
+### Öğrenme Kaynakları
+- [JWT Nedir?](https://jwt.io/)
+- [RESTful API Best Practices](https://restfulapi.net/)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [React Patterns](https://react-patterns.com/)
+
+---
 
 ## 🤝 Katkıda Bulunma
 
-1. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-2. Değişiklikleri commit edin (`git commit -m 'Add some amazing feature'`)
-3. Branch'i push edin (`git push origin feature/amazing-feature`)
-4. Pull request açın
+Projeye katkıda bulunmak için:
+
+### 1. Fork Yap
+```bash
+# GitHub'da "Fork" butonuna tıkla
+```
+
+### 2. Clone Et
+```bash
+git clone https://github.com/YOUR_USERNAME/Full_Stack_Web_Project.git
+cd Full_Stack_Web_Project
+```
+
+### 3. Feature Branch Oluştur
+```bash
+git checkout -b feature/amazing-feature
+```
+
+### 4. Değişiklikleri Commit Et
+```bash
+git commit -m "feat: Add amazing feature"
+git commit -m "fix: Fix bug in authentication"
+git commit -m "docs: Update README"
+```
+
+### 5. Branch'i Push Et
+```bash
+git push origin feature/amazing-feature
+```
+
+### 6. Pull Request Aç
+GitHub'da Pull Request oluşturun ve değişiklikleri açıklayın.
+
+### Commit Message Convention
+```
+feat: Yeni özellik ekle
+fix: Bug düzelt
+docs: Dokümantasyon güncelle
+style: Kod stili değiştir
+refactor: Kodu yeniden düzenle
+perf: Performansı iyileştir
+test: Test ekle
+chore: Build veya dependency güncelleme
+```
+
+---
 
 ## 📄 Lisans
 
-Bu proje MIT Lisansı altında yayınlanmıştır.
+Bu proje **MIT Lisansı** altında yayınlanmıştır.
+
+Daha fazla bilgi için bkz: [LICENSE](./LICENSE)
+
+---
 
 ## 👤 Yazar
 
 **Hector** - Full Stack Developer
 
+- 🔗 GitHub: [@mozybali](https://github.com/mozybali)
+- 📧 Email: [İletişim bilgisi ekleyin]
+
 ---
 
-**Son Güncelleme**: 30 Kasım 2025
+## 🙏 Teşekkürler
 
+Bu proje aşağıdaki harika projeler ve kütüphaneler tarafından güçlendirilmektedir:
+
+- [NestJS](https://nestjs.com/) - Progressive Node.js framework
+- [React](https://react.dev/) - A JavaScript library for building user interfaces
+- [TypeORM](https://typeorm.io/) - ORM for TypeScript and JavaScript
+- [Zustand](https://github.com/pmndrs/zustand) - Small, fast and scalable state management
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+
+---
+
+<div align="center">
+
+### ⭐ Eğer bu proje beğendiysen, yıldız vermeyi unutma!
+
+**[⬆ Başa Dön](#-gamevault---game-account--key-marketplace)**
+
+</div>
