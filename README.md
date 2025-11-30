@@ -57,7 +57,7 @@
 - ✅ **Swagger API** - İnteraktif API dokumentasyonu
 - ✅ **Global Hata Yönetimi** - Standardlaştırılmış hata yanıtları
 - ✅ **Input Validasyonu** - DTO ve class-validator ile veri doğrulama
-- ✅ **CORS Desteği** - Frontend-Backend iletişimi
+
 
 ---
 
@@ -74,10 +74,6 @@
 | **Passport.js** | - | Kimlik doğrulama stratejileri |
 | **Swagger** | OpenAPI | API dokümantasyonu |
 
-### Frontend
-| Teknoloji | Versiyon | Kullanım |
-|-----------|----------|---------|
-| **React** | 18.3+ | UI kütüphanesi |
 ### DevOps
 | Araç | Kullanım |
 |------|---------|
@@ -486,7 +482,7 @@ curl -X POST http://localhost:3000/orders \
 | Problem | Çözüm |
 |---------|-------|
 | **Port 3000 kullanımda** | `lsof -ti:3000 \| xargs kill -9` |
-| **Port 5173 kullanımda** | `lsof -ti:5173 \| xargs kill -9` |
+
 | **PostgreSQL bağlantısı başarısız** | `psql -U postgres` ile kontrol edin |
 | **JWT Token hatası** | `.env` dosyasındaki `JWT_SECRET` kontrol edin |
 | **CORS hatası** | `backend/src/main.ts` dosyasında CORS ayarını kontrol edin |
@@ -496,8 +492,7 @@ curl -X POST http://localhost:3000/orders \
 
 1. **Server Logs**: Terminal çıktılarını kontrol edin
 2. **Browser Console**: F12 → Console sekmesine bakın
-3. **Network Tab**: API çağrılarını ve yanıtlarını inceleyin
-4. **Swagger UI**: http://localhost:3000/api
+3. **Swagger UI**: http://localhost:3000/api
 
 ---
 
@@ -505,10 +500,8 @@ curl -X POST http://localhost:3000/orders \
 
 ### Resmi Dokümantasyon
 - [NestJS Documentation](https://docs.nestjs.com/)
-- [React Documentation](https://react.dev/)
 - [TypeORM Documentation](https://typeorm.io/)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 
 ### Proje Dökümentasyonu
 - 📖 [QUICKSTART.md](./QUICKSTART.md) - 5 dakikalık başlangıç
@@ -520,7 +513,7 @@ curl -X POST http://localhost:3000/orders \
 - [JWT Nedir?](https://jwt.io/)
 - [RESTful API Best Practices](https://restfulapi.net/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [React Patterns](https://react-patterns.com/)
+
 
 ---
 
@@ -595,10 +588,8 @@ Daha fazla bilgi için bkz: [LICENSE](./LICENSE)
 Bu proje aşağıdaki harika projeler ve kütüphaneler tarafından güçlendirilmektedir:
 
 - [NestJS](https://nestjs.com/) - Progressive Node.js framework
-- [React](https://react.dev/) - A JavaScript library for building user interfaces
 - [TypeORM](https://typeorm.io/) - ORM for TypeScript and JavaScript
-- [Zustand](https://github.com/pmndrs/zustand) - Small, fast and scalable state management
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [PostgreSQL](https://www.postgresql.org/) - Advanced open source database
 
 ---
 

@@ -54,9 +54,48 @@ CREATE DATABASE gamevault;
 
 ## 🔧 Adım 2: Backend Kurulumu (2 dakika)
 
+### Proje Dizinine Gidin
+
+```bash
+cd /Users/hector/Desktop/web_proje/backend
+```
+
+### Environment Setup
+
+```bash
+# .env dosyası oluşturun
+cp .env.example .env
+
+# Varsayılan ayarlar yeterlidir, yapılandırma tamamlanır
+```
+
+### Bağımlılıkları Yükleyin
+
+```bash
+npm install
+```
+
+### Backend'i Başlatın
+
+```bash
+npm run start:dev
+```
+
+**Beklenen Output:**
+```
+[NestFactory] Starting Nest application...
+[InstanceLoader] AppModule dependencies initialized...
+[NestMicroservice] NestJS v11.0.0 started successfully
+Listening on port 3000
+
+Swagger documentation is available at http://localhost:3000/api
+```
+
+✅ Backend çalışıyor! [http://localhost:3000](http://localhost:3000)
+
 ---
 
-## 🧪 Hızlı Test
+## ✅ Hepsi Hazır!
 
 ### 1. API Test Et
 
@@ -94,15 +133,7 @@ Expected response:
 
 - [http://localhost:3000/api](http://localhost:3000/api) - Swagger API Dokümantasyonu
 
-✅ Her şey çalışıyor!
-
----
-
-## 🛑 Sorun Giderme
-
-### Port 3000 Zaten Kullanımda
-
-### Database Bağlantı Hatası
+## 🧪 Hızlı Test
 ```bash
 # PostgreSQL çalışıyor mu kontrol edin
 psql -U postgres -d gamevault
@@ -260,7 +291,6 @@ curl -X GET http://localhost:3000/orders/my \
 2. **Build Et**
    ```bash
    cd backend && npm run build
-   cd frontend && npm run build
    ```
 
 3. **Tests Çalıştır**
@@ -279,7 +309,6 @@ curl -X GET http://localhost:3000/orders/my \
 - **Swagger UI**: http://localhost:3000/api
 - **Dokümantasyon**: Bkz. [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)
 - **API Doc**: [BACKEND_API.md](./BACKEND_API.md)
-- **Frontend Doc**: [FRONTEND_GUIDE.md](./FRONTEND_GUIDE.md)
 
 ---
 
@@ -290,9 +319,7 @@ Projeyi ayağa kaldırmak için:
 - [ ] Node.js, npm, PostgreSQL kurulu
 - [ ] `psql` ile veritabanı bağlantısı test edildi
 - [ ] Backend kuruldu ve `npm run start:dev` çalışıyor
-- [ ] Frontend kuruldu ve `npm run dev` çalışıyor
 - [ ] http://localhost:3000/api erişilebiliyor
-- [ ] http://localhost:5173 erişilebiliyor
 - [ ] Yeni kullanıcı kaydolabiliyorsunuz
 - [ ] Giriş yapabiliyorsunuz
 
