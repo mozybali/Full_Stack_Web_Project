@@ -434,7 +434,7 @@ Daha fazla bilgi için bkz: [LICENSE](./LICENSE)
 **mozybali** 
 
 - 🔗 GitHub: [@mozybali](https://github.com/mozybali)
-- 📧 Email: [İletişim bilgisi ekleyin]
+- 📧 Email: [grely.bali.63@gmail.com]
 
 ---
 
