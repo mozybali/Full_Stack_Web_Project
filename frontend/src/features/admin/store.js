@@ -48,7 +48,7 @@ export const useGameStore = create((set, get) => ({
     } finally {
       set({ loading: false });
     }
-  }
+  },
 
   updateGame: async (id, data) => {
     set({ loading: true, error: null });

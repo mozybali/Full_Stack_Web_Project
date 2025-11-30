@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCartStore } from './cartStore';
+import useCartStore from './useCartStore';
 import { Button } from '../../common/ui';
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, clearCart, getTotalPrice } = useCartStore();
+  const { items, removeItem, updateQuantity, clearCart, totalPrice } = useCartStore();
   const navigate = useNavigate();
 
-  const total = getTotalPrice();
+  const total = totalPrice;
 
   if (items.length === 0) {
     return (

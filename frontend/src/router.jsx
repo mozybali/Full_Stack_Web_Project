@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import DashboardLayout from './layouts/DashboardLayout';
+import TestPage from './TestPage';
 
 import HomePage from './features/catalog/HomePage';
 import ProductDetailPage from './features/catalog/ProductDetailPage';
@@ -15,9 +16,14 @@ import UserManagementPage from './features/admin/UserManagementPage';
 import ProductManagementPage from './features/admin/ProductManagementPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
+console.log('AppRouter component rendering');
+
 export default function AppRouter() {
+  console.log('AppRouter function called');
   return (
     <Routes>
+      <Route path="/test" element={<TestPage />} />
+      
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/products/:id" element={<ProductDetailPage />} />

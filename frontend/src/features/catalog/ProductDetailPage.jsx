@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProductStore } from './store';
-import { useCartStore } from '../orders/cartStore';
+import useCartStore from '../orders/useCartStore';
 import { Loading, Alert } from '../../common/ui';
 
 export default function ProductDetailPage() {

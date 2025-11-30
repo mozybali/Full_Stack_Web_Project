@@ -67,7 +67,13 @@ export class GamesController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Oyun bilgilerini güncelle' })
-    description: 'Game not found',
+  @ApiResponse({
+    status: 200,
+    description: 'Oyun başarıyla güncellendi',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Oyun bulunamadı',
   })
   update(@Param('id') id: string, @Body() dto: UpdateGameDto) {
     return this.gamesService.update(+id, dto);

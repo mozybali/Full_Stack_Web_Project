@@ -7,8 +7,11 @@ export default function HomePage() {
   const { products, loading, error, fetchProducts, clearError } = useProductStore();
 
   useEffect(() => {
-    fetchProducts();
+    console.log('HomePage useEffect - fetching products');
+    fetchProducts().catch(err => console.error('Fetch error:', err));
   }, []);
+
+  console.log('HomePage render - loading:', loading, 'products:', products.length, 'error:', error);
 
   if (loading) return <Loading text="Ürünler yükleniyor..." />;
 

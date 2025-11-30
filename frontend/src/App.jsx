@@ -6,11 +6,14 @@ import NotificationCenter from './common/components/NotificationCenter';
 import GlobalLoader from './common/components/GlobalLoader';
 import AppRouter from './router';
 
+console.log('App component rendering');
+
 /**
  * Ana uygulama bileşeni
  * Tüm global provider'ları ve layout'ları içerir
  */
 export default function App() {
+  console.log('App function called');
   return (
     <ErrorBoundary>
       {/* Hata yönetimi context'i */}

@@ -5,11 +5,13 @@ import { useOrderStore } from '../orders/store';
 import { Loading } from '../../common/ui';
 
 export default function AdminDashboard() {
-  const { products, loading: productsLoading } = useProductStore();
-  const { games, loading: gamesLoading } = useGameStore();
+  const { products, loading: productsLoading, fetchProducts } = useProductStore();
+  const { games, loading: gamesLoading, fetchGames } = useGameStore();
   const { orders, loading: ordersLoading, fetchAllOrders } = useOrderStore();
 
   useEffect(() => {
+    fetchProducts();
+    fetchGames();
     fetchAllOrders();
   }, []);
 
