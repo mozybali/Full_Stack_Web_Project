@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../../users/users.service';
+import { JwtPayload, RequestUser } from '../interfaces/jwt-payload.interface';
 
 /**
  * JWT Doğrulama Stratejisi
@@ -27,7 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * @returns Doğrulanan kullanıcı nesnesi (sub ve roles ile)
    * @throws UnauthorizedException - Kullanıcı bulunamazsa
    */
-  async validate(payload: any) {
+  async validate(payload: JwtPayload): Promise<RequestUser> {
     // Kullanıcıyı veritabanından sorgula - silinmiş veya pasif kullanıcıları engelle
     const user = await this.usersService.findOne(payload.sub);
     

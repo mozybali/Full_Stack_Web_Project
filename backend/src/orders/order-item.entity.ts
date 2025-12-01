@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Order } from './order.entity';
 import { Product } from '../products/product.entity';
 
@@ -13,10 +13,12 @@ export class OrderItem {
 
   // İlişkili sipariş
   @ManyToOne(() => Order, (order) => order.items, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'order_id' })
   order: Order;
 
   // Sipariş içindeki ürün
   @ManyToOne(() => Product, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'product_id' })
   product: Product;
 
   @Column({ default: 1 })

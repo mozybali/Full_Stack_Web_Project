@@ -4,6 +4,8 @@ import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { User } from '../users/user.entity';
 
 /**
  * Kimlik doğrulama servisi
@@ -96,9 +98,13 @@ export class AuthService {
    * @param user - Kullanıcı nesnesi
    * @returns JWT token ve kullanıcı bilgileri
    */
-  private buildToken(user: any) {
+  private buildToken(user: User) {
     // JWT payload'ı (kullanıcı ID'si ve rolleri)
-    const payload = { sub: user.id, roles: user.roles.map((r) => r.name) };
+    const payload: JwtPayload = { 
+      sub: user.id, 
+      roles: user.roles.map((r) => r.name) 
+    };
+    
     return {
       accessToken: this.jwtService.sign(payload),
       user: {

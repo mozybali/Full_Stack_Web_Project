@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  JoinColumn,
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
@@ -24,6 +25,7 @@ export class Order {
   // Sipariş veren alıcı
   @Index()
   @ManyToOne(() => User, (user) => user.orders, { eager: true, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'buyer_id' })
   buyer: User;
 
   @CreateDateColumn({ name: 'created_at' })

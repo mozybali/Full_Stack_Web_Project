@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
   Index,
@@ -48,11 +49,13 @@ export class Product {
   // Ürünü satışa sunan kullanıcı
   @Index()
   @ManyToOne(() => User, (user) => user.products, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'seller_id' })
   seller: User;
 
   // Ürünün ilişkili olduğu oyun
   @Index()
   @ManyToOne(() => Game, (game) => game.products, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'game_id' })
   game: Game;
 
   @CreateDateColumn({ name: 'created_at' })

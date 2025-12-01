@@ -1,6 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
+import { RequestUser } from '../../auth/interfaces/jwt-payload.interface';
 
 /**
  * Rol Tabanlı Erişim Kontrolü (RBAC) Guard
@@ -23,7 +24,7 @@ export class RolesGuard implements CanActivate {
     }
 
     // Request'ten kullanıcıyı al ve rollerini kontrol et
-    const { user } = context.switchToHttp().getRequest();
+    const { user }: { user: RequestUser } = context.switchToHttp().getRequest();
     
     if (!user || !user.roles) {
       throw new ForbiddenException('Kullanıcı bilgileri bulunamadı');
