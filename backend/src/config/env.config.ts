@@ -50,7 +50,7 @@ export const env = () => {
       // Veritabanı şifresi
       pass: isProduction 
         ? process.env.DB_PASSWORD 
-        : (process.env.DB_PASSWORD || 'postgres'),
+        : (process.env.DB_PASSWORD || 'justcan'),
       
       // Veritabanı adı
       name: process.env.DB_NAME || 'gamevault'

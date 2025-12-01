@@ -61,11 +61,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  // Veritabanını seed et
-  const { SeedingService } = await import('./seeding/seeding.service');
-  const seedingService = app.get(SeedingService);
-  await seedingService.seed();
-
   // Sunucuyu 3000 portunda dinlemeye başla
   await app.listen(3000);
   console.log('Swagger dokümantasyonu: http://localhost:3000/api adresinde erişilebilir');
