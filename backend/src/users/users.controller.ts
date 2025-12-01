@@ -1,10 +1,11 @@
-import { Controller, Get, Param, Delete, UseGuards, Body, Put, Req } from '@nestjs/common';
+import { Controller, Get, Param, Delete, UseGuards, Body, Put, Req, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RoleNames } from '../common/enums/role-names.enum';
 
 // Kullanıcı yönetimi ile ilgili tüm endpoint'ler
 @ApiTags('Kullanıcılar')
@@ -18,7 +19,7 @@ export class UsersController {
    * Tüm kullanıcıları listele (Admin)
    */
   @Get()
-  @Roles('ADMIN')
+  @Roles(RoleNames.ADMIN)
   @ApiOperation({ summary: 'Tüm kullanıcıları getir' })
   @ApiResponse({
     status: 200,
@@ -45,8 +46,8 @@ export class UsersController {
     status: 404,
     description: 'Kullanıcı bulunamadı',
   })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findOne(id);
   }
 
   /**
@@ -62,8 +63,8 @@ export class UsersController {
     status: 404,
     description: 'Kullanıcı bulunamadı',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto, @Req() req: any) {
-    return this.usersService.update(+id, dto, req.user);
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto, @Req() req: any) {
+    return this.usersService.update(id, dto, req.user);
   }
 
 
@@ -72,7 +73,7 @@ export class UsersController {
    * Kullanıcıyı sil (Admin)
    */
   @Delete(':id')
-  @Roles('ADMIN')
+  @Roles(RoleNames.ADMIN)
   @ApiOperation({ summary: 'Kullanıcıyı sil' })
   @ApiResponse({
     status: 200,
@@ -82,7 +83,7 @@ export class UsersController {
     status: 404,
     description: 'Kullanıcı bulunamadı',
   })
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.remove(id);
   }
 }

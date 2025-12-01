@@ -1,4 +1,4 @@
-import { IsEmail, IsString, IsOptional } from 'class-validator';
+import { IsEmail, IsString, IsOptional, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
@@ -19,4 +19,14 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   username?: string;
+
+  @ApiProperty({
+    example: 'NewSecurePassword123',
+    description: 'Yeni şifre (minimum 6 karakter)',
+    required: false,
+  })
+  @IsOptional()
+  @MinLength(6)
+  @IsString()
+  password?: string;
 }

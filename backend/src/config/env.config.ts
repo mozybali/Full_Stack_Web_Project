@@ -9,6 +9,9 @@ export const env = () => ({
   // JWT gizli anahtarı (UYARI: Production'da güvenli bir değer kullanın!)
   jwtSecret: process.env.JWT_SECRET || 'dev-secret',
   
+  // JWT token expiration (varsayılan: 24 saat)
+  jwtExpiration: process.env.JWT_EXPIRATION || '1d',
+  
   // Veritabanı konfigürasyonu
   db: {
     // PostgreSQL sunucu host'u (varsayılan: localhost)

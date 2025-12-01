@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Logger,
+  BadRequestException,
 } from '@nestjs/common';
 
 /**
@@ -22,24 +23,41 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Sunucu hatası oluştu';
+    let errors: any = null;
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      message =
-        typeof exceptionResponse === 'object'
-          ? (exceptionResponse as any).message
-          : exceptionResponse;
+      
+      // Response object ise, message ve errors'u çıkar
+      if (typeof exceptionResponse === 'object') {
+        const resp = exceptionResponse as any;
+        message = resp.message || message;
+        // Validation errors varsa göster
+        if (resp.message instanceof Array) {
+          errors = resp.message;
+          message = 'Doğrulama hatası';
+        }
+      } else {
+        message = exceptionResponse;
+      }
     } else if (exception instanceof Error) {
       this.logger.error(exception.message, exception.stack);
       message = exception.message;
     }
 
-    response.status(status).json({
+    const errorResponse = {
       statusCode: status,
       message,
       timestamp: new Date().toISOString(),
       path: request.url,
-    });
+    };
+
+    // Validation errors varsa ekle
+    if (errors) {
+      (errorResponse as any).errors = errors;
+    }
+
+    response.status(status).json(errorResponse);
   }
 }

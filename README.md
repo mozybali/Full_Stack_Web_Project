@@ -3,15 +3,15 @@
 <div align="center">
 
 [![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-v11.0-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![NestJS](https://img.shields.io/badge/NestJS-v11.0+-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v12+-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 **Oyun hesapları ve oyun anahtarları satın almak/satmak için eksiksiz bir marketplace platformu.**
 
 ---
 
-**[🚀 Hızlı Başlangıç](#-hızlı-başlangıç) • [📖 Dokümantasyon](#-ek-kaynaklar) • [🔌 API](#-api-endpoints) • [🤝 Katkıda Bulunma](#-katkıda-bulunma)**
+**[🚀 Hızlı Başlangıç](#-hızlı-başlangıç) • [📖 Dokümantasyon](#-ek-kaynaklar) • [🔌 API](./BACKEND_API.md) • [🗄️ Veritabanı](./DATABASE.md)**
 
 </div>
 
@@ -87,15 +87,15 @@
 
 ### Ön Gereksinimler
 ```
-✓ Node.js 18+ (https://nodejs.org/)
-✓ PostgreSQL 12+ (https://www.postgresql.org/)
-✓ Git (https://git-scm.com/)
+✓ Node.js 18+
+✓ PostgreSQL 12+
+✓ Git
 ✓ npm veya yarn
 ```
 
 ### 1️⃣ Repository'yi Clone Et
 ```bash
-git clone https://github.com/mozybali/Full_Stack_Web_Project.git
+git clone <repository-url>
 cd Full_Stack_Web_Project
 ```
 
@@ -126,6 +126,23 @@ psql -U postgres -c "CREATE DATABASE gamevault;"
 
 ✅ Uygulama başlatıldığında veritabanı senkronize edilecektir.
 
+### Production Ortamı Hazırlama
+
+Production dağıtımı için:
+
+```bash
+# .env dosyasını production ayarlarıyla oluştur
+NODE_ENV=production
+DB_SYNCHRONIZE=false
+JWT_SECRET=<uzun-ve-güvenli-bir-anahtar>
+
+# Build et
+npm run build
+
+# Production'da çalıştır
+npm start
+```
+
 ## 🔧 Konfigürasyon
 
 ### Backend Environment Variables
@@ -138,24 +155,34 @@ psql -U postgres -c "CREATE DATABASE gamevault;"
 # ====================================
 PORT=3000
 NODE_ENV=development
+FRONTEND_URL=http://localhost:5173
 
 # ====================================
 # JWT Configuration
+# ⚠️ PRODUCTION'DA GÜVENLI BİR ANAHTAR KULLANIN!
 # ====================================
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-JWT_EXPIRATION=86400
+JWT_SECRET=<güvenli-bir-anahtar>
+JWT_EXPIRATION=1d
 
 # ====================================
 # Database Configuration
 # ====================================
 DB_HOST=localhost
 DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
+DB_USER=<veritabanı-kullanıcısı>
+DB_PASSWORD=<veritabanı-şifresi>
 DB_NAME=gamevault
 DB_LOGGING=false
-DB_SYNCHRONIZE=true
+DB_SYNCHRONIZE=true  # Development: true, Production: false
 ```
+
+### ⚠️ Güvenlik Uyarıları
+
+- **JWT_SECRET**: Production'da en az 32 karakter, karmaşık bir değer kullanın (asla ortak kullanmayın)
+- **Database Credentials**: Asla varsayılan değerler kullanmayın, güvenli ve unique olmalı
+- **NODE_ENV**: Production'da `production` olarak ayarlayın
+- **CORS**: Production'da FRONTEND_URL'i spesifik bir domaine ayarlayın
+- **.env**: Asla version control'e commit etmeyin (`.gitignore` ekli olmalı)
 
 ---
 
@@ -167,7 +194,7 @@ DB_SYNCHRONIZE=true
 ```bash
 cd backend
 npm run start:dev
-# Swagger: http://localhost:3000/api
+# Swagger: http://localhost:3000/api (development ortamında erişilebilir)
 ```
 
 ### Kullanıcı Rolleri
@@ -175,14 +202,16 @@ npm run start:dev
 | Rol | İzinler |
 |-----|---------|
 | **BUYER** | Ürün görüntüleme, sepete ekleme, sipariş oluşturma |
-| **SELLER** | Ürün yönetimi (CRUD), kendi siparişlerini görüntüleme |
-| **ADMIN** | Tüm yönetim işlemleri, sistem ayarları |
+| **SELLER** | Ürün yönetimi (CRUD), kendi siparişlerini görüntüleme, ürün status yönetimi |
+| **ADMIN** | Tüm yönetim işlemleri, sistem ayarları, oyun/rol yönetimi, tüm siparişleri görüntüleme |
 
 ### Geliştirme Yaparken İpuçları
 
 1. **Backend değişiklikleri otomatik yüklenir** (`npm run start:dev` kullanıyorsanız)
-2. **API dokümantasyonunu kontrol et**: http://localhost:3000/api
+2. **API dokümantasyonunu kontrol et**: Swagger UI (http://localhost:3000/api - development)
 3. **Hata mesajlarını kontrol et**: Server logs
+4. **Database transactions**: Sipariş oluşturma sırasında stok güncelleme atomik işlemdir
+5. **Role-based access control**: Her endpoint'in auth ve role gereksinimlerini kontrol edin
 
 ---
 
@@ -308,7 +337,7 @@ PUT    /roles/:id              # Rol güncelle [Admin]
 DELETE /roles/:id              # Rol sil [Admin]
 ```
 
-📖 **Detaylı API Dokümantasyonu**: http://localhost:3000/api (Swagger UI)
+📖 **Detaylı API Dokümantasyonu**: Swagger UI (development ortamında http://localhost:3000/api adresinde)
 
 ---
 
@@ -340,7 +369,7 @@ Veritabanı tasarımı, tabloları, ilişkileri ve örnek SQL queries için: **[
 | **Port 3000 kullanımda** | `lsof -ti:3000 \| xargs kill -9` |
 
 | **PostgreSQL bağlantısı başarısız** | `psql -U postgres` ile kontrol edin |
-| **JWT Token hatası** | `.env` dosyasındaki `JWT_SECRET` kontrol edin |
+| **JWT Token hatası** | `.env` dosyasındaki `JWT_SECRET` konfigürasyonunun doğru olup olmadığını kontrol edin |
 | **CORS hatası** | `backend/src/main.ts` dosyasında CORS ayarını kontrol edin |
 | **Modüller bulunamadı** | `npm install` komutu çalıştırın |
 

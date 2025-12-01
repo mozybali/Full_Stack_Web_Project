@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto, UpdateProductDto } from './dto/create-product.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
+import { RoleNames } from '../common/enums/role-names.enum';
 
 // Ürün yönetimi ile ilgili tüm endpoint'ler
 @ApiTags('Ürünler')
@@ -39,8 +40,8 @@ export class ProductsController {
     status: 404,
     description: 'Ürün bulunamadı',
   })
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.findOne(id);
   }
 
   /**
@@ -48,7 +49,7 @@ export class ProductsController {
    */
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('SELLER', 'ADMIN')
+  @Roles(RoleNames.SELLER, RoleNames.ADMIN)
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Yeni ürün oluştur' })
   @ApiResponse({
@@ -68,7 +69,7 @@ export class ProductsController {
    */
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('SELLER', 'ADMIN')
+  @Roles(RoleNames.SELLER, RoleNames.ADMIN)
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Ürün bilgilerini güncelle' })
   @ApiResponse({
@@ -79,18 +80,16 @@ export class ProductsController {
     status: 404,
     description: 'Ürün bulunamadı',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateProductDto, @Request() req: any) {
-    return this.productsService.update(+id, dto, req.user.sub);
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateProductDto, @Request() req: any) {
+    return this.productsService.update(id, dto, req.user.sub);
   }
-
-
 
   /**
    * Ürünü sil
    */
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('SELLER', 'ADMIN')
+  @Roles(RoleNames.SELLER, RoleNames.ADMIN)
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Ürünü sil' })
   @ApiResponse({
@@ -101,7 +100,7 @@ export class ProductsController {
     status: 404,
     description: 'Ürün bulunamadı',
   })
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number, @Request() req: any) {
+    return this.productsService.remove(id, req.user.sub);
   }
 }

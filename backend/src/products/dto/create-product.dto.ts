@@ -89,4 +89,21 @@ export class UpdateProductDto {
   @IsNumber()
   @Min(1)
   stock?: number;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Oyun ID',
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  gameId?: number;
+
+  @ApiProperty({
+    example: true,
+    description: 'Ürün aktif mi',
+    required: false,
+  })
+  @IsOptional()
+  isActive?: boolean;
 }

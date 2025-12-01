@@ -1,5 +1,12 @@
 # 🗄️ Database Dokümantasyonu
 
+**Proje:** GameVault - Game Account & Key Marketplace  
+**Veritabanı:** PostgreSQL 12+  
+**ORM:** TypeORM 0.3.20  
+**Son Güncelleme:** 1 Aralık 2025 (v2.0 - Transaction Support, isActive Field, Security Enhancements)
+
+---
+
 ## 📋 İçindekiler
 
 - [Genel Bilgiler](#-genel-bilgiler)
@@ -8,31 +15,34 @@
 - [Tablolar](#-tablolar)
 - [İlişkiler](#-ilişkiler)
 - [Enum Tipleri](#-enum-tipleri)
-- [İndeksler](#-indeksler)
 - [Constraints](#-constraints)
 - [Örnek Queries](#-örnek-queries)
-- [Başvuru](#-başvuru)
+- [Veritabanı Yedekleme](#-veritabanı-yedekleme)
 
 ---
 
 ## 🔧 Genel Bilgiler
 
-| Property | Değer |
-|----------|-------|
+| Özellik | Değer |
+|---------|-------|
 | **DBMS** | PostgreSQL 12+ |
-| **ORM** | TypeORM |
-| **Synchronize** | true (development) |
+| **ORM** | TypeORM 0.3.20 |
+| **Synchronize** | true (development), false (production) |
 | **Charset** | UTF-8 |
 | **Timezone** | UTC |
+| **Tablo Sayısı** | 7 Ana + 1 Junction |
+| **İlişki Tipi** | One-to-Many, Many-to-Many |
 
 ### Bağlantı Bilgisi
 
 ```env
 DB_HOST=localhost
 DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
+DB_USER=<veritabanı-kullanıcısı>
+DB_PASSWORD=<veritabanı-şifresi>
 DB_NAME=gamevault
+DB_LOGGING=false
+DB_SYNCHRONIZE=true  # Development: true, Production: false
 ```
 
 ---
@@ -41,15 +51,15 @@ DB_NAME=gamevault
 
 ### 1️⃣ PostgreSQL Kurulumu (İlk Kez)
 
+PostgreSQL resmi website'sinden indirebilirsiniz: https://www.postgresql.org/download/
+
+Alternatif kurulum yöntemleri:
 ```bash
 # macOS (Homebrew)
 brew install postgresql@15
 
 # Ubuntu/Debian
 sudo apt-get install postgresql postgresql-contrib
-
-# Windows
-# https://www.postgresql.org/download/windows/ adresinden indir
 ```
 
 ### 2️⃣ PostgreSQL Başlatma
@@ -61,7 +71,9 @@ brew services start postgresql@15
 # Ubuntu/Debian
 sudo systemctl start postgresql
 
-# Kontrol et
+# Windows (Service olarak çalışır, manual başlatmaya gerek yok)
+
+# Kurulumu kontrol et
 psql --version
 ```
 
@@ -81,12 +93,32 @@ CREATE DATABASE gamevault;
 \q
 ```
 
-### 4️⃣ Uygulama Başlatma
+### 4️⃣ .env Dosyası Oluşturma
 
-Uygulama başlatıldığında TypeORM otomatik olarak:
-- Database'e bağlanır
-- Tüm tabloları oluşturur (eğer yoksa)
-- Tabloları senkronize eder
+```bash
+cd backend
+cp .env.example .env
+```
+
+`.env` dosyasının içeriği (örnek):
+
+```env
+PORT=3000
+NODE_ENV=development
+JWT_SECRET=<güvenli-bir-anahtar>
+JWT_EXPIRATION=1d
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=<veritabanı-kullanıcısı>
+DB_PASSWORD=<veritabanı-şifresi>
+DB_NAME=gamevault
+DB_LOGGING=false
+DB_SYNCHRONIZE=true
+```
+
+⚠️ **Önemli:** `.env` dosyasını asla version control'e commit etmeyin!
+
+### 5️⃣ Uygulama Başlatma
 
 ```bash
 cd backend
@@ -94,7 +126,28 @@ npm install
 npm run start:dev
 ```
 
-**✅ Başarılı oldu!** Veritabanı hazır ve uygulamaya başlamaya hazır.
+**✅ Başarılı oldu!** 
+
+TypeORM otomatik olarak:
+- ✓ Database'e bağlanır
+- ✓ Tüm tabloları oluşturur (eğer yoksa)
+- ✓ Tabloları senkronize eder (development ortamında)
+- ✓ Varsayılan rolleri (ADMIN, SELLER, BUYER) ekler
+- ✓ Seeding verilerini oluşturur (Transaction desteği ile atomik işlemler)
+
+API'yi ziyaret et: Swagger UI (development ortamında http://localhost:3000/api adresinde)
+
+### 6️⃣ Önemli: Production Ayarları
+
+Production ortamında aşağıdaki değişiklikleri yapın:
+
+```env
+DB_SYNCHRONIZE=false  # Manuel migration veya oto-migration tools kullanın
+NODE_ENV=production
+# Güvenli şifre ve JWT secret kullanın
+```
+
+**Not:** TypeORM transaction mekanizması ürün siparişlerinde stok güncellemelerini korur, concurrent işlemlerde veri tutarlılığını sağlar.
 
 ---
 
@@ -102,237 +155,336 @@ npm run start:dev
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                           DATABASE SCHEMA                        │
+│                      DATABASE SCHEMA DIAGRAM                     │
 └──────────────────────────────────────────────────────────────────┘
 
-                              ┌─────────────┐
-                              │   games     │
-                              │  ─────────  │
-                              │  id (PK)    │
-                              │  name       │
-                              │  platform   │
-                              │  genre      │
-                              └────────┬────┘
+                              ┌──────────────┐
+                              │    games     │
+                              │──────────────│
+                              │ id (PK)      │
+                              │ name (UNIQUE)│
+                              │ platform     │
+                              │ genre        │
+                              └────────┬─────┘
                                        │ 1:N
                                        │
-┌──────────────────┐            ┌──────▼─────────┐
-│     users        │            │    products    │
-│   ──────────     │            │   ──────────   │
-│   id (PK) ◄──────┼────┐       │   id (PK)      │
-│   email   │      │    │       │   title        │
-│ username  │      │    │       │   description │
-│ password  │      │    └───────┤   seller_id(FK)
-│ createdAt │      │ 1:N        │   game_id (FK) │
-│ updatedAt │      │            │   type (ENUM)  │
-└─────┬────┘      │            │   price        │
-      │ M:N       │            │   stock        │
-      │           │            │   isActive     │
-  ┌───▼────┐      │            │   createdAt    │
-  │user_    │      │            │   updatedAt    │
-  │roles    │      │            └──────┬────────┘
-  └───┬────┘      │                    │ M:1
-      │ M:N       │                    │
-      │           │        ┌───────────┘
-      │     ┌─────▼────┐   │
-      └────►│  roles   │   │
-            │──────────│   │
-            │ id (PK)  │   │
-            │ name     │   │
-            │ desc.    │   │
-            └──────────┘   │
-                           │
-                    ┌──────▼─────────┐
-                    │    orders      │
-                    │   ──────────   │
-                    │   id (PK)      │
-                    │   buyer_id (FK)
-                    │   status (ENUM)
-                    │   totalPrice   │
-                    │   createdAt    │
-                    └──────┬─────────┘
-                           │ 1:N
-                           │
-                    ┌──────▼──────────┐
-                    │  order_items    │
-                    │  ──────────────┐
-                    │  id (PK)       │
-                    │  order_id (FK) │
-                    │  product_id(FK)
-                    │  quantity      │
-                    │  unitPrice     │
-                    └────────────────┘
+┌──────────────────────┐       ┌───────▼─────────────┐
+│      users           │       │     products        │
+│──────────────────────│       │─────────────────────│
+│ id (PK)              │◄──────┤ id (PK)             │
+│ email (UNIQUE)       │ 1:N   │ title               │
+│ username (UNIQUE)    │       │ description         │
+│ passwordHash         │       │ type (ENUM)         │
+│ createdAt            │       │ price (>0)          │
+│ updatedAt            │       │ currency            │
+└──┬──────────────────┘       │ stock (>=0)         │
+   │ M:N                       │ isActive            │
+   │                           │ sellerId (FK→users)  │
+   │                           │ gameId (FK→games)   │
+   │          ┌────────────────┤ createdAt           │
+   │          │                │ updatedAt           │
+   │  ┌───────▼────┐           └──────┬──────────────┘
+   │  │user_roles  │                  │ M:1
+   │  │────────────│                  │
+   │  │userId (FK) │                  │
+   │  │roleId (FK) │                  │
+   │  │PRIMARY (userId, roleId)       │
+   │  └───────┬────┘                  │
+   │          │ M:N                   │
+   └─────────┤                        │
+             │                        │
+      ┌──────▼─────┐           ┌──────▼──────────┐
+      │   roles    │           │     orders      │
+      │────────────│           │─────────────────│
+      │ id (PK)    │           │ id (PK)         │
+      │ name (UNIQUE)          │ buyerId (FK)    │
+      │ description│           │ status (ENUM)   │
+      └────────────┘           │ totalPrice      │
+                               │ createdAt       │
+                               └────────┬────────┘
+                                        │ 1:N
+                                        │
+                                 ┌──────▼──────────┐
+                                 │  order_items    │
+                                 │──────────────────│
+                                 │ id (PK)          │
+                                 │ orderId (FK)     │
+                                 │ productId (FK)   │
+                                 │ quantity         │
+                                 │ unitPrice        │
+                                 └──────────────────┘
+
+LEGEND:
+  PK     = Primary Key
+  FK     = Foreign Key
+  1:N    = One-to-Many
+  M:N    = Many-to-Many
+  (...)  = Constraint
 ```
 
 ---
 
 ## 📋 Tablolar
 
-### 1️⃣ users (Kullanıcılar)
+### 1️⃣ `users` - Kullanıcılar
 
 **Tanım:** Sistemdeki tüm kullanıcıları depolamak için ana tablo.
 
+```typescript
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column({ unique: true })
+  username: string;
+
+  @Column()
+  passwordHash: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @ManyToMany(() => Role, (role) => role.users, { eager: true })
+  @JoinTable()
+  roles: Role[];
+
+  @OneToMany(() => Product, (product) => product.seller)
+  products: Product[];
+
+  @OneToMany(() => Order, (order) => order.buyer)
+  orders: Order[];
+}
+```
+
 | Kolon | Tip | Constraints | Açıklama |
 |-------|-----|-----------|----------|
-| `id` | SERIAL | PK, AUTO_INCREMENT | Benzersiz kullanıcı ID |
-| `email` | VARCHAR(255) | UNIQUE, NOT NULL | Kullanıcı email adresi |
-| `username` | VARCHAR(100) | UNIQUE, NOT NULL | Kullanıcı adı |
-| `passwordHash` | VARCHAR(255) | NOT NULL | Şifrelenmiş şifre (bcrypt) |
-| `createdAt` | TIMESTAMP | DEFAULT NOW(), NOT NULL | Oluşturulma tarihi |
-| `updatedAt` | TIMESTAMP | DEFAULT NOW(), NOT NULL | Güncellenme tarihi |
-
-**İndeksler:**
-```sql
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_username ON users(username);
-```
-
-**Örnek Veri:**
-```sql
-SELECT * FROM users WHERE email = 'user@example.com';
-```
+| `id` | SERIAL | PK | Benzersiz kullanıcı ID |
+| `email` | VARCHAR | UNIQUE, NOT NULL | Kullanıcı email adresi |
+| `username` | VARCHAR | UNIQUE, NOT NULL | Kullanıcı adı |
+| `passwordHash` | VARCHAR | NOT NULL | Şifrelenmiş şifre (bcrypt) |
+| `createdAt` | TIMESTAMP | NOT NULL | Oluşturulma tarihi |
+| `updatedAt` | TIMESTAMP | NOT NULL | Güncellenme tarihi |
 
 ---
 
-### 2️⃣ roles (Roller)
+### 2️⃣ `roles` - Roller
 
 **Tanım:** Sistem rolleri ve izinleri tanımlamak için tablo.
 
+```typescript
+@Entity('roles')
+export class Role {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
+  name: string;
+
+  @Column({ nullable: true })
+  description?: string;
+
+  @ManyToMany(() => User, (user) => user.roles)
+  users: User[];
+}
+```
+
 | Kolon | Tip | Constraints | Açıklama |
 |-------|-----|-----------|----------|
-| `id` | SERIAL | PK, AUTO_INCREMENT | Benzersiz rol ID |
-| `name` | VARCHAR(50) | UNIQUE, NOT NULL | Rol adı (BUYER, SELLER, ADMIN) |
-| `description` | VARCHAR(255) | Nullable | Rol açıklaması |
+| `id` | SERIAL | PK | Benzersiz rol ID |
+| `name` | VARCHAR | UNIQUE, NOT NULL | Rol adı |
+| `description` | VARCHAR | Nullable | Rol açıklaması |
 
 **Varsayılan Roller:**
-```sql
-INSERT INTO roles (name, description) VALUES
-  ('BUYER', 'Ürün satın alabilen kullanıcılar'),
-  ('SELLER', 'Ürün satabilecek kullanıcılar'),
-  ('ADMIN', 'Platform yöneticileri');
-```
+- `ADMIN` - Platform yöneticileri
+- `SELLER` - Ürün satabilen kullanıcılar
+- `BUYER` - Ürün satın alabilen kullanıcılar (varsayılan)
 
 ---
 
-### 3️⃣ user_roles (Kullanıcı-Rol İlişkisi)
+### 3️⃣ `user_roles` - Kullanıcı-Rol İlişkisi
 
-**Tanım:** Kullanıcılar ile roller arasındaki many-to-many ilişkisini tanımlamak için junction table.
+**Tanım:** Many-to-Many junction table
 
-| Kolon | Tip | Constraints | Açıklama |
-|-------|-----|-----------|----------|
-| `userId` | INTEGER | FK (users.id), PK | Kullanıcı ID |
-| `roleId` | INTEGER | FK (roles.id), PK | Rol ID |
-
-**Foreign Keys:**
-```sql
-ALTER TABLE user_roles 
-ADD CONSTRAINT fk_user_roles_userId 
-FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE user_roles 
-ADD CONSTRAINT fk_user_roles_roleId 
-FOREIGN KEY (roleId) REFERENCES roles(id) ON DELETE CASCADE;
-```
+| Kolon | Tip | Constraints |
+|-------|-----|-----------|
+| `userId` | INTEGER | FK (users.id), PK |
+| `roleId` | INTEGER | FK (roles.id), PK |
 
 ---
 
-### 4️⃣ games (Oyunlar)
+### 4️⃣ `games` - Oyunlar
 
 **Tanım:** Satılan oyunların katalogunu tutmak için tablo.
 
+```typescript
+@Entity('games')
+export class Game {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column()
+  platform: string;
+
+  @Column({ nullable: true })
+  genre?: string;
+
+  @OneToMany(() => Product, (product) => product.game)
+  products: Product[];
+}
+```
+
 | Kolon | Tip | Constraints | Açıklama |
 |-------|-----|-----------|----------|
-| `id` | SERIAL | PK, AUTO_INCREMENT | Benzersiz oyun ID |
-| `name` | VARCHAR(150) | UNIQUE, NOT NULL | Oyun adı |
-| `platform` | VARCHAR(50) | NOT NULL | Platform (PC, Console, Mobile) |
-| `genre` | VARCHAR(100) | Nullable | Oyun türü (Action, RPG, etc) |
-
-**İndeksler:**
-```sql
-CREATE INDEX idx_games_name ON games(name);
-CREATE INDEX idx_games_platform ON games(platform);
-```
+| `id` | SERIAL | PK | Benzersiz oyun ID |
+| `name` | VARCHAR | UNIQUE, NOT NULL | Oyun adı |
+| `platform` | VARCHAR | NOT NULL | Platform (PC, Console, Mobile) |
+| `genre` | VARCHAR | Nullable | Oyun türü (Action, RPG, etc) |
 
 ---
 
-### 5️⃣ products (Ürünler)
+### 5️⃣ `products` - Ürünler
 
 **Tanım:** Satılan ürünleri (hesaplar ve anahtarlar) tutmak için ana tablo.
 
+```typescript
+@Entity('products')
+export class Product {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  title: string;
+
+  @Column({ type: 'text', nullable: true })
+  description?: string;
+
+  @Column({ type: 'enum', enum: ProductType })
+  type: ProductType;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  price: number;
+
+  @Column({ default: 'TRY' })
+  currency: string;
+
+  @Column({ default: 1 })
+  stock: number;
+
+  @Column({ default: true })
+  isActive: boolean;
+
+  @ManyToOne(() => User, (user) => user.products, { eager: true })
+  seller: User;
+
+  @ManyToOne(() => Game, (game) => game.products, { eager: true })
+  game: Game;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+}
+```
+
 | Kolon | Tip | Constraints | Açıklama |
 |-------|-----|-----------|----------|
-| `id` | SERIAL | PK, AUTO_INCREMENT | Benzersiz ürün ID |
-| `title` | VARCHAR(200) | NOT NULL | Ürün başlığı |
+| `id` | SERIAL | PK | Benzersiz ürün ID |
+| `title` | VARCHAR | NOT NULL | Ürün başlığı |
 | `description` | TEXT | Nullable | Ürün açıklaması |
 | `type` | ENUM | NOT NULL | Ürün tipi (ACCOUNT, KEY) |
-| `price` | DECIMAL(10,2) | NOT NULL, CHECK > 0 | Fiyat |
-| `currency` | VARCHAR(3) | DEFAULT 'TRY' | Para birimi |
-| `stock` | INTEGER | DEFAULT 1, CHECK >= 0 | Stok miktarı |
-| `isActive` | BOOLEAN | DEFAULT true | Ürün aktif mi |
-| `sellerId` | INTEGER | FK (users.id), NOT NULL | Satıcı ID |
-| `gameId` | INTEGER | FK (games.id), NOT NULL | İlgili oyun ID |
-| `createdAt` | TIMESTAMP | DEFAULT NOW(), NOT NULL | Oluşturulma tarihi |
-| `updatedAt` | TIMESTAMP | DEFAULT NOW(), NOT NULL | Güncellenme tarihi |
-
-**İndeksler:**
-```sql
-CREATE INDEX idx_products_sellerId ON products(sellerId);
-CREATE INDEX idx_products_gameId ON products(gameId);
-CREATE INDEX idx_products_type ON products(type);
-CREATE INDEX idx_products_isActive ON products(isActive);
-CREATE INDEX idx_products_createdAt ON products(createdAt DESC);
-```
+| `price` | DECIMAL(10,2) | NOT NULL, >0 | Fiyat |
+| `currency` | VARCHAR | DEFAULT 'TRY' | Para birimi |
+| `stock` | INTEGER | >=0 | Stok miktarı |
+| `isActive` | BOOLEAN | DEFAULT true | Ürün aktif mi (satıcı tarafından kontrol edilebilir) |
+| `sellerId` | INTEGER | FK (users.id) | Satıcı ID |
+| `gameId` | INTEGER | FK (games.id) | İlgili oyun ID |
+| `createdAt` | TIMESTAMP | NOT NULL | Oluşturulma tarihi |
+| `updatedAt` | TIMESTAMP | NOT NULL | Güncellenme tarihi |
 
 ---
 
-### 6️⃣ orders (Siparişler)
+### 6️⃣ `orders` - Siparişler
 
 **Tanım:** Müşterilerin siparişlerini tutmak için ana tablo.
 
+```typescript
+@Entity('orders')
+export class Order {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => User, (user) => user.orders, { eager: true })
+  buyer: User;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
+  status: OrderStatus;
+
+  @OneToMany(() => OrderItem, (item) => item.order, {
+    cascade: true,
+    eager: true,
+  })
+  items: OrderItem[];
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  totalPrice: number;
+}
+```
+
 | Kolon | Tip | Constraints | Açıklama |
 |-------|-----|-----------|----------|
-| `id` | SERIAL | PK, AUTO_INCREMENT | Benzersiz sipariş ID |
-| `buyerId` | INTEGER | FK (users.id), NOT NULL | Alıcı ID |
+| `id` | SERIAL | PK | Benzersiz sipariş ID |
+| `buyerId` | INTEGER | FK (users.id) | Alıcı ID |
 | `status` | ENUM | DEFAULT 'PENDING' | Sipariş durumu |
 | `totalPrice` | DECIMAL(10,2) | NOT NULL | Toplam fiyat |
-| `createdAt` | TIMESTAMP | DEFAULT NOW(), NOT NULL | Sipariş tarihi |
-
-**İndeksler:**
-```sql
-CREATE INDEX idx_orders_buyerId ON orders(buyerId);
-CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_orders_createdAt ON orders(createdAt DESC);
-```
+| `createdAt` | TIMESTAMP | NOT NULL | Sipariş tarihi |
 
 ---
 
-### 7️⃣ order_items (Sipariş Satırları)
+### 7️⃣ `order_items` - Sipariş Satırları
 
 **Tanım:** Siparişlerdeki ürünleri tutmak için junction table.
 
+```typescript
+@Entity('order_items')
+export class OrderItem {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => Order, (order) => order.items)
+  order: Order;
+
+  @ManyToOne(() => Product)
+  product: Product;
+
+  @Column({ default: 1 })
+  quantity: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  unitPrice: number;
+}
+```
+
 | Kolon | Tip | Constraints | Açıklama |
 |-------|-----|-----------|----------|
-| `id` | SERIAL | PK, AUTO_INCREMENT | Benzersiz satır ID |
-| `orderId` | INTEGER | FK (orders.id), NOT NULL | Sipariş ID |
-| `productId` | INTEGER | FK (products.id), NOT NULL | Ürün ID |
-| `quantity` | INTEGER | NOT NULL, CHECK > 0 | Ürün miktarı |
-| `unitPrice` | DECIMAL(10,2) | NOT NULL, CHECK > 0 | Satın alındığı andaki fiyat |
-
-**Foreign Keys:**
-```sql
-ALTER TABLE order_items 
-ADD CONSTRAINT fk_order_items_orderId 
-FOREIGN KEY (orderId) REFERENCES orders(id) ON DELETE CASCADE;
-
-ALTER TABLE order_items 
-ADD CONSTRAINT fk_order_items_productId 
-FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT;
-```
-
-**İndeksler:**
-```sql
-CREATE INDEX idx_order_items_orderId ON order_items(orderId);
-CREATE INDEX idx_order_items_productId ON order_items(productId);
-```
+| `id` | SERIAL | PK | Benzersiz satır ID |
+| `orderId` | INTEGER | FK (orders.id) | Sipariş ID |
+| `productId` | INTEGER | FK (products.id) | Ürün ID |
+| `quantity` | INTEGER | >0 | Ürün miktarı |
+| `unitPrice` | DECIMAL(10,2) | >0 | Satın alındığı andaki fiyat |
 
 ---
 
@@ -356,7 +508,7 @@ users: User[];
 ```
 
 **Kullanım:**
-```javascript
+```typescript
 const user = await userRepository.findOne({ where: { id: 1 } });
 console.log(user.roles); // [{ id: 1, name: 'BUYER' }]
 ```
@@ -441,13 +593,6 @@ enum ProductType {
 }
 ```
 
-**SQL Check Constraint:**
-```sql
-ALTER TABLE products 
-ADD CONSTRAINT check_product_type 
-CHECK (type IN ('ACCOUNT', 'KEY'));
-```
-
 ---
 
 ### OrderStatus
@@ -455,21 +600,27 @@ CHECK (type IN ('ACCOUNT', 'KEY'));
 ```typescript
 enum OrderStatus {
   PENDING = 'PENDING',       // Sipariş alındı, işleme alındı
+  PAID = 'PAID',             // Ödeme alındı
   COMPLETED = 'COMPLETED',   // Ürünler teslim edildi
   CANCELLED = 'CANCELLED'    // Sipariş iptal edildi
 }
 ```
 
-**SQL Check Constraint:**
-```sql
-ALTER TABLE orders 
-ADD CONSTRAINT check_order_status 
-CHECK (status IN ('PENDING', 'COMPLETED', 'CANCELLED'));
+---
+
+### RoleNames
+
+```typescript
+enum RoleNames {
+  ADMIN = 'ADMIN',      // Platform yöneticileri
+  SELLER = 'SELLER',    // Ürün satabilen kullanıcılar
+  BUYER = 'BUYER'       // Ürün satın alabilen kullanıcılar
+}
 ```
 
 ---
 
-## 🔑 Constraints
+## 🔒 Constraints
 
 ### Primary Keys
 ```sql
@@ -493,16 +644,16 @@ ALTER TABLE games ADD CONSTRAINT uq_games_name UNIQUE (name);
 ### Check Constraints
 ```sql
 ALTER TABLE products 
-ADD CONSTRAINT check_price_positive CHECK (price > 0);
+ADD CONSTRAINT check_product_price CHECK (price > 0);
 
 ALTER TABLE products 
-ADD CONSTRAINT check_stock_positive CHECK (stock >= 0);
+ADD CONSTRAINT check_product_stock CHECK (stock >= 0);
 
 ALTER TABLE order_items 
-ADD CONSTRAINT check_quantity_positive CHECK (quantity > 0);
+ADD CONSTRAINT check_order_item_quantity CHECK (quantity > 0);
 
 ALTER TABLE order_items 
-ADD CONSTRAINT check_unit_price_positive CHECK (unitPrice > 0);
+ADD CONSTRAINT check_order_item_price CHECK (unitPrice > 0);
 ```
 
 ### Foreign Key Constraints
@@ -531,6 +682,15 @@ FOREIGN KEY (orderId) REFERENCES orders(id) ON DELETE CASCADE;
 ALTER TABLE order_items 
 ADD CONSTRAINT fk_order_items_product 
 FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT;
+
+-- User Roles (CASCADE DELETE)
+ALTER TABLE user_roles 
+ADD CONSTRAINT fk_user_roles_userId 
+FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE user_roles 
+ADD CONSTRAINT fk_user_roles_roleId 
+FOREIGN KEY (roleId) REFERENCES roles(id) ON DELETE CASCADE;
 ```
 
 ---
@@ -631,53 +791,52 @@ ORDER BY month DESC;
 
 ---
 
-## 🔍 Başvuru
+## 📦 Veritabanı Yedekleme
 
-### TypeORM Configuration
-
-```typescript
-// app.module.ts
-TypeOrmModule.forRootAsync({
-  useFactory: () => ({
-    type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'postgres',
-    password: 'postgres',
-    database: 'gamevault',
-    autoLoadEntities: true,
-    synchronize: true,  // Development only!
-    logging: false,
-  }),
-})
-```
-
-### Entity Dekoratörleri
-
-```typescript
-@Entity('users')
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ type: 'varchar', length: 255, unique: true })
-  email: string;
-
-  @OneToMany(() => Product, product => product.seller)
-  products: Product[];
-}
-```
-
-### Veritabanı Yedekleme
+### Backup Alma
 
 ```bash
-# Backup al
-pg_dump -U postgres gamevault > backup.sql
+# Tüm veritabanını backup al
+pg_dump -U postgres -h localhost gamevault > backup.sql
 
-# Restore et
+# Kompres ederek backup al
+pg_dump -U postgres gamevault | gzip > backup_$(date +%Y%m%d_%H%M%S).sql.gz
+```
+
+### Backup Geri Yükleme
+
+```bash
+# Backup'tan restore et
 psql -U postgres gamevault < backup.sql
+
+# Kompres edilmiş backup'tan restore et
+gunzip -c backup_20251201_120000.sql.gz | psql -U postgres gamevault
 ```
 
 ---
 
-**Son Güncelleme:** 1 Aralık 2025
+## 🔍 TypeORM Configuration
+
+```typescript
+// app.module.ts
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+TypeOrmModule.forRootAsync({
+  useFactory: () => ({
+    type: 'postgres',
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT) || 5432,
+    username: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || 'postgres',
+    database: process.env.DB_NAME || 'gamevault',
+    autoLoadEntities: true,
+    synchronize: process.env.DB_SYNCHRONIZE === 'true',
+    logging: process.env.DB_LOGGING === 'true',
+  }),
+})
+```
+
+---
+
+**Son Güncelleme:** 1 Aralık 2025  
+**Proje:** [Full_Stack_Web_Project](https://github.com/mozybali/Full_Stack_Web_Project)

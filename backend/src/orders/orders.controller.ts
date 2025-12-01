@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Param, Patch, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Req, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto, UpdateOrderDto } from './dto/create-order.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
+import { RoleNames } from '../common/enums/role-names.enum';
 
 // Sipariş yönetimi ile ilgili tüm endpoint'ler
 @ApiTags('Siparişler')
@@ -49,7 +50,7 @@ export class OrdersController {
    * Tüm siparişleri getir (Admin)
    */
   @Get()
-  @Roles('ADMIN')
+  @Roles(RoleNames.ADMIN)
   @ApiOperation({ summary: 'Tüm siparişleri getir' })
   @ApiResponse({
     status: 200,
@@ -72,15 +73,15 @@ export class OrdersController {
     status: 404,
     description: 'Sipariş bulunamadı',
   })
-  findOne(@Param('id') id: string, @Req() req: any) {
-    return this.ordersService.findOne(+id, req.user);
+  findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+    return this.ordersService.findOne(id, req.user);
   }
 
   /**
    * Sipariş durumunu güncelle (PATCH)
    */
   @Patch(':id')
-  @Roles('ADMIN')
+  @Roles(RoleNames.ADMIN)
   @ApiOperation({ summary: 'Sipariş durumunu güncelle' })
   @ApiResponse({
     status: 200,
@@ -90,7 +91,7 @@ export class OrdersController {
     status: 404,
     description: 'Sipariş bulunamadı',
   })
-  updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderDto) {
-    return this.ordersService.updateStatus(+id, dto);
+  updateStatus(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateOrderDto) {
+    return this.ordersService.updateStatus(id, dto);
   }
 }

@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RoleNames } from '../common/enums/role-names.enum';
 
 /**
  * Kullanıcı yönetimi servisi
@@ -24,7 +26,7 @@ export class UsersService {
    */
   async createWithDefaultRole(dto: CreateUserDto) {
     // BUYER rolünü bul
-    const buyerRole = await this.rolesRepo.findOne({ where: { name: 'BUYER' } });
+    const buyerRole = await this.rolesRepo.findOne({ where: { name: RoleNames.BUYER } });
     // Yeni kullanıcı nesnesi oluştur
     const user = this.usersRepo.create({
       ...dto,
@@ -90,7 +92,7 @@ export class UsersService {
     }
 
     // Sadece kendi profilini güncelleyebilir veya admin güncelleyebilir
-    if (user && existingUser.id !== user.sub && !user.roles?.includes('ADMIN')) {
+    if (user && existingUser.id !== user.sub && !user.roles?.includes(RoleNames.ADMIN)) {
       throw new ForbiddenException('Sadece kendi profilinizi güncelleyebilirsiniz');
     }
 
@@ -112,7 +114,20 @@ export class UsersService {
       }
     }
 
-    await this.usersRepo.update(id, dto);
+    // Şifre güncellemesi
+    if (dto.password) {
+      if (dto.password.length < 6) {
+        throw new BadRequestException('Şifre minimum 6 karakter olmalıdır');
+      }
+      const hashedPassword = await bcrypt.hash(dto.password, 10);
+      await this.usersRepo.update(id, {
+        ...dto,
+        passwordHash: hashedPassword,
+      });
+    } else {
+      await this.usersRepo.update(id, dto);
+    }
+
     return this.findOne(id);
   }
 }

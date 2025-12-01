@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * Uygulamayı bootstrap et
@@ -12,10 +13,12 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 async function bootstrap() {
   // NestJS uygulamasını oluştur
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   // CORS ayarlarını yapılandır (Frontend'in API'ye erişebilmesi için)
+  const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: corsOrigin,
     credentials: true,
   });
 
@@ -57,6 +60,11 @@ async function bootstrap() {
   // Swagger dokümantasyonunu oluştur
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
+  // Veritabanını seed et
+  const { SeedingService } = await import('./seeding/seeding.service');
+  const seedingService = app.get(SeedingService);
+  await seedingService.seed();
 
   // Sunucuyu 3000 portunda dinlemeye başla
   await app.listen(3000);

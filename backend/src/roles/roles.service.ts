@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from './role.entity';
 import { CreateRoleDto, UpdateRoleDto } from './dto/create-role.dto';
+import { RoleNames } from '../common/enums/role-names.enum';
 
 /**
  * Rol yönetimi servisi
@@ -20,9 +21,9 @@ export class RolesService {
    */
   async seedDefaults() {
     const defaults = [
-      { name: 'ADMIN', description: 'Platform yöneticileri' },
-      { name: 'SELLER', description: 'Ürün satıcıları' },
-      { name: 'BUYER', description: 'Ürün alıcıları' },
+      { name: RoleNames.ADMIN, description: 'Platform yöneticileri' },
+      { name: RoleNames.SELLER, description: 'Ürün satıcıları' },
+      { name: RoleNames.BUYER, description: 'Ürün alıcıları' },
     ];
 
     for (const d of defaults) {
@@ -112,8 +113,8 @@ export class RolesService {
     }
 
     // Varsayılan roller silinemez (güvenlik için)
-    const defaultRoles = ['ADMIN', 'SELLER', 'BUYER'];
-    if (defaultRoles.includes(role.name)) {
+    const defaultRoles = [RoleNames.ADMIN, RoleNames.SELLER, RoleNames.BUYER];
+    if (defaultRoles.includes(role.name as RoleNames)) {
       throw new ConflictException(`${role.name} varsayılan bir rol olduğu için silinemez`);
     }
 

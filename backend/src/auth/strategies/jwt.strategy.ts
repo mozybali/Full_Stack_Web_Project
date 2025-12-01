@@ -20,10 +20,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   /**
    * JWT Payload'ını doğrula
    * @param payload - JWT Payload'ı
-   * @returns Doğrulanan kullanıcı nesnesi
+   * @returns Doğrulanan kullanıcı nesnesi (sub ve roles ile)
    */
   async validate(payload: any) {
-    return { sub: payload.sub, roles: payload.roles };
+    // Payload'dan kullanıcı ID'sini ve rollerini çıkar
+    // Bu veriler request.user'a atanacak ve RolesGuard tarafından kullanılacak
+    return {
+      sub: payload.sub,
+      roles: payload.roles || [],
+    };
   }
 }
 

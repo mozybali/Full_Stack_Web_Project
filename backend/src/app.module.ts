@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { env } from './config/env.config';
@@ -9,6 +9,8 @@ import { RolesModule } from './roles/roles.module';
 import { GamesModule } from './games/games.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
+import { SeedingModule } from './seeding/seeding.module';
+import { SeedingService } from './seeding/seeding.service';
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { OrdersModule } from './orders/orders.module';
     TypeOrmModule.forRootAsync({
       useFactory: () => {
         const cfg = env();
+        const isProduction = process.env.NODE_ENV === 'production';
         return {
           type: 'postgres',
           host: cfg.db.host,
@@ -25,7 +28,8 @@ import { OrdersModule } from './orders/orders.module';
           password: cfg.db.pass,
           database: cfg.db.name,
           autoLoadEntities: true,
-          synchronize: true
+          synchronize: !isProduction, // Only sync in development!
+          logging: process.env.DB_LOGGING === 'true'
         };
       },
     }),
@@ -36,6 +40,17 @@ import { OrdersModule } from './orders/orders.module';
     GamesModule,
     ProductsModule,
     OrdersModule,
+    SeedingModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly seedingService: SeedingService) {}
+
+  /**
+   * Module başlatıldığında veritabanını seed et
+   * Varsayılan rolleri ve diğer gerekli verileri oluştur
+   */
+  async onModuleInit() {
+    await this.seedingService.seed();
+  }
+}
