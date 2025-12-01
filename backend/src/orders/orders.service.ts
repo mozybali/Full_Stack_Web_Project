@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Order } from './order.entity';
 import { OrderItem } from './order-item.entity';
+import { Product } from '../products/product.entity';
 import { CreateOrderDto, UpdateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from '../common/enums/order-status.enum';
-import { ProductsService } from '../products/products.service';
 import { RoleNames } from '../common/enums/role-names.enum';
 
 /**
@@ -17,7 +17,8 @@ export class OrdersService {
   constructor(
     @InjectRepository(Order)
     private readonly ordersRepo: Repository<Order>,
-    private readonly productsService: ProductsService,
+    @InjectRepository(Product)
+    private readonly productsRepo: Repository<Product>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -41,14 +42,24 @@ export class OrdersService {
       let totalPrice = 0;
       const orderItems: Partial<OrderItem>[] = [];
 
-      // Tüm ürünleri kontrol et ve stokları lock ile oku
+      // Tüm ürünleri kontrol et ve stokları pessimistic lock ile oku (race condition önleme)
       for (const item of dto.items) {
-        const product = await this.productsService.findOne(item.productId);
+        // Pessimistic write lock ile ürünü kilitle - aynı anda başka transaction değiştiremez
+        const product = await queryRunner.manager.findOne(Product, {
+          where: { id: item.productId },
+          lock: { mode: 'pessimistic_write' }
+        });
+        
         if (!product) {
           throw new BadRequestException(`Ürün ${item.productId} bulunamadı`);
         }
+        
+        if (!product.isActive) {
+          throw new BadRequestException(`${product.title} artık satışta değil`);
+        }
+        
         if (product.stock < item.quantity) {
-          throw new BadRequestException(`${product.title} için yeterli stok yok`);
+          throw new BadRequestException(`${product.title} için yeterli stok yok (Mevcut: ${product.stock}, İstenen: ${item.quantity})`);
         }
 
         totalPrice += Number(product.price) * item.quantity;
@@ -57,6 +68,10 @@ export class OrdersService {
           quantity: item.quantity,
           unitPrice: product.price,
         });
+        
+        // Stoğu hemen güncelle (lock tutulurken)
+        product.stock -= item.quantity;
+        await queryRunner.manager.save(Product, product);
       }
 
       // Sipariş oluştur
@@ -68,15 +83,6 @@ export class OrdersService {
       });
 
       const savedOrder = await queryRunner.manager.save(order);
-
-      // Stokları güncelle (transaction içinde)
-      for (const item of dto.items) {
-        const product = await this.productsService.findOne(item.productId);
-        if (product) {
-          const newStock = product.stock - item.quantity;
-          await queryRunner.manager.update('products', { id: item.productId }, { stock: newStock });
-        }
-      }
 
       await queryRunner.commitTransaction();
       return savedOrder;
