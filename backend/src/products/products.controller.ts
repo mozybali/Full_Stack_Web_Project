@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request, ParseIntPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto, UpdateProductDto } from './dto/create-product.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RoleNames } from '../common/enums/role-names.enum';
+import { multerMemoryOptions } from '../config/multer.config';
 
 // Ürün yönetimi ile ilgili tüm endpoint'ler
 @ApiTags('Ürünler')
@@ -50,8 +52,24 @@ export class ProductsController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleNames.SELLER, RoleNames.ADMIN)
+  @UseInterceptors(FileInterceptor('image', multerMemoryOptions))
   @ApiBearerAuth('JWT')
-  @ApiOperation({ summary: 'Yeni ürün oluştur' })
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Yeni ürün oluştur (resimle birlikte)' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string', example: 'Oyun Lisansı' },
+        description: { type: 'string', example: 'Premium oyun lisansı' },
+        type: { type: 'string', enum: ['ACCOUNT', 'KEY'], example: 'KEY' },
+        price: { type: 'number', example: 29.99 },
+        stock: { type: 'number', example: 100 },
+        gameId: { type: 'number', example: 1 },
+        image: { type: 'string', format: 'binary', description: 'Ürün resmi (JPEG, PNG, WebP - Max 5MB)' },
+      },
+    },
+  })
   @ApiResponse({
     status: 201,
     description: 'Ürün başarıyla oluşturuldu',
@@ -60,8 +78,12 @@ export class ProductsController {
     status: 401,
     description: 'Yetkisiz erişim',
   })
-  create(@Body() dto: CreateProductDto, @Request() req: any) {
-    return this.productsService.create(dto, req.user.sub);
+  create(
+    @Body() dto: CreateProductDto,
+    @Request() req: any,
+    @UploadedFile() image?: Express.Multer.File,
+  ) {
+    return this.productsService.create(dto, req.user.sub, image);
   }
 
   /**
@@ -70,8 +92,24 @@ export class ProductsController {
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleNames.SELLER, RoleNames.ADMIN)
+  @UseInterceptors(FileInterceptor('image', multerMemoryOptions))
   @ApiBearerAuth('JWT')
-  @ApiOperation({ summary: 'Ürün bilgilerini güncelle' })
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Ürün bilgilerini güncelle (resimle birlikte)' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string', example: 'Oyun Lisansı' },
+        description: { type: 'string', example: 'Premium oyun lisansı' },
+        price: { type: 'number', example: 29.99 },
+        stock: { type: 'number', example: 100 },
+        gameId: { type: 'number', example: 1 },
+        isActive: { type: 'boolean', example: true },
+        image: { type: 'string', format: 'binary', description: 'Yeni ürün resmi (opsiyonel)' },
+      },
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'Ürün başarıyla güncellendi',
@@ -80,8 +118,13 @@ export class ProductsController {
     status: 404,
     description: 'Ürün bulunamadı',
   })
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateProductDto, @Request() req: any) {
-    return this.productsService.update(id, dto, req.user.sub);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateProductDto,
+    @Request() req: any,
+    @UploadedFile() image?: Express.Multer.File,
+  ) {
+    return this.productsService.update(id, dto, req.user.sub, image);
   }
 
   /**

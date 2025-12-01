@@ -49,6 +49,15 @@ export class CreateProductDto {
   })
   @IsNumber()
   gameId: number;
+
+  @ApiProperty({
+    example: '/uploads/products/product-123456.webp',
+    description: 'Ürün resmi URL',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 }
 
 export class UpdateProductDto {
@@ -98,6 +107,15 @@ export class UpdateProductDto {
   @IsOptional()
   @IsNumber()
   gameId?: number;
+
+  @ApiProperty({
+    example: '/uploads/products/product-123456.webp',
+    description: 'Ürün resmi URL',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 
   @ApiProperty({
     example: true,

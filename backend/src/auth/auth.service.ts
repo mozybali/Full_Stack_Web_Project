@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
@@ -13,6 +14,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly dataSource: DataSource,
   ) {}
 
   /**
@@ -22,26 +24,41 @@ export class AuthService {
    * @throws ConflictException - Email veya username zaten mevcut
    */
   async register(dto: RegisterDto) {
-    // Email ve username benzersizlik kontrolü
-    const existingEmail = await this.usersService.findByEmail(dto.email);
-    if (existingEmail) {
-      throw new ConflictException('Bu email adresi zaten kayıtlı');
-    }
+    // Transaction ile kullanıcı kaydı yap - race condition önle
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    const existingUsername = await this.usersService.findByUsername(dto.username);
-    if (existingUsername) {
-      throw new ConflictException('Bu kullanıcı adı zaten alınmış');
-    }
+    try {
+      // Email ve username benzersizlik kontrolü
+      const existingEmail = await this.usersService.findByEmail(dto.email);
+      if (existingEmail) {
+        throw new ConflictException('Bu email adresi zaten kayıtlı');
+      }
 
-    // Şifreyi 10 salt ile hash'le
-    const passwordHash = await bcrypt.hash(dto.password, 10);
-    // Varsayılan BUYER rolü ile kullanıcı oluştur
-    const user = await this.usersService.createWithDefaultRole({
-      email: dto.email,
-      username: dto.username,
-      passwordHash,
-    });
-    return this.buildToken(user);
+      const existingUsername = await this.usersService.findByUsername(dto.username);
+      if (existingUsername) {
+        throw new ConflictException('Bu kullanıcı adı zaten alınmış');
+      }
+
+      // Şifreyi 10 salt ile hash'le
+      const passwordHash = await bcrypt.hash(dto.password, 10);
+      
+      // Varsayılan BUYER rolü ile kullanıcı oluştur
+      const user = await this.usersService.createWithDefaultRole({
+        email: dto.email,
+        username: dto.username,
+        passwordHash,
+      });
+
+      await queryRunner.commitTransaction();
+      return this.buildToken(user);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   /**

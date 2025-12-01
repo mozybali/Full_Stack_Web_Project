@@ -53,7 +53,7 @@ export const env = () => {
         : (process.env.DB_PASSWORD || 'justcan'),
       
       // Veritabanı adı
-      name: process.env.DB_NAME || 'gamevault'
+      name: process.env.DB_NAME || 'gamelinker'
     }
   };
 };

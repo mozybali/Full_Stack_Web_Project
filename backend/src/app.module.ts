@@ -10,6 +10,7 @@ import { GamesModule } from './games/games.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { SeedingModule } from './seeding/seeding.module';
+import { UploadModule } from './upload/upload.module';
 import { SeedingService } from './seeding/seeding.service';
 
 @Module({
@@ -41,6 +42,7 @@ import { SeedingService } from './seeding/seeding.service';
     ProductsModule,
     OrdersModule,
     SeedingModule,
+    UploadModule,
   ],
 })
 export class AppModule implements OnModuleInit {

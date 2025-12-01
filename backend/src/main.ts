@@ -1,10 +1,12 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { ConfigService } from '@nestjs/config';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 /**
  * Uygulamayı bootstrap et
@@ -12,8 +14,13 @@ import { ConfigService } from '@nestjs/config';
  */
 async function bootstrap() {
   // NestJS uygulamasını oluştur
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
+
+  // Static dosyaları serve et (uploads klasörü)
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads',
+  });
 
   // CORS ayarlarını yapılandır (Frontend'in API'ye erişebilmesi için)
   const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
@@ -35,6 +42,9 @@ async function bootstrap() {
 
   // Global response interceptor'ı ekle
   app.useGlobalInterceptors(new ResponseInterceptor());
+
+  // Global class serializer interceptor'ı ekle (@Exclude() decorator'ının çalışması için)
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   // Swagger API Dokümantasyonu Konfigürasyonu
   const config = new DocumentBuilder()

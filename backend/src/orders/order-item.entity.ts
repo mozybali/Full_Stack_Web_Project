@@ -12,22 +12,22 @@ export class OrderItem {
   id: number;
 
   // İlişkili sipariş
-  @ManyToOne(() => Order, (order) => order.items)
+  @ManyToOne(() => Order, (order) => order.items, { onDelete: 'CASCADE' })
   order: Order;
 
   // Sipariş içindeki ürün
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, { onDelete: 'RESTRICT' })
   product: Product;
 
   @Column({ default: 1 })
   quantity: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'unit_price' })
   unitPrice: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }

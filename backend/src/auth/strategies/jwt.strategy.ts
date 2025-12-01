@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from '../../users/users.service';
 
 /**
  * JWT Doğrulama Stratejisi
@@ -9,7 +10,10 @@ import { ConfigService } from '@nestjs/config';
  */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(configService: ConfigService) {
+  constructor(
+    configService: ConfigService,
+    private readonly usersService: UsersService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -18,11 +22,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   /**
-   * JWT Payload'ını doğrula
+   * JWT Payload'ını doğrula ve kullanıcıyı veritabanından kontrol et
    * @param payload - JWT Payload'ı
    * @returns Doğrulanan kullanıcı nesnesi (sub ve roles ile)
+   * @throws UnauthorizedException - Kullanıcı bulunamazsa
    */
   async validate(payload: any) {
+    // Kullanıcıyı veritabanından sorgula - silinmiş veya pasif kullanıcıları engelle
+    const user = await this.usersService.findOne(payload.sub);
+    
+    if (!user) {
+      throw new UnauthorizedException('Kullanıcı bulunamadı veya hesap pasif');
+    }
+
     // Payload'dan kullanıcı ID'sini ve rollerini çıkar
     // Bu veriler request.user'a atanacak ve RolesGuard tarafından kullanılacak
     return {

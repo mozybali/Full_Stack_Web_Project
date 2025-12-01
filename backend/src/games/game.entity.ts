@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
 import { Product } from '../products/product.entity';
 
 /**
@@ -10,7 +10,8 @@ export class Game {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Index()
+  @Column({ unique: true })
   name: string;
 
   @Column()
@@ -19,10 +20,10 @@ export class Game {
   @Column({ nullable: true })
   genre?: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
   // Bu oyun için satışa sunulan ürünler

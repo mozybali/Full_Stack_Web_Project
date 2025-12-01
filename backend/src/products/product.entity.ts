@@ -5,6 +5,7 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 import { ProductType } from '../common/enums/product-type.enum';
 import { User } from '../users/user.entity';
@@ -37,20 +38,26 @@ export class Product {
   @Column({ default: 1 })
   stock: number;
 
-  @Column({ default: true })
+  @Column({ type: 'text', nullable: true, name: 'image_url' })
+  imageUrl?: string;
+
+  @Index()
+  @Column({ default: true, name: 'is_active' })
   isActive: boolean;
 
   // Ürünü satışa sunan kullanıcı
-  @ManyToOne(() => User, (user) => user.products)
+  @Index()
+  @ManyToOne(() => User, (user) => user.products, { onDelete: 'CASCADE' })
   seller: User;
 
   // Ürünün ilişkili olduğu oyun
-  @ManyToOne(() => Game, (game) => game.products)
+  @Index()
+  @ManyToOne(() => Game, (game) => game.products, { onDelete: 'CASCADE' })
   game: Game;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }

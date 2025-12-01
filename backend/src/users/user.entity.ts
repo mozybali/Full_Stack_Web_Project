@@ -7,7 +7,10 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
+  Index,
+  Unique,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { Role } from '../roles/role.entity';
 import { Product } from '../products/product.entity';
 import { Order } from '../orders/order.entity';
@@ -17,23 +20,28 @@ import { Order } from '../orders/order.entity';
  * Sistem kullanıcılarının bilgilerini tutmak için kullanılır
  */
 @Entity('users')
+@Unique(['email'])
+@Unique(['username'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column({ unique: true })
   email: string;
 
+  @Index()
   @Column({ unique: true })
   username: string;
 
-  @Column()
+  @Exclude()
+  @Column({ name: 'password_hash' })
   passwordHash: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
   // Kullanıcının sahip olduğu roller
