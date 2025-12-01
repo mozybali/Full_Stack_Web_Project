@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -19,8 +19,20 @@ export class AuthService {
    * Yeni kullanıcı kaydı
    * @param dto - Email, kullanıcı adı ve şifre bilgileri
    * @returns JWT token ve kullanıcı bilgileri
+   * @throws ConflictException - Email veya username zaten mevcut
    */
   async register(dto: RegisterDto) {
+    // Email ve username benzersizlik kontrolü
+    const existingEmail = await this.usersService.findByEmail(dto.email);
+    if (existingEmail) {
+      throw new ConflictException('Bu email adresi zaten kayıtlı');
+    }
+
+    const existingUsername = await this.usersService.findByUsername(dto.username);
+    if (existingUsername) {
+      throw new ConflictException('Bu kullanıcı adı zaten alınmış');
+    }
+
     // Şifreyi 10 salt ile hash'le
     const passwordHash = await bcrypt.hash(dto.password, 10);
     // Varsayılan BUYER rolü ile kullanıcı oluştur

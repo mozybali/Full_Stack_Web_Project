@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete, UseGuards, Body, Put, Req, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, Delete, UseGuards, Body, Put, Req, ParseIntPipe, ForbiddenException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -35,6 +35,7 @@ export class UsersController {
 
   /**
    * ID'ye göre kullanıcı bul
+   * Kendi bilgisini veya admin tüm kullanıcıları görebilir
    */
   @Get(':id')
   @ApiOperation({ summary: 'ID\'ye göre kullanıcı getir' })
@@ -46,7 +47,11 @@ export class UsersController {
     status: 404,
     description: 'Kullanıcı bulunamadı',
   })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+    // Kendi profilini görebilir veya admin tüm profilleri görebilir
+    if (req.user.sub !== id && !req.user.roles?.includes(RoleNames.ADMIN)) {
+      throw new ForbiddenException('Bu kullanıcının bilgilerine erişim izniniz yok');
+    }
     return this.usersService.findOne(id);
   }
 

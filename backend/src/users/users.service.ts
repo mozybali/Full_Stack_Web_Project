@@ -54,6 +54,15 @@ export class UsersService {
   }
 
   /**
+   * Kullanıcı adına göre kullanıcı bul
+   * @param username - Aranacak kullanıcı adı
+   * @returns Kullanıcı nesnesi veya null
+   */
+  findByUsername(username: string) {
+    return this.usersRepo.findOne({ where: { username } });
+  }
+
+  /**
    * ID'ye göre kullanıcı bul
    * @param id - Kullanıcı ID'si
    * @returns Kullanıcı nesnesi veya null
@@ -106,28 +115,34 @@ export class UsersService {
 
     // Username benzersizlik kontrolü
     if (dto.username && dto.username !== existingUser.username) {
-      const usernameExists = await this.usersRepo.findOne({
-        where: { username: dto.username },
-      });
+      const usernameExists = await this.findByUsername(dto.username);
       if (usernameExists) {
         throw new ConflictException('Bu kullanıcı adı zaten kullanılıyor');
       }
     }
 
-    // Şifre güncellemesi
+    // Güncelleme datası hazırla
+    const updateData: any = { ...dto };
+
+    // Şifre güncellemesi - password'ü hash'le ve passwordHash'e ata
     if (dto.password) {
       if (dto.password.length < 6) {
         throw new BadRequestException('Şifre minimum 6 karakter olmalıdır');
       }
       const hashedPassword = await bcrypt.hash(dto.password, 10);
-      await this.usersRepo.update(id, {
-        ...dto,
-        passwordHash: hashedPassword,
-      });
-    } else {
-      await this.usersRepo.update(id, dto);
+      updateData.passwordHash = hashedPassword;
+      delete updateData.password;  // password alanını sil, passwordHash'i kullan
     }
 
+    // Email ve username'i güncelle (eğer varsa)
+    if (dto.email) {
+      updateData.email = dto.email;
+    }
+    if (dto.username) {
+      updateData.username = dto.username;
+    }
+
+    await this.usersRepo.update(id, updateData);
     return this.findOne(id);
   }
 }

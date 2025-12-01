@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, Req, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Req, UseGuards, ParseIntPipe, Query, DefaultValuePipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto, UpdateOrderDto } from './dto/create-order.dto';
@@ -48,16 +48,20 @@ export class OrdersController {
 
   /**
    * Tüm siparişleri getir (Admin)
+   * Pagination desteklidir
    */
   @Get()
   @Roles(RoleNames.ADMIN)
-  @ApiOperation({ summary: 'Tüm siparişleri getir' })
+  @ApiOperation({ summary: 'Tüm siparişleri getir (pagination destekli)' })
   @ApiResponse({
     status: 200,
     description: 'Tüm siparişlerin listesi',
   })
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(
+    @Query('skip', new DefaultValuePipe(0), ParseIntPipe) skip: number = 0,
+    @Query('take', new DefaultValuePipe(20), ParseIntPipe) take: number = 20,
+  ) {
+    return this.ordersService.findAll(skip, take);
   }
 
   /**

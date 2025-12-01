@@ -104,9 +104,12 @@ export class OrdersService {
    * Tüm siparişleri getir (Admin)
    * @returns Tüm siparişler
    */
-  findAll() {
+  findAll(skip: number = 0, take: number = 20) {
+    // Pagination ile siparişleri getir (N+1 query problemi azaltılır)
     return this.ordersRepo.find({
       relations: ['buyer', 'items', 'items.product'],
+      skip: Math.max(0, skip),
+      take: Math.min(100, Math.max(1, take)),  // Max 100 item per page
     });
   }
 
