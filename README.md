@@ -330,15 +330,6 @@ nest generate module <module-name>
 nest generate controller <module-name>
 nest generate service <module-name>
 ```
-
-### Code Style
-
-Proje TypeScript strict mode kullanır. Kod yazarken:
-- Type safety'e dikkat edin
-- DTO'lar için class-validator kullanın
-- Entity ilişkilerini doğru tanımlayın
-- Swagger decorator'ları ekleyin
-
 ## 🔒 Güvenlik
 
 ### Uygulanan Güvenlik Önlemleri
