@@ -1,7 +1,7 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
+import { ValidationPipe, ClassSerializerInterceptor, Logger } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { ConfigService } from '@nestjs/config';
@@ -13,6 +13,8 @@ import { join } from 'path';
  * NestJS uygulamasını başlat, konfigürasyonları yap ve dinleme başla
  */
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
+  
   // NestJS uygulamasını oluştur
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
@@ -23,7 +25,7 @@ async function bootstrap() {
   });
 
   // CORS ayarlarını yapılandır (Frontend'in API'ye erişebilmesi için)
-  const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const corsOrigin = configService.get<string>('corsOrigin');
   app.enableCors({
     origin: corsOrigin,
     credentials: true,
@@ -71,9 +73,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  // Sunucuyu 3000 portunda dinlemeye başla
-  await app.listen(3000);
-  console.log('Swagger dokümantasyonu: http://localhost:3000/api adresinde erişilebilir');
+  // Sunucuyu başlat
+  const port = configService.get<number>('port') || 3000;
+  await app.listen(port);
+  
+  logger.log(`Uygulama http://localhost:${port} adresinde çalışıyor`);
+  logger.log(`Swagger dokümantasyonu: http://localhost:${port}/api`);
 }
 
 // Bootstrap işlevini çalıştır

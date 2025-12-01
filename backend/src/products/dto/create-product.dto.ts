@@ -1,4 +1,5 @@
 import { IsString, IsNumber, IsEnum, IsOptional, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProductType } from '../../common/enums/product-type.enum';
 
@@ -31,6 +32,7 @@ export class CreateProductDto {
     example: 29.99,
     description: 'Ürün fiyatı',
   })
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   price: number;
@@ -39,6 +41,7 @@ export class CreateProductDto {
     example: 100,
     description: 'Ürün stok miktarı',
   })
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   stock: number;
@@ -47,6 +50,7 @@ export class CreateProductDto {
     example: 1,
     description: 'Oyun ID',
   })
+  @Type(() => Number)
   @IsNumber()
   gameId: number;
 
@@ -85,6 +89,7 @@ export class UpdateProductDto {
     required: false,
   })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   price?: number;
@@ -95,6 +100,7 @@ export class UpdateProductDto {
     required: false,
   })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   stock?: number;
@@ -105,6 +111,7 @@ export class UpdateProductDto {
     required: false,
   })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   gameId?: number;
 

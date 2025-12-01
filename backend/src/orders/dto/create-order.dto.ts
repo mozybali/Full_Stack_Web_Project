@@ -8,6 +8,7 @@ export class CreateOrderItemDto {
     example: 1,
     description: 'Ürün ID',
   })
+  @Type(() => Number)
   @IsNumber()
   productId: number;
 
@@ -15,6 +16,7 @@ export class CreateOrderItemDto {
     example: 2,
     description: 'Sipariş miktarı',
   })
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   quantity: number;

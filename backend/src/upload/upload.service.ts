@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -10,6 +10,7 @@ import * as sharp from 'sharp';
  */
 @Injectable()
 export class UploadService {
+  private readonly logger = new Logger(UploadService.name);
   private readonly uploadPath: string;
   private readonly maxFileSize: number;
   private readonly allowedMimeTypes: string[];
@@ -116,7 +117,7 @@ export class UploadService {
       }
     } catch (error) {
       // Silme hatası kritik değil, logla ve devam et
-      console.error('Resim silinirken hata:', error);
+      this.logger.error(`Resim silinirken hata: ${error.message}`, error.stack);
     }
   }
 

@@ -20,7 +20,6 @@ import { SeedingService } from './seeding/seeding.service';
     TypeOrmModule.forRootAsync({
       useFactory: () => {
         const cfg = env();
-        const isProduction = process.env.NODE_ENV === 'production';
         return {
           type: 'postgres',
           host: cfg.db.host,
@@ -29,7 +28,7 @@ import { SeedingService } from './seeding/seeding.service';
           password: cfg.db.pass,
           database: cfg.db.name,
           autoLoadEntities: true,
-          synchronize: !isProduction, // Only sync in development!
+          synchronize: true,
           logging: process.env.DB_LOGGING === 'true'
         };
       },
