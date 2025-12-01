@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Product } from '../products/product.entity';
 
 /**
@@ -18,6 +18,12 @@ export class Game {
 
   @Column({ nullable: true })
   genre?: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   // Bu oyun için satışa sunulan ürünler
   @OneToMany(() => Product, (product) => product.game)

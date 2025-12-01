@@ -41,11 +41,11 @@ export class Product {
   isActive: boolean;
 
   // Ürünü satışa sunan kullanıcı
-  @ManyToOne(() => User, (user) => user.products, { eager: true })
+  @ManyToOne(() => User, (user) => user.products)
   seller: User;
 
   // Ürünün ilişkili olduğu oyun
-  @ManyToOne(() => Game, (game) => game.products, { eager: true })
+  @ManyToOne(() => Game, (game) => game.products)
   game: Game;
 
   @CreateDateColumn()

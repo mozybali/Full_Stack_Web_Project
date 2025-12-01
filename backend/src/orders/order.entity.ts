@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { OrderItem } from './order-item.entity';
@@ -26,12 +27,15 @@ export class Order {
   @CreateDateColumn()
   createdAt: Date;
 
+  @UpdateDateColumn()
+  updatedAt: Date;
+
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
 
   // Siparişteki ürünler
   @OneToMany(() => OrderItem, (item) => item.order, {
-    cascade: true,
+    cascade: ['insert', 'update'],
     eager: true,
   })
   items: OrderItem[];
