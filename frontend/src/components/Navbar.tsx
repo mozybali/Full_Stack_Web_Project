@@ -1,3 +1,20 @@
+/**
+ * Navbar Component
+ * 
+ * Uygulamanın üst navigasyon çubuğu.
+ * 
+ * Özellikler:
+ * - Logo ve ana navigasyon linkleri
+ * - Kullanıcı durumuna göre dinamik menü (giriş yapmış/yapmamış)
+ * - Sepet ikonu ve ürün sayısı
+ * - Admin paneli erişimi (SELLER rolü için)
+ * - Responsive tasarım
+ * 
+ * Kullanılan Context'ler:
+ * - useAuth: Kullanıcı bilgisi ve yetkilendirme
+ * - useCart: Sepet bilgisi
+ */
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -6,7 +23,9 @@ import { FaShoppingCart, FaUser, FaSignOutAlt, FaHome, FaGamepad, FaShoppingBag,
 import { RoleNames } from '../types';
 
 const Navbar: React.FC = () => {
+  // Auth context'ten kullanıcı bilgisi ve fonksiyonları al
   const { user, isAuthenticated, logout, hasRole } = useAuth();
+  // Cart context'ten sepet bilgilerini al
   const { getTotalItems } = useCart();
 
   return (

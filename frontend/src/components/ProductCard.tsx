@@ -1,24 +1,53 @@
+/**
+ * Product Card Component
+ * 
+ * Tek bir ürünü kart formatında gösteren component.
+ * 
+ * Özellikler:
+ * - Ürün görseli
+ * - Ürün başlığı ve açıklaması
+ * - Oyun bilgisi ve platform
+ * - Fiyat bilgisi
+ * - Sepete ekle butonu
+ * - Stok durumu göstergesi
+ * - Ürün detay sayfasına link
+ * 
+ * Kullanım:
+ * <ProductCard product={productData} />
+ * 
+ * @param {ProductCardProps} props - Product card özellikleri
+ */
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { FaShoppingCart } from 'react-icons/fa';
 
+/**
+ * ProductCard props tipi
+ */
 interface ProductCardProps {
-  product: Product;
+  product: Product; // Gösterilecek ürün verisi
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  // Sepet fonksiyonunu context'ten al
   const { addToCart } = useCart();
 
+  /**
+   * Sepete ekleme işlemini yönet
+   * Link tıklamasını engelle ve sepete ekle
+   */
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Link'e tıklamayı engelle
     addToCart(product);
   };
 
+  // Ürün görselinin tam URL'ini oluştur
   const imageUrl = product.imageUrl 
     ? `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.imageUrl}`
-    : 'https://via.placeholder.com/300x200?text=No+Image';
+    : 'https://via.placeholder.com/300x200?text=No+Image'; // Varsayılan görsel
 
   return (
     <div className="card">

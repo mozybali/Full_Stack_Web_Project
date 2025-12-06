@@ -1,35 +1,38 @@
-import React, { useState, useEffect } from 'react';
+/**
+ * Ana Sayfa (Home Page)
+ * 
+ * Uygulamanın giriş sayfası.
+ * Hero section, arama ve öne çıkan ürünleri gösterir.
+ * 
+ * Özellikler:
+ * - Hero banner
+ * - Ürün arama
+ * - Öne çıkan ürünler (ilk 8)
+ * - Özellikler bölümü
+ */
+
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import ProductCard from '../components/ProductCard';
-import { productService } from '../services/product.service';
-import type { Product } from '../types';
+import { useProducts } from '../hooks';
+import { ProductGrid } from '../features/products';
+import { ROUTES } from '../config';
 import { FaSearch } from 'react-icons/fa';
 
 const Home: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Aktif ürünleri hook'tan al
+  const { activeProducts, loading } = useProducts();
+  // Arama terimi state'i
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
+  // Arama terimine göre ürünleri filtrele (memoized)
+  const filteredProducts = useMemo(() => {
+    return activeProducts.filter(product =>
+      product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.game.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [activeProducts, searchTerm]);
 
-  const loadProducts = async () => {
-    try {
-      const data = await productService.getAll();
-      setProducts(data.filter(p => p.isActive));
-    } catch (error) {
-      console.error('Ürünler yüklenirken hata:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filteredProducts = products.filter(product =>
-    product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.game.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  // İlk 8 ürünü öne çıkan olarak göster
   const featuredProducts = filteredProducts.slice(0, 8);
 
   return (
@@ -61,26 +64,16 @@ const Home: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900">Öne Çıkan Ürünler</h2>
-          <Link to="/products" className="text-primary-600 hover:text-primary-700 font-semibold">
+          <Link to={ROUTES.PRODUCTS} className="text-primary-600 hover:text-primary-700 font-semibold">
             Tümünü Gör →
           </Link>
         </div>
 
-        {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-          </div>
-        ) : featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-gray-500 text-lg">Henüz ürün bulunmamaktadır.</p>
-          </div>
-        )}
+        <ProductGrid 
+          products={featuredProducts} 
+          loading={loading}
+          emptyMessage="Henüz ürün bulunmamaktadır."
+        />
       </div>
 
       {/* Features Section */}

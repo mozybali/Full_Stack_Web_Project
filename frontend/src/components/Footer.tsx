@@ -1,3 +1,17 @@
+/**
+ * Footer Component
+ * 
+ * Uygulamanın alt bilgi bölümü.
+ * 
+ * İçerik:
+ * - Şirket bilgileri ve açıklama
+ * - Hızlı linkler
+ * - Sosyal medya linkleri
+ * - Telif hakkı bilgisi
+ * 
+ * Layout: 3 kolonlu responsive grid
+ */
+
 import React from 'react';
 import { FaGithub, FaTwitter, FaLinkedin } from 'react-icons/fa';
 
