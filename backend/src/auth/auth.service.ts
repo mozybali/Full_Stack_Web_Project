@@ -1,11 +1,14 @@
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { DataSource } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
+import { CreateAdminDto } from './dto/create-admin.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { User } from '../users/user.entity';
+import { Role } from '../roles/role.entity';
 
 /**
  * Kimlik doğrulama servisi
@@ -17,6 +20,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly dataSource: DataSource,
+    @InjectRepository(Role) private readonly rolesRepo: Repository<Role>,
   ) {}
 
   /**
@@ -114,5 +118,64 @@ export class AuthService {
         roles: user.roles.map((r) => r.name),
       },
     };
+  }
+
+  /**
+   * Admin profili oluştur
+   * Email, username ve şifre ile yeni admin kullanıcısı oluşturur
+   * @param dto - Email, kullanıcı adı ve şifre bilgileri
+   * @returns JWT token ve admin kullanıcı bilgileri
+   * @throws ConflictException - Email veya username zaten mevcut
+   */
+  async createAdmin(dto: CreateAdminDto) {
+    // Transaction ile admin oluştur
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Email ve username benzersizlik kontrolü
+      const existingEmail = await this.usersService.findByEmail(dto.email);
+      if (existingEmail) {
+        throw new ConflictException('Bu email adresi zaten kayıtlı');
+      }
+
+      const existingUsername = await this.usersService.findByUsername(dto.username);
+      if (existingUsername) {
+        throw new ConflictException('Bu kullanıcı adı zaten alınmış');
+      }
+
+      // Şifreyi 10 salt ile hash'le
+      const passwordHash = await bcrypt.hash(dto.password, 10);
+      
+      // ADMIN rolünü bul
+      const adminRole = await this.rolesRepo.findOne({ where: { name: 'ADMIN' } });
+      if (!adminRole) {
+        throw new ConflictException('ADMIN rolü veritabanında bulunamadı');
+      }
+
+      // Admin kullanıcısını ADMIN rolü ile oluştur
+      const user = await queryRunner.manager.create(User, {
+        email: dto.email,
+        username: dto.username,
+        passwordHash,
+        roles: [adminRole],
+      });
+
+      await queryRunner.manager.save(user);
+      await queryRunner.commitTransaction();
+      
+      // Oluşturulan admin'i yeniden yükle (roles eager loading için)
+      const createdAdmin = await this.usersService.findOne(user.id);
+      if (!createdAdmin) {
+        throw new ConflictException('Admin profili oluşturulduktan sonra yeniden yüklenemedi');
+      }
+      return this.buildToken(createdAdmin);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
 // Kimlik doğrulama ile ilgili tüm endpoint'ler
 @ApiTags('Kimlik Doğrulama')
@@ -44,5 +45,23 @@ export class AuthController {
   })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.password);
+  }
+
+  /**
+   * Admin profili oluştur
+   * Email, kullanıcı adı ve şifre ile yeni admin hesabı oluşturur
+   */
+  @Post('admin/create')
+  @ApiOperation({ summary: 'Yeni admin profili oluştur' })
+  @ApiResponse({
+    status: 201,
+    description: 'Admin profili başarıyla oluşturuldu',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Geçersiz giriş veya email/username zaten mevcut',
+  })
+  createAdmin(@Body() dto: CreateAdminDto) {
+    return this.authService.createAdmin(dto);
   }
 }
