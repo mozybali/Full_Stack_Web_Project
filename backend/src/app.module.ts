@@ -1,8 +1,13 @@
+/**
+ * Ana Uygulama Modülü
+ * Tüm feature modüllerini import eder ve veritabanı bağlantısını yapılandırır
+ */
 import { Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { env } from './config/env.config';
 
+// Feature Modüller
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
@@ -15,12 +20,13 @@ import { SeedingService } from './seeding/seeding.service';
 
 @Module({
   imports: [
+    // Global config module - Tüm modüllerden erişilebilir
     ConfigModule.forRoot({ isGlobal: true, load: [env] }),
 
+    // TypeORM veritabanı bağlantısı
     TypeOrmModule.forRootAsync({
       useFactory: () => {
         const cfg = env();
-        const isProduction = process.env.NODE_ENV === 'production';
         
         return {
           type: 'postgres',
@@ -29,10 +35,11 @@ import { SeedingService } from './seeding/seeding.service';
           username: cfg.db.user,
           password: cfg.db.pass,
           database: cfg.db.name,
+          // Entity'leri otomatik yükle
           autoLoadEntities: true,
-          // UYARI: synchronize sadece development'ta kullanılmalı
-          // Production'da migration kullanılmalı (veri kaybı riski!)
-          synchronize: !isProduction,
+          // Şema senkronizasyonu KAPALI - Migration kullanılıyor
+          synchronize: false,
+          // SQL logları (development)
           logging: process.env.DB_LOGGING === 'true'
         };
       },
