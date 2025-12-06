@@ -14,9 +14,8 @@ import { RolesModule } from './roles/roles.module';
 import { GamesModule } from './games/games.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
-import { SeedingModule } from './seeding/seeding.module';
 import { UploadModule } from './upload/upload.module';
-import { SeedingService } from './seeding/seeding.service';
+import { RolesService } from './roles/roles.service';
 
 @Module({
   imports: [
@@ -51,18 +50,16 @@ import { SeedingService } from './seeding/seeding.service';
     GamesModule,
     ProductsModule,
     OrdersModule,
-    SeedingModule,
     UploadModule,
   ],
 })
 export class AppModule implements OnModuleInit {
-  constructor(private readonly seedingService: SeedingService) {}
+  constructor(private readonly rolesService: RolesService) {}
 
   /**
-   * Module başlatıldığında veritabanını seed et
-   * Varsayılan rolleri ve diğer gerekli verileri oluştur
+   * Module başlatıldığında varsayılan rolleri seed et
    */
   async onModuleInit() {
-    await this.seedingService.seed();
+    await this.rolesService.seedDefaults();
   }
 }
