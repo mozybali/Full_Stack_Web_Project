@@ -17,6 +17,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { MainLayout } from './layouts';
 import ProtectedRoute from './components/ProtectedRoute';
+import LoadingScreen from './components/LoadingScreen';
 import { ROUTES } from './config';
 
 // Sayfa Component'leri
@@ -30,17 +31,19 @@ import Orders from './pages/Orders';
 import Admin from './pages/Admin';
 
 import { RoleNames } from './types';
+import { useAuth } from './context/AuthContext';
 
-function App() {
+function AppContent() {
+  const { isLoading } = useAuth();
+
+  // Auth yüklenirken loading ekranı göster
+  if (isLoading) {
+    return <LoadingScreen message="Oturum açılıyor..." />;
+  }
+
   return (
-    <Router>
-      {/* Kimlik doğrulama state'ini tüm uygulamaya sağla */}
-      <AuthProvider>
-        {/* Sepet state'ini tüm uygulamaya sağla */}
-        <CartProvider>
-          {/* Ana layout (Navbar + Footer) */}
-          <MainLayout>
-            <Routes>
+    <MainLayout>
+      <Routes>
               {/* Genel erişilebilir sayfalar */}
               <Route path={ROUTES.HOME} element={<Home />} />
               <Route path={ROUTES.LOGIN} element={<Login />} />
@@ -70,6 +73,15 @@ function App() {
               />
             </Routes>
           </MainLayout>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AuthProvider>
+        <CartProvider>
+          <AppContent />
         </CartProvider>
       </AuthProvider>
     </Router>

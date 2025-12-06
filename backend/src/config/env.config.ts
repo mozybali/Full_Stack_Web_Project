@@ -35,7 +35,7 @@ export const env = () => {
     jwtExpiration: process.env.JWT_EXPIRATION || '1d',
     
     // CORS için izin verilen frontend adresi
-    corsOrigin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    corsOrigin: process.env.FRONTEND_URL || (isProduction ? 'http://localhost:5173' : true),
     
     // Veritabanı konfigürasyonu
     db: {

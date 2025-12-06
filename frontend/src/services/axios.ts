@@ -30,11 +30,14 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
+    // 401 Unauthorized - Token geçersiz veya expired
     if (error.response?.status === 401) {
-      // Token geçersiz veya expired - logout
+      // localStorage'ı temizle
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      
+      // Custom event emit et - AuthContext bunu dinlesin
+      window.dispatchEvent(new Event('logout'));
     }
     return Promise.reject(error);
   }

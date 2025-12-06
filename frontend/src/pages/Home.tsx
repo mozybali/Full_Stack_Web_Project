@@ -20,7 +20,7 @@ import { FaSearch } from 'react-icons/fa';
 
 const Home: React.FC = () => {
   // Aktif ürünleri hook'tan al
-  const { activeProducts, loading } = useProducts();
+  const { activeProducts, loading, error } = useProducts();
   // Arama terimi state'i
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -68,6 +68,12 @@ const Home: React.FC = () => {
             Tümünü Gör →
           </Link>
         </div>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <p>Ürünler yüklenirken hata oluştu: {error}</p>
+          </div>
+        )}
 
         <ProductGrid 
           products={featuredProducts} 

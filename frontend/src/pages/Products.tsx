@@ -25,8 +25,8 @@ import type { ProductType } from '../types';
 
 const Products: React.FC = () => {
   // Custom hook'lar ile veri yönetimi
-  const { activeProducts, loading: productsLoading } = useProducts();
-  const { games, loading: gamesLoading } = useGames();
+  const { activeProducts, loading: productsLoading, error: productsError } = useProducts();
+  const { games, loading: gamesLoading, error: gamesError } = useGames();
   
   // Filtre state'leri
   const [searchTerm, setSearchTerm] = useState(''); // Arama terimi
@@ -55,6 +55,16 @@ const Products: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <PageContainer>
         <h1 className="text-4xl font-bold text-gray-900 mb-8">Tüm Ürünler</h1>
+
+        {(productsError || gamesError) && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <p>
+              {productsError && `Ürünler yüklenirken hata: ${productsError}`}
+              {productsError && gamesError && ' | '}
+              {gamesError && `Oyunlar yüklenirken hata: ${gamesError}`}
+            </p>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8 space-y-4">

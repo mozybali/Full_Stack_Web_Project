@@ -20,11 +20,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // Sayfa yüklendiğinde localStorage'dan kullanıcıyı yükle
-    const storedUser = authService.getCurrentUser();
-    if (storedUser && authService.isAuthenticated()) {
-      setUser(storedUser);
-    }
-    setIsLoading(false);
+    const initAuth = async () => {
+      try {
+        const storedUser = authService.getCurrentUser();
+        const token = authService.getToken();
+        
+        if (storedUser && token) {
+          setUser(storedUser);
+        } else {
+          // Token veya user yoksa temizle
+          authService.logout();
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        authService.logout();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initAuth();
+
+    // 401 hatası durumunda logout event'i dinle
+    const handleLogout = () => {
+      setUser(null);
+    };
+
+    window.addEventListener('logout', handleLogout);
+
+    return () => {
+      window.removeEventListener('logout', handleLogout);
+    };
   }, []);
 
   const login = async (data: LoginDto): Promise<void> => {

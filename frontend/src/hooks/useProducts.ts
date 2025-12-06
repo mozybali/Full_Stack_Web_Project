@@ -27,9 +27,11 @@ export const useProducts = () => {
       setLoading(true);
       setError(null);
       const data = await productService.getAll();
+      console.log('Products loaded successfully:', data);
       setProducts(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ürünler yüklenirken hata oluştu');
+      const errorMessage = err instanceof Error ? err.message : 'Ürünler yüklenirken hata oluştu';
+      setError(errorMessage);
       console.error('Error loading products:', err);
     } finally {
       setLoading(false);

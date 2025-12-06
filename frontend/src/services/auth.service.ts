@@ -20,6 +20,11 @@ export const authService = {
     return userStr ? JSON.parse(userStr) : null;
   },
 
+  // Token'ı al
+  getToken(): string | null {
+    return localStorage.getItem('access_token');
+  },
+
   // Token'ı kaydet
   setToken(token: string): void {
     localStorage.setItem('access_token', token);
