@@ -26,9 +26,19 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor - hata yönetimi
+// Response interceptor - hata yönetimi ve veri yapılandırması
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Backend response yapısı: { statusCode, data, message }
+    // Doğrudan data alanını return et
+    if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+      return {
+        ...response,
+        data: response.data.data,
+      };
+    }
+    return response;
+  },
   (error) => {
     // 401 Unauthorized - Token geçersiz veya expired
     if (error.response?.status === 401) {
