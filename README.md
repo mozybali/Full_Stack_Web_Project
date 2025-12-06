@@ -1,6 +1,6 @@
 # 🎮 GamerMarkt - Oyun Hesabı ve Lisans Satış Platformu
 
-GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekilde alınıp satılabildiği modern bir e-ticaret platformudur. NestJS framework'ü ile geliştirilmiş RESTful API backend'i içerir.
+GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekilde alınıp satılabildiği modern bir e-ticaret platformudur. React ve TypeScript tabanlı frontend ile NestJS framework'ü ile geliştirilmiş RESTful API backend'ine sahiptir.
 
 ## 📋 İçindekiler
 
@@ -47,29 +47,25 @@ GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekild
 
 ## 🛠 Teknolojiler
 
-### Backend Framework ve Dil
+### Backend
 - **NestJS** (v11.x) - Progressive Node.js framework
-- **TypeScript** (v5.x) - Tip güvenli JavaScript
-
-### Veritabanı
+- **TypeScript** (v5.4+) - Tip güvenli JavaScript
 - **PostgreSQL** - İlişkisel veritabanı
 - **TypeORM** (v0.3.x) - ORM kütüphanesi
-
-### Kimlik Doğrulama ve Güvenlik
-- **Passport** & **Passport-JWT** - Authentication middleware
+- **Passport & JWT** - Kimlik doğrulama
 - **bcrypt** - Şifre hashleme
-- **JWT** - Token tabanlı authentication
-
-### Validasyon ve Dönüşüm
-- **class-validator** - DTO validasyonu
-- **class-transformer** - Object transformation
-
-### Dosya İşleme
-- **Multer** - Dosya yükleme middleware
+- **Multer** - Dosya yükleme
 - **Sharp** - Görsel işleme ve optimizasyon
+- **Swagger/OpenAPI** - API dokümantasyonu
 
-### API Dokümantasyonu
-- **Swagger / OpenAPI** - Otomatik API dokümantasyonu
+### Frontend
+- **React** (v19.2+) - UI framework
+- **TypeScript** (v5.9+) - Tip güvenli JavaScript
+- **Vite** (v7.2+) - Build tool
+- **React Router** (v7.10+) - Routing
+- **Axios** - HTTP client
+- **Tailwind CSS** (v3.4+) - Styling
+- **React Icons** - Icon library
 
 ## 📦 Kurulum
 
@@ -79,11 +75,10 @@ GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekild
 - npm veya yarn
 - PostgreSQL (v14.x veya üzeri)
 
-### Adımlar
+### Backend Kurulumu
 
-1. **Projeyi klonlayın**
+1. **Backend dizinine gidin**
 ```bash
-git clone <repository-url>
 cd web_proje/backend
 ```
 
@@ -92,22 +87,17 @@ cd web_proje/backend
 npm install
 ```
 
-3. **Ortam değişkenlerini yapılandırın**
-
-`.env` dosyası oluşturun (aşağıdaki Yapılandırma bölümüne bakın)
+3. **Ortam değişkenlerini yapılandırın** (aşağıdaki Yapılandırma bölümüne bakın)
 
 4. **Veritabanını oluşturun**
 ```bash
-# PostgreSQL'e bağlanın
-psql -U postgres
-
-# Veritabanını oluşturun
-CREATE DATABASE gamevault_db;
+# PostgreSQL'e bağlanıp veritabanı oluşturun
+createdb gamevault_db
 ```
 
 5. **Uygulamayı başlatın**
 ```bash
-# Development modu
+# Development modu (hot reload aktif)
 npm run start:dev
 
 # Production build
@@ -115,40 +105,60 @@ npm run build
 npm run start
 ```
 
-Uygulama varsayılan olarak `http://localhost:3000` adresinde çalışacaktır.
+Backend varsayılan olarak `http://localhost:3000` adresinde çalışır.
+
+### Frontend Kurulumu
+
+1. **Frontend dizinine gidin**
+```bash
+cd web_proje/frontend
+```
+
+2. **Bağımlılıkları yükleyin**
+```bash
+npm install
+```
+
+3. **Geliştirme sunucusunu başlatın**
+```bash
+npm run dev
+```
+
+Frontend varsayılan olarak `http://localhost:5173` adresinde çalışır.
 
 ## ⚙️ Yapılandırma
 
-Aşağıdaki ortam değişkenlerini `.env` dosyasında tanımlayın:
+Backend `.env` dosyası oluşturun:
 
 ```env
-# Sunucu Ayarları
+# Sunucu
 PORT=3000
 NODE_ENV=development
 
-# Veritabanı Ayarları
+# Veritabanı
 DB_HOST=localhost
 DB_PORT=5432
-DB_USER=your_db_username
-DB_PASS=your_db_password
+DB_USER=postgres
+DB_PASS=your_password
 DB_NAME=your_db_name
 
-# JWT Ayarları
-JWT_SECRET=your_very_secure_random_secret_key_here
+# JWT
+JWT_SECRET=your_secret_key_min_32_chars
 JWT_EXPIRES_IN=7d
 
-# CORS Ayarları
-CORS_ORIGIN=http://localhost:3001
+# CORS
+CORS_ORIGIN=http://localhost:5173
 
-# Opsiyonel: Veritabanı Logging
+# Database
 DB_LOGGING=false
 ```
 
 ### Önemli Notlar
 
-- `JWT_SECRET`: Güçlü, rastgele bir string kullanın (en az 32 karakter önerilir)
-- `NODE_ENV`: Production'da mutlaka `production` olarak ayarlayın
+- `JWT_SECRET`: En az 32 karakter uzunluğunda güçlü bir şifre kullanın
+- `NODE_ENV`: Production ortamında `production` olarak ayarlayın
 - `CORS_ORIGIN`: Frontend uygulamanızın URL'ini belirtin
+- `.env` dosyasını **asla** git repository'sine commit etmeyin
 
 ## 🗄️ Veritabanı
 
@@ -177,16 +187,30 @@ OrderItem (Sipariş Kalemleri)
 └── product (ManyToOne) → Product
 ```
 
-### Otomatik Seed Data
+### Migration Yönetimi
 
-Uygulama ilk başlatıldığında otomatik olarak şu veriler oluşturulur:
+Veritabanı değişiklikleri TypeORM migration'ları ile yönetilir:
 
-- **Roller**: Admin, Moderator, User
-- Varsayılan admin hesabı (opsiyonel)
+```bash
+# Migration oluştur
+npm run migration:generate -- -n MigrationName
 
-### Migration Notları
+# Migration'ları çalıştır
+npm run migration:run
 
-⚠️ **Önemli**: `synchronize: true` sadece development ortamında kullanılır. Production'da TypeORM migration'ları kullanılmalıdır.
+# Migration'ları geri al
+npm run migration:revert
+
+# Mevcut migration'ları göster
+npm run migration:show
+```
+
+### Seed Data
+
+Uygulama ilk başlatıldığında varsayılan roller otomatik olarak oluşturulur:
+- **Admin** - Tam yönetim yetkisi
+- **Moderator** - Moderation işlemleri
+- **User** - Standart kullanıcı
 
 ## 🚀 API Kullanımı
 
@@ -263,93 +287,250 @@ Authorization: Bearer <your_access_token>
 ## 📁 Proje Yapısı
 
 ```
-backend/
-├── src/
-│   ├── auth/                    # Kimlik doğrulama modülü
-│   │   ├── guards/             # JWT guard'ları
-│   │   ├── strategies/         # Passport stratejileri
-│   │   └── dto/                # Login/Register DTO'ları
-│   │
-│   ├── users/                   # Kullanıcı yönetimi
-│   │   ├── user.entity.ts      # User entity
-│   │   └── dto/                # User DTO'ları
-│   │
-│   ├── roles/                   # Rol yönetimi
-│   │   ├── role.entity.ts      # Role entity
-│   │   └── dto/
-│   │
-│   ├── games/                   # Oyun yönetimi
-│   │   ├── game.entity.ts      # Game entity
-│   │   └── dto/
-│   │
-│   ├── products/                # Ürün yönetimi
-│   │   ├── product.entity.ts   # Product entity
-│   │   └── dto/
-│   │
-│   ├── orders/                  # Sipariş yönetimi
-│   │   ├── order.entity.ts     # Order entity
-│   │   ├── order-item.entity.ts
-│   │   └── dto/
-│   │
-│   ├── common/                  # Paylaşılan modüller
-│   │   ├── decorators/         # Custom decorator'lar
-│   │   ├── guards/             # Custom guard'lar (RolesGuard)
-│   │   ├── interceptors/       # Global interceptor'lar
-│   │   ├── filters/            # Exception filter'ları
-│   │   ├── enums/              # Enum tanımları
-│   │   └── utils/              # Yardımcı fonksiyonlar
-│   │
-│   ├── config/                  # Yapılandırma dosyaları
-│   │   ├── env.config.ts       # Ortam değişkenleri
-│   │   └── multer.config.ts    # Dosya yükleme config
-│   │
-│   ├── seeding/                 # Database seeding
-│   │   └── seeding.service.ts  # Seed servisi
-│   │
-│   ├── upload/                  # Dosya yükleme servisi
-│   │
-│   ├── app.module.ts            # Ana uygulama modülü
-│   └── main.ts                  # Uygulama giriş noktası
+web_proje/
 │
-├── uploads/                     # Yüklenen dosyalar (gitignore)
-│   └── products/               # Ürün görselleri
+├── backend/                     # NestJS Backend
+│   ├── src/
+│   │   ├── auth/                # Kimlik doğrulama modülü
+│   │   │   ├── guards/         # JWT, Roles guard'ları
+│   │   │   ├── strategies/     # Passport stratejileri
+│   │   │   ├── dto/            # Login/Register DTO'ları
+│   │   │   ├── auth.controller.ts
+│   │   │   ├── auth.service.ts
+│   │   │   └── auth.module.ts
+│   │   │
+│   │   ├── users/               # Kullanıcı yönetimi
+│   │   │   ├── user.entity.ts
+│   │   │   ├── dto/
+│   │   │   ├── users.controller.ts
+│   │   │   ├── users.service.ts
+│   │   │   └── users.module.ts
+│   │   │
+│   │   ├── roles/               # Rol yönetimi
+│   │   │   ├── role.entity.ts
+│   │   │   ├── dto/
+│   │   │   ├── roles.controller.ts
+│   │   │   ├── roles.service.ts
+│   │   │   └── roles.module.ts
+│   │   │
+│   │   ├── games/               # Oyun yönetimi
+│   │   │   ├── game.entity.ts
+│   │   │   ├── dto/
+│   │   │   ├── games.controller.ts
+│   │   │   ├── games.service.ts
+│   │   │   └── games.module.ts
+│   │   │
+│   │   ├── products/            # Ürün yönetimi
+│   │   │   ├── product.entity.ts
+│   │   │   ├── dto/
+│   │   │   ├── products.controller.ts
+│   │   │   ├── products.service.ts
+│   │   │   └── products.module.ts
+│   │   │
+│   │   ├── orders/              # Sipariş yönetimi
+│   │   │   ├── order.entity.ts
+│   │   │   ├── order-item.entity.ts
+│   │   │   ├── dto/
+│   │   │   ├── orders.controller.ts
+│   │   │   ├── orders.service.ts
+│   │   │   └── orders.module.ts
+│   │   │
+│   │   ├── common/              # Paylaşılan modüller
+│   │   │   ├── decorators/     # Custom decorator'lar
+│   │   │   ├── guards/         # Custom guard'lar
+│   │   │   ├── interceptors/   # Global interceptor'lar
+│   │   │   ├── filters/        # Exception handler'ları
+│   │   │   ├── enums/          # Enum tanımları
+│   │   │   └── utils/          # Yardımcı fonksiyonlar
+│   │   │
+│   │   ├── config/              # Yapılandırma
+│   │   │   ├── env.config.ts
+│   │   │   └── multer.config.ts
+│   │   │
+│   │   ├── upload/              # Dosya yükleme servisi
+│   │   ├── migrations/          # Database migration'ları
+│   │   ├── app.module.ts        # Ana modül
+│   │   ├── data-source.ts       # TypeORM config
+│   │   └── main.ts              # Giriş noktası
+│   │
+│   ├── uploads/                 # Yüklenen dosyalar
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── nest-cli.json
 │
-├── package.json
-├── tsconfig.json
-├── nest-cli.json
-└── .env                        # Ortam değişkenleri (gitignore)
+└── frontend/                    # React Frontend
+    ├── src/
+    │   ├── components/          # React komponenti
+    │   │   ├── ui/             # UI komponenti
+    │   │   ├── admin/          # Admin paneli
+    │   │   ├── Footer.tsx
+    │   │   ├── Navbar.tsx
+    │   │   ├── ProductCard.tsx
+    │   │   ├── LoadingScreen.tsx
+    │   │   └── ProtectedRoute.tsx
+    │   │
+    │   ├── pages/              # Sayfalar
+    │   │   ├── Home.tsx
+    │   │   ├── Products.tsx
+    │   │   ├── ProductDetail.tsx
+    │   │   ├── Cart.tsx
+    │   │   ├── Orders.tsx
+    │   │   ├── Admin.tsx
+    │   │   ├── Login.tsx
+    │   │   ├── Register.tsx
+    │   │   └── NotFound.tsx
+    │   │
+    │   ├── services/           # API servisleri
+    │   │   ├── auth.service.ts
+    │   │   ├── product.service.ts
+    │   │   ├── order.service.ts
+    │   │   ├── game.service.ts
+    │   │   ├── user.service.ts
+    │   │   ├── axios.ts        # Axios config
+    │   │   └── index.ts
+    │   │
+    │   ├── hooks/              # Custom React hook'ları
+    │   │   ├── useProducts.ts
+    │   │   ├── useOrders.ts
+    │   │   ├── useGames.ts
+    │   │   ├── useFilter.ts
+    │   │   └── index.ts
+    │   │
+    │   ├── context/            # React Context
+    │   │   ├── AuthContext.tsx
+    │   │   └── CartContext.tsx
+    │   │
+    │   ├── layouts/            # Layout komponenti
+    │   │   ├── MainLayout.tsx
+    │   │   ├── PageContainer.tsx
+    │   │   └── index.ts
+    │   │
+    │   ├── config/             # Konfigürasyon
+    │   │   ├── constants.ts
+    │   │   └── index.ts
+    │   │
+    │   ├── types/              # TypeScript type'ları
+    │   │   └── index.ts
+    │   │
+    │   ├── assets/             # Statik dosyalar
+    │   ├── App.tsx
+    │   ├── App.css
+    │   ├── index.css
+    │   └── main.tsx
+    │
+    ├── public/                 # Statik public dosyalar
+    ├── package.json
+    ├── vite.config.ts
+    ├── tailwind.config.js
+    ├── tsconfig.json
+    ├── eslint.config.js
+    └── postcss.config.js
 ```
 
 ## 🔧 Geliştirme
 
-### Yeni Modül Ekleme
+### Backend Geliştirme
+
+#### NestJS CLI ile Modül Oluşturma
 
 ```bash
-# NestJS CLI ile modül oluşturma
+# Modül oluştur
 nest generate module <module-name>
+
+# Controller oluştur
 nest generate controller <module-name>
+
+# Service oluştur
 nest generate service <module-name>
 ```
+
+#### Veritabanı Migration'ları
+
+```bash
+# Değişiklikleri analiz ederek migration oluştur
+npm run migration:generate -- -n MigrationName
+
+# Yeni migration oluştur
+npm run migration:create -- -n MigrationName
+
+# Migration'ları çalıştır
+npm run migration:run
+
+# Bir önceki migration'ı geri al
+npm run migration:revert
+```
+
+### Frontend Geliştirme
+
+#### Yarn/NPM Scripts
+
+```bash
+# Geliştirme sunucusunu başlat
+npm run dev
+
+# Production build
+npm run build
+
+# Build'i preview et
+npm run preview
+
+# ESLint check
+npm run lint
+```
+
+### Vite Build
+
+Frontend, Vite ile optimize edilmiş build'ler oluşturur:
+- Development: Hot Module Replacement (HMR) desteğiyle hızlı geliştirme
+- Production: Minified ve optimized dosyalar
 ## 🔒 Güvenlik
 
 ### Uygulanan Güvenlik Önlemleri
 
 - ✅ **Şifre Hashleme**: bcrypt ile güvenli şifre saklama
-- ✅ **JWT Authentication**: Token tabanlı oturum yönetimi
-- ✅ **Role-Based Access Control**: Rol bazlı yetkilendirme
-- ✅ **Input Validation**: class-validator ile giriş doğrulama
+- ✅ **JWT Authentication**: Token tabanlı stateless oturum yönetimi
+- ✅ **Role-Based Access Control (RBAC)**: Granüler yetkilendirme
+- ✅ **Input Validation**: class-validator ile DTO validasyonu
 - ✅ **CORS Yapılandırması**: Cross-origin güvenliği
-- ✅ **Global Exception Handling**: Hata yönetimi
+- ✅ **Global Exception Handling**: Standardize hata yönetimi
 - ✅ **SQL Injection Koruması**: TypeORM parametreli sorgular
 - ✅ **File Upload Güvenliği**: Dosya tipi ve boyut kontrolü
+- ✅ **Environment Variables**: Hassas bilgilerin ayrı yönetimi
+
+### Best Practices
+
+- Database sorguları parametreli hale getirilir (SQL injection önlemi)
+- API responses'ında hassas bilgiler (şifre, token vb.) döndürülmez
+- JWT secret key'i güçlü ve rastgele olmalıdır
+- Production ortamında debug bilgileri devre dışı bırakılır
 
 ## 📝 Lisans
 
-Bu proje eğitim amaçlı geliştirilmiştir.
+Bu proje **MIT Lisansı** altında yayımlanmıştır.
 
-## 👨‍💻 Geliştirici
+### MIT Lisansı Özeti
 
-Herhangi bir soru veya öneriniz için lütfen issue açın.
+MIT Lisansı, açık kaynak yazılımlar için en permissif lisanslardan biridir. Temel haklarınız:
+
+- ✅ **Ticari Kullanım**: Projeyi ticari amaçlar için kullanabilirsiniz
+- ✅ **Değişiklik**: Kodu değiştirebilir ve kustomize edebilirsiniz
+- ✅ **Dağıtım**: Projeyi başka kişilere veya kuruluşlara dağıtabilirsiniz
+- ✅ **Özel Kullanım**: Kapalı kaynak olarak kullanabilirsiniz
+
+### Şartlar
+
+- ⚠️ **Lisans ve Copyright Notu**: MIT lisans metnini ve copyright bildirimi orijinal dağıtımda bulundurmalısınız
+- ⚠️ **Sorumluluk Reddi**: Yazılım "olduğu gibi" sağlanır, herhangi bir garantisi yoktur
+
+### Daha Fazla Bilgi
+
+Tam lisans metni için: [MIT License](https://opensource.org/licenses/MIT)
+
+## 👨‍💻 Katkıda Bulunma
+
+Herhangi bir soru, hata raporlaması veya öneriniz için lütfen issue açın.
 
 ---
+
+**Son Güncelleme**: Aralık 2025
 
