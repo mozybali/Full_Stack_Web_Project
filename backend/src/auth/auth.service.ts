@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
+import { CreateSellerDto } from './dto/create-seller.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { User } from '../users/user.entity';
 import { Role } from '../roles/role.entity';
@@ -171,6 +172,65 @@ export class AuthService {
         throw new ConflictException('Admin profili oluşturulduktan sonra yeniden yüklenemedi');
       }
       return this.buildToken(createdAdmin);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  /**
+   * Seller profili oluştur
+   * Email, username ve şifre ile yeni seller kullanıcısı oluşturur
+   * @param dto - Email, kullanıcı adı ve şifre bilgileri
+   * @returns JWT token ve seller kullanıcı bilgileri
+   * @throws ConflictException - Email veya username zaten mevcut
+   */
+  async createSeller(dto: CreateSellerDto) {
+    // Transaction ile seller oluştur
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Email ve username benzersizlik kontrolü
+      const existingEmail = await this.usersService.findByEmail(dto.email);
+      if (existingEmail) {
+        throw new ConflictException('Bu email adresi zaten kayıtlı');
+      }
+
+      const existingUsername = await this.usersService.findByUsername(dto.username);
+      if (existingUsername) {
+        throw new ConflictException('Bu kullanıcı adı zaten alınmış');
+      }
+
+      // Şifreyi 10 salt ile hash'le
+      const passwordHash = await bcrypt.hash(dto.password, 10);
+      
+      // SELLER rolünü bul
+      const sellerRole = await this.rolesRepo.findOne({ where: { name: 'SELLER' } });
+      if (!sellerRole) {
+        throw new ConflictException('SELLER rolü veritabanında bulunamadı');
+      }
+
+      // Seller kullanıcısını SELLER rolü ile oluştur
+      const user = await queryRunner.manager.create(User, {
+        email: dto.email,
+        username: dto.username,
+        passwordHash,
+        roles: [sellerRole],
+      });
+
+      await queryRunner.manager.save(user);
+      await queryRunner.commitTransaction();
+      
+      // Oluşturulan seller'ı yeniden yükle (roles eager loading için)
+      const createdSeller = await this.usersService.findOne(user.id);
+      if (!createdSeller) {
+        throw new ConflictException('Seller profili oluşturulduktan sonra yeniden yüklenemedi');
+      }
+      return this.buildToken(createdSeller);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

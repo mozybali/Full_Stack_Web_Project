@@ -42,6 +42,19 @@ export class ProductsService {
   }
 
   /**
+   * Satıcı ID'ye göre ürünleri bul
+   * Belirtilen satıcının tüm ürünlerini döndürür
+   * @param sellerId - Satıcı ID'si
+   * @returns Satıcının ürünleri
+   */
+  findBySellerId(sellerId: number) {
+    return this.productsRepo.find({
+      where: { seller: { id: sellerId } },
+      relations: ['seller', 'game'],
+    });
+  }
+
+  /**
    * Yeni ürün oluştur
    * @param dto - Ürün oluşturma DTO'su
    * @param sellerId - Satıcı ID'si

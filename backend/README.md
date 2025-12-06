@@ -22,7 +22,7 @@ Oyun hesapları ve oyun lisans anahtarlarının satışı yapılan modern e-tica
 - Şifre hashleme (bcrypt)
 
 ### Kullanıcı Yönetimi
-- Rol tabanlı yetkilendirme (Admin, Moderator, User)
+- Rol tabanlı yetkilendirme (Admin, Seller, Buyer)
 - Kullanıcı profil yönetimi
 - Kullanıcı listesi ve detayları
 
@@ -193,9 +193,9 @@ DELETE /roles/:id                  # Rol sil (Admin)
 #### Games
 ```
 GET    /games                      # Tüm oyunları listele
-POST   /games                      # Yeni oyun ekle (Admin/Moderator)
+POST   /games                      # Yeni oyun ekle (Admin)
 GET    /games/:id                  # Oyun detayı
-PATCH  /games/:id                  # Oyun güncelle (Admin/Moderator)
+PATCH  /games/:id                  # Oyun güncelle (Admin)
 DELETE /games/:id                  # Oyun sil (Admin)
 ```
 

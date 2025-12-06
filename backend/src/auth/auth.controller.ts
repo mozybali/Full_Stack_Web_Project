@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
+import { CreateSellerDto } from './dto/create-seller.dto';
 
 // Kimlik doğrulama ile ilgili tüm endpoint'ler
 @ApiTags('Kimlik Doğrulama')
@@ -63,5 +64,23 @@ export class AuthController {
   })
   createAdmin(@Body() dto: CreateAdminDto) {
     return this.authService.createAdmin(dto);
+  }
+
+  /**
+   * Seller profili oluştur
+   * Email, kullanıcı adı ve şifre ile yeni seller hesabı oluşturur
+   */
+  @Post('seller/create')
+  @ApiOperation({ summary: 'Yeni seller profili oluştur' })
+  @ApiResponse({
+    status: 201,
+    description: 'Seller profili başarıyla oluşturuldu',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Geçersiz giriş veya email/username zaten mevcut',
+  })
+  createSeller(@Body() dto: CreateSellerDto) {
+    return this.authService.createSeller(dto);
   }
 }

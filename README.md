@@ -19,7 +19,7 @@ GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekild
 ### Kullanıcı Yönetimi
 - 👤 Kullanıcı kaydı ve girişi
 - 🔐 JWT tabanlı kimlik doğrulama
-- 🎭 Rol tabanlı yetkilendirme (Admin, Moderator, User)
+- 🎭 Rol tabanlı yetkilendirme (Admin, Seller, Buyer)
 - 👥 Kullanıcı profil yönetimi
 
 ### Ürün Yönetimi

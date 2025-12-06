@@ -5,7 +5,7 @@ import LoadingScreen from './LoadingScreen';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requireRole?: string;
+  requireRole?: string | string[];
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireRole }) => {
@@ -20,11 +20,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireRole }
     return <Navigate to="/login" replace />;
   }
 
-  if (requireRole && !hasRole(requireRole)) {
-    return <Navigate to="/" replace />;
+  if (requireRole) {
+    const requiredRoles = Array.isArray(requireRole) ? requireRole : [requireRole];
+    const hasAnyRole = requiredRoles.some(role => hasRole(role));
+    
+    if (!hasAnyRole) {
+      return <Navigate to="/" replace />;
+    }
   }
 
   return <>{children}</>;
 };
 
 export default ProtectedRoute;
+

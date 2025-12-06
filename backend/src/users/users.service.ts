@@ -244,4 +244,67 @@ export class UsersService {
       await queryRunner.release();
     }
   }
+
+  /**
+   * Kullanıcıya roller ata
+   * Admin'in kullanıcıya rol vermek/almak için kullanılır
+   * @param id - Kullanıcı ID'si
+   * @param roleIds - Atanacak rol ID'leri
+   * @returns Güncellenen kullanıcı ve rolleri
+   * @throws NotFoundException - Kullanıcı veya rol bulunamazsa
+   * @throws InternalServerErrorException - Veritabanı hatası durumunda
+   */
+  async updateRoles(id: number, roleIds: number[]) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Kullanıcıyı bul
+      const user = await queryRunner.manager.findOne(User, {
+        where: { id },
+        relations: ['roles'],
+        lock: { mode: 'pessimistic_write' },
+      });
+
+      if (!user) {
+        throw new NotFoundException(`Kullanıcı ${id} bulunamadı`);
+      }
+
+      // Rol ID'lerini al ve doğrula
+      if (!roleIds || roleIds.length === 0) {
+        throw new BadRequestException('En az bir rol seçilmelidir');
+      }
+
+      // Tüm rolleri veritabanından al
+      const roles = await queryRunner.manager.findByIds(Role, roleIds);
+
+      // Seçilen tüm rol ID'lerinin mevcut olduğunu kontrol et
+      if (roles.length !== roleIds.length) {
+        const foundIds = roles.map(r => r.id);
+        const missingIds = roleIds.filter(id => !foundIds.includes(id));
+        throw new NotFoundException(`Rol ID'leri bulunamadı: ${missingIds.join(', ')}`);
+      }
+
+      // Kullanıcıya yeni rolleri ata
+      user.roles = roles;
+      await queryRunner.manager.save(user);
+
+      await queryRunner.commitTransaction();
+
+      // Güncellenmiş kullanıcıyı döndür
+      return this.findOne(id);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      if (error instanceof NotFoundException ||
+          error instanceof BadRequestException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException('Rol güncellenirken hata oluştu');
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }

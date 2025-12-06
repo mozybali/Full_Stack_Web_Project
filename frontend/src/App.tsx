@@ -63,11 +63,11 @@ function AppContent() {
                 }
               />
               
-              {/* Korumalı sayfa - Sadece SELLER rolüne sahip kullanıcılar */}
+              {/* Korumalı sayfa - Sadece ADMIN veya SELLER rolüne sahip kullanıcılar */}
               <Route
                 path={ROUTES.ADMIN}
                 element={
-                  <ProtectedRoute requireRole={RoleNames.SELLER}>
+                  <ProtectedRoute requireRole={[RoleNames.ADMIN, RoleNames.SELLER]}>
                     <Admin />
                   </ProtectedRoute>
                 }

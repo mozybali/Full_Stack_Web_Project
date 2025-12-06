@@ -146,4 +146,21 @@ export class ProductsController {
   remove(@Param('id', ParseIntPipe) id: number, @Request() req: any) {
     return this.productsService.remove(id, req.user.sub);
   }
+
+  /**
+   * Kendi ürünlerimi getir (Satıcı)
+   * Giriş yapmış satıcının yalnızca kendi ürünlerini görmesi sağlanır
+   */
+  @Get('my/products')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleNames.SELLER, RoleNames.ADMIN)
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: 'Benim ürünlerim (kendi ürünlerimi getir)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Satıcının ürünleri başarıyla döndürüldü',
+  })
+  getMyProducts(@Request() req: any) {
+    return this.productsService.findBySellerId(req.user.sub);
+  }
 }

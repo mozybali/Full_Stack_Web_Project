@@ -5,6 +5,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserRolesDto } from './dto/update-user-roles.dto';
 import { RoleNames } from '../common/enums/role-names.enum';
 
 // Kullanıcı yönetimi ile ilgili tüm endpoint'ler
@@ -90,5 +91,26 @@ export class UsersController {
   })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
+  }
+
+  /**
+   * Kullanıcıya rolleri ata (Admin)
+   */
+  @Put(':id/roles')
+  @Roles(RoleNames.ADMIN)
+  @ApiOperation({ summary: 'Kullanıcıya rolleri ata' })
+  @ApiResponse({
+    status: 200,
+    description: 'Roller başarıyla atandı',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Kullanıcı veya rol bulunamadı',
+  })
+  updateRoles(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateUserRolesDto,
+  ) {
+    return this.usersService.updateRoles(id, dto.roleIds);
   }
 }
