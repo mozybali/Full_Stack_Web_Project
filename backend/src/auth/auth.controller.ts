@@ -1,10 +1,14 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { CreateSellerDto } from './dto/create-seller.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RoleNames } from '../common/enums/role-names.enum';
 
 // Kimlik doğrulama ile ilgili tüm endpoint'ler
 @ApiTags('Kimlik Doğrulama')
@@ -51,9 +55,12 @@ export class AuthController {
   /**
    * Admin profili oluştur
    * Email, kullanıcı adı ve şifre ile yeni admin hesabı oluşturur
+   * Sadece mevcut admin kullanıcılar yeni admin oluşturabilir
    */
   @Post('admin/create')
-  @ApiOperation({ summary: 'Yeni admin profili oluştur' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleNames.ADMIN)
+  @ApiOperation({ summary: 'Yeni admin profili oluştur (sadece admin için)' })
   @ApiResponse({
     status: 201,
     description: 'Admin profili başarıyla oluşturuldu',
@@ -62,6 +69,14 @@ export class AuthController {
     status: 400,
     description: 'Geçersiz giriş veya email/username zaten mevcut',
   })
+  @ApiResponse({
+    status: 401,
+    description: 'Kimlik doğrulama başarısız',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Admin rolü gerekli',
+  })
   createAdmin(@Body() dto: CreateAdminDto) {
     return this.authService.createAdmin(dto);
   }
@@ -69,9 +84,12 @@ export class AuthController {
   /**
    * Seller profili oluştur
    * Email, kullanıcı adı ve şifre ile yeni seller hesabı oluşturur
+   * Sadece admin kullanıcılar yeni seller oluşturabilir
    */
   @Post('seller/create')
-  @ApiOperation({ summary: 'Yeni seller profili oluştur' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleNames.ADMIN)
+  @ApiOperation({ summary: 'Yeni seller profili oluştur (sadece admin için)' })
   @ApiResponse({
     status: 201,
     description: 'Seller profili başarıyla oluşturuldu',
@@ -79,6 +97,14 @@ export class AuthController {
   @ApiResponse({
     status: 400,
     description: 'Geçersiz giriş veya email/username zaten mevcut',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Kimlik doğrulama başarısız',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Admin rolü gerekli',
   })
   createSeller(@Body() dto: CreateSellerDto) {
     return this.authService.createSeller(dto);

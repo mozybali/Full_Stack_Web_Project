@@ -28,14 +28,20 @@ export const env = () => {
     
     // JWT gizli anahtarı (production'da zorunlu, development'ta varsayılan değer kullanılabilir)
     jwtSecret: isProduction 
-      ? process.env.JWT_SECRET 
+      ? (process.env.JWT_SECRET || (() => {
+          throw new Error('🚨 CRITICAL: JWT_SECRET environment variable zorunludur (production)');
+        })())
       : (process.env.JWT_SECRET || 'dev-secret-key'),
     
-    // JWT token geçerlilik süresi (varsayılan: 24 saat)
-    jwtExpiration: process.env.JWT_EXPIRATION || '1d',
+    // JWT token geçerlilik süresi (varsayılan: 15 dakika - güvenlik için kısa tutuldu)
+    jwtExpiration: process.env.JWT_EXPIRATION || '15m',
     
     // CORS için izin verilen frontend adresi
-    corsOrigin: process.env.FRONTEND_URL || (isProduction ? 'http://localhost:5173' : true),
+    corsOrigin: isProduction
+      ? (process.env.FRONTEND_URL || (() => {
+          throw new Error('🚨 CRITICAL: FRONTEND_URL environment variable zorunludur (production)');
+        })())
+      : (process.env.FRONTEND_URL || true),
     
     // Veritabanı konfigürasyonu
     db: {

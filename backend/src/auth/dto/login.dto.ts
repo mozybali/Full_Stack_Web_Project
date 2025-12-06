@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginDto {
@@ -6,14 +6,13 @@ export class LoginDto {
     example: 'user@example.com',
     description: 'Kullanıcı email adresi',
   })
-  @IsEmail()
+  @IsEmail({}, { message: 'Geçerli bir email adresi giriniz' })
   email: string;
 
   @ApiProperty({
-    example: 'SecurePassword123',
-    description: 'Kullanıcı şifresi (minimum 6 karakter)',
+    example: 'SecurePass123!',
+    description: 'Kullanıcı şifresi',
   })
-  @IsNotEmpty()
-  @MinLength(6)
+  @IsNotEmpty({ message: 'Şifre zorunludur' })
   password: string;
 }
