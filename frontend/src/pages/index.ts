@@ -25,3 +25,4 @@ export { default as ProductDetail } from './ProductDetail';
 export { default as Cart } from './Cart';
 export { default as Orders } from './Orders';
 export { default as Admin } from './Admin';
+export { default as NotFound } from './NotFound';

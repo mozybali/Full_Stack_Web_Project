@@ -29,6 +29,7 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
 import Admin from './pages/Admin';
+import NotFound from './pages/NotFound';
 
 import { RoleNames } from './types';
 import { useAuth } from './context/AuthContext';
@@ -71,6 +72,9 @@ function AppContent() {
                   </ProtectedRoute>
                 }
               />
+              
+              {/* 404 - Bulunamadı sayfası */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </MainLayout>
   );
