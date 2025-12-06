@@ -131,7 +131,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=your_db_username
 DB_PASS=your_db_password
-DB_NAME=gamermarkt_db
+DB_NAME=your_db_name
 
 # JWT Ayarları
 JWT_SECRET=your_very_secure_random_secret_key_here
