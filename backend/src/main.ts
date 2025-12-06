@@ -52,7 +52,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('GamerMarkt API')
     .setDescription('Oyun hesapları ve lisanslar satış platformu API dokümantasyonu')
-    .setVersion('1.0.0')
+    .setVersion('0.8.4')
     .addBearerAuth(
       {
         type: 'http',
@@ -71,14 +71,14 @@ async function bootstrap() {
 
   // Swagger dokümantasyonunu oluştur
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('swagger', app, document);
 
   // Sunucuyu başlat
   const port = configService.get<number>('port') || 3000;
   await app.listen(port);
   
   logger.log(`Uygulama http://localhost:${port} adresinde çalışıyor`);
-  logger.log(`Swagger dokümantasyonu: http://localhost:${port}/api`);
+  logger.log(`Swagger dokümantasyonu: http://localhost:${port}/swagger`);
 }
 
 // Bootstrap işlevini çalıştır
