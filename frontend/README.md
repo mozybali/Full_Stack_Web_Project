@@ -1,4 +1,4 @@
-# GameVault - Frontend
+# GamerMarkt - Frontend
 
 Modern bir oyun hesabı ve key marketplace frontend uygulaması. React, TypeScript, Tailwind CSS ve Vite ile geliştirilmiştir.
 

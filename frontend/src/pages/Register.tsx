@@ -55,7 +55,7 @@ const Register: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md p-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Kayıt Ol</h2>
-            <p className="mt-2 text-gray-600">GameVault'a katılın</p>
+            <p className="mt-2 text-gray-600">GamerMarkt'a katılın</p>
           </div>
 
           {error && (

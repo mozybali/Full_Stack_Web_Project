@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center space-x-8">
             <Link to="/" className="flex items-center space-x-2 text-2xl font-bold text-primary-600">
               <FaGamepad />
-              <span>GameVault</span>
+              <span>GamerMarkt</span>
             </Link>
             
             <div className="hidden md:flex space-x-4">

@@ -1,6 +1,6 @@
-# 🎮 GameVault - Oyun Hesabı ve Lisans Satış Platformu
+# 🎮 GamerMarkt - Oyun Hesabı ve Lisans Satış Platformu
 
-GameVault, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekilde alınıp satılabildiği modern bir e-ticaret platformudur. NestJS framework'ü ile geliştirilmiş RESTful API backend'i içerir.
+GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekilde alınıp satılabildiği modern bir e-ticaret platformudur. NestJS framework'ü ile geliştirilmiş RESTful API backend'i içerir.
 
 ## 📋 İçindekiler
 
@@ -131,7 +131,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=your_db_username
 DB_PASS=your_db_password
-DB_NAME=gamevault_db
+DB_NAME=gamermarkt_db
 
 # JWT Ayarları
 JWT_SECRET=your_very_secure_random_secret_key_here

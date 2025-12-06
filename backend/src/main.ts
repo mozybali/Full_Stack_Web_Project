@@ -50,7 +50,7 @@ async function bootstrap() {
 
   // Swagger API Dokümantasyonu Konfigürasyonu
   const config = new DocumentBuilder()
-    .setTitle('GameVault API')
+    .setTitle('GamerMarkt API')
     .setDescription('Oyun hesapları ve lisanslar satış platformu API dokümantasyonu')
     .setVersion('1.0.0')
     .addBearerAuth(

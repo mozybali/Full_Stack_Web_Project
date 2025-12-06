@@ -42,7 +42,7 @@ const Login: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md p-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Giriş Yap</h2>
-            <p className="mt-2 text-gray-600">GameVault hesabınıza giriş yapın</p>
+            <p className="mt-2 text-gray-600">GamerMarkt hesabınıza giriş yapın</p>
           </div>
 
           {error && (
