@@ -106,11 +106,9 @@ export class UsersService {
     await queryRunner.startTransaction();
 
     try {
-      // Kullanıcıyı pessimistic write lock ile bul
-      // Bu lock, başka transaction'ların aynı kaydı değiştirmesini engeller
+      // Kullanıcının var olup olmadığını kontrol et (lock olmadan)
       const user = await queryRunner.manager.findOne(User, {
         where: { id },
-        lock: { mode: 'pessimistic_write' }, // Kilit modunda oku
       });
 
       // Kullanıcı bulunamadıysa hata fırlat
