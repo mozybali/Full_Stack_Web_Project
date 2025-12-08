@@ -102,7 +102,8 @@ export class OrdersService {
   findMy(userId: number) {
     return this.ordersRepo.find({
       where: { buyer: { id: userId } },
-      relations: ['buyer', 'items', 'items.product'],
+      relations: ['buyer', 'items', 'items.product', 'items.product.game'],
+      order: { createdAt: 'DESC' },
     });
   }
 
@@ -113,9 +114,10 @@ export class OrdersService {
   findAll(skip: number = 0, take: number = 20) {
     // Pagination ile siparişleri getir (N+1 query problemi azaltılır)
     return this.ordersRepo.find({
-      relations: ['buyer', 'items', 'items.product'],
+      relations: ['buyer', 'items', 'items.product', 'items.product.game'],
       skip: Math.max(0, skip),
       take: Math.min(100, Math.max(1, take)),  // Max 100 item per page
+      order: { createdAt: 'DESC' },
     });
   }
 
@@ -128,7 +130,7 @@ export class OrdersService {
   async findOne(id: number, user?: any) {
     const order = await this.ordersRepo.findOne({
       where: { id },
-      relations: ['buyer', 'items', 'items.product'],
+      relations: ['buyer', 'items', 'items.product', 'items.product.game'],
     });
 
     if (!order) {

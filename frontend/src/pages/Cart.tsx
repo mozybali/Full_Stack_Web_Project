@@ -23,10 +23,12 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { orderService } from '../services/order.service';
+import { useToast } from '../components/ui/ToastContainer';
 import { FaTrash, FaMinus, FaPlus, FaShoppingCart } from 'react-icons/fa';
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   // Context'lerden sepet ve auth verilerini al
   const { items, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
   const { isAuthenticated } = useAuth();
@@ -44,12 +46,16 @@ const Cart: React.FC = () => {
   const handleCheckout = async () => {
     // Giriş yapılmamışsa login sayfasına yönlendir
     if (!isAuthenticated) {
+      toast.warning('Sipariş vermek için giriş yapmalısınız');
       navigate('/login');
       return;
     }
 
     // Sepet boşsa işlem yapma
-    if (items.length === 0) return;
+    if (items.length === 0) {
+      toast.error('Sepetiniz boş');
+      return;
+    }
 
     setLoading(true);
     try {
@@ -65,10 +71,14 @@ const Cart: React.FC = () => {
       await orderService.create(orderData);
       // Sepeti temizle
       clearCart();
-      // Siparışlar sayfasına yönlendir
-      navigate('/orders');
+      // Başarı mesajı göster
+      toast.success('Siparişiniz başarıyla oluşturuldu!');
+      // Kısa bir gecikme sonra siparişler sayfasına yönlendir
+      setTimeout(() => {
+        navigate('/orders');
+      }, 500);
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Sipariş oluşturulurken bir hata oluştu');
+      toast.error(error.response?.data?.message || 'Sipariş oluşturulurken bir hata oluştu');
     } finally {
       setLoading(false);
     }

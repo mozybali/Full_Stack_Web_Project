@@ -76,7 +76,7 @@ export const PRODUCT_TYPES = {
 // Order Status
 export const ORDER_STATUS = {
   PENDING: 'PENDING',
-  PROCESSING: 'PROCESSING',
+  PAID: 'PAID',
   COMPLETED: 'COMPLETED',
   CANCELLED: 'CANCELLED',
 } as const;
@@ -84,7 +84,7 @@ export const ORDER_STATUS = {
 // Status Labels (Turkish)
 export const ORDER_STATUS_LABELS: Record<string, string> = {
   PENDING: 'Beklemede',
-  PROCESSING: 'İşleniyor',
+  PAID: 'Ödendi',
   COMPLETED: 'Tamamlandı',
   CANCELLED: 'İptal Edildi',
 } as const;
@@ -92,7 +92,7 @@ export const ORDER_STATUS_LABELS: Record<string, string> = {
 // Status Colors
 export const ORDER_STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-800',
-  PROCESSING: 'bg-blue-100 text-blue-800',
+  PAID: 'bg-blue-100 text-blue-800',
   COMPLETED: 'bg-green-100 text-green-800',
   CANCELLED: 'bg-red-100 text-red-800',
 } as const;
@@ -107,5 +107,5 @@ export const PRODUCT_TYPE_LABELS: Record<string, string> = {
 export const ROLE_NAMES = {
   ADMIN: 'ADMIN',
   SELLER: 'SELLER',
-  CUSTOMER: 'CUSTOMER',
+  BUYER: 'BUYER',
 } as const;
