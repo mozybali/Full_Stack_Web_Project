@@ -1,8 +1,25 @@
+/**
+ * Ürün Oluşturma DTO (Data Transfer Object)
+ * 
+ * Yeni ürün oluşturma ve güncelleme işlemleri için gerekli verileri tanımlar ve doğrular.
+ * 
+ * Validasyon kuralları:
+ * - Title: String, zorunlu
+ * - Description: String, opsiyonel
+ * - Type: ACCOUNT veya KEY enum değeri
+ * - Price: Pozitif sayı
+ * - Stock: Minimum 1
+ * - GameId: Pozitif tamsayı
+ * - ImageUrl: String, opsiyonel
+ */
 import { IsString, IsNumber, IsEnum, IsOptional, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProductType } from '../../common/enums/product-type.enum';
 
+/**
+ * Ürün oluşturma için DTO
+ */
 export class CreateProductDto {
   @ApiProperty({
     example: 'Oyun Lisansı',

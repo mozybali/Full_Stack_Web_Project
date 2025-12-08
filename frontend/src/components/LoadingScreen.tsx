@@ -1,7 +1,27 @@
+/**
+ * Yükleme Ekranı Component'i
+ * 
+ * Uygulama genelinde kullanılan standart yükleme ekranı.
+ * Merkezi bir loading UI sağlayarak tutarlılık oluşturur.
+ * 
+ * Özellikler:
+ * - Dönen yükleme ikonu (spinner)
+ * - Özelleştirilebilir mesaj
+ * - Merkezi ve tam ekran görünüm
+ * 
+ * Kullanım:
+ * <LoadingScreen />
+ * <LoadingScreen message="Veriler yükleniyor..." />
+ * 
+ * @param {LoadingScreenProps} props - Component özellikleri
+ */
 import React from 'react';
 
+/**
+ * LoadingScreen props tipi
+ */
 interface LoadingScreenProps {
-  message?: string;
+  message?: string; // Gösterilecek mesaj (varsayılan: "Yükleniyor...")
 }
 
 /**

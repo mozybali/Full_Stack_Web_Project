@@ -1,6 +1,18 @@
+/**
+ * Kullanıcı Giriş DTO (Data Transfer Object)
+ * 
+ * Kullanıcı oturum açma işlemi için gerekli verileri tanımlar ve doğrular.
+ * 
+ * Validasyon kuralları:
+ * - Email: Geçerli email formatı
+ * - Password: Boş olamaz
+ */
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
+/**
+ * Giriş formu için DTO
+ */
 export class LoginDto {
   @ApiProperty({
     example: 'user@example.com',

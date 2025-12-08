@@ -1,3 +1,19 @@
+/**
+ * Giriş Sayfası (Login Page)
+ * 
+ * Kullanıcıların email ve şifre ile giriş yapabildiği sayfa.
+ * 
+ * Özellikler:
+ * - Email ve şifre ile giriş formu
+ * - Form validasyonu
+ * - Hata mesajı gösterimi
+ * - Yükleme durumu (loading)
+ * - Kayıt sayfasına yönlendirme
+ * - Zaten giriş yapmış kullanıcıları ana sayfaya yönlendirme
+ * 
+ * Kullanılan Context'ler:
+ * - useAuth: Kimlik doğrulama işlemleri
+ */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -7,12 +23,14 @@ import { FaEnvelope, FaLock } from 'react-icons/fa';
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
+  
+  // Form state'leri
   const [formData, setFormData] = useState<LoginDto>({
     email: '',
     password: '',
   });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(''); // Hata mesajı
+  const [loading, setLoading] = useState(false); // Yükleme durumu
 
   // Zaten giriş yapmışsa ana sayfaya yönlendir
   useEffect(() => {
@@ -21,6 +39,9 @@ const Login: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  /**
+   * Input değişikliklerini yakalayıp state'e kaydet
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -28,6 +49,10 @@ const Login: React.FC = () => {
     });
   };
 
+  /**
+   * Form gönderildiğinde login işlemi yap
+   * Başarılı olursa ana sayfaya yönlendir
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');

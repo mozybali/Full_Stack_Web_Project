@@ -1,6 +1,19 @@
+/**
+ * Kullanıcı Kayıt DTO (Data Transfer Object)
+ * 
+ * Yeni kullanıcı kaydı için gerekli verileri tanımlar ve doğrular.
+ * 
+ * Validasyon kuralları:
+ * - Email: Geçerli email formatı
+ * - Username: 3-20 karakter, alfanumerik ve alt çizgi
+ * - Password: Minimum 8 karakter, büyük harf, küçük harf, sayı ve özel karakter
+ */
 import { IsEmail, IsNotEmpty, MinLength, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
+/**
+ * Kayıt formu için DTO
+ */
 export class RegisterDto {
   @ApiProperty({
     example: 'user@example.com',

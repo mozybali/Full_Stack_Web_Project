@@ -1,6 +1,19 @@
+/**
+ * Oyun Oluşturma DTO (Data Transfer Object)
+ * 
+ * Yeni oyun oluşturma ve güncelleme işlemleri için gerekli verileri tanımlar ve doğrular.
+ * 
+ * Validasyon kuralları:
+ * - Name: String, zorunlu
+ * - Platform: String, zorunlu (PC, PlayStation, Xbox, vb.)
+ * - Genre: String, opsiyonel (Action, RPG, Strategy, vb.)
+ */
 import { IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
+/**
+ * Oyun oluşturma için DTO
+ */
 export class CreateGameDto {
   @ApiProperty({
     example: 'Elden Ring',
@@ -26,6 +39,10 @@ export class CreateGameDto {
   genre?: string;
 }
 
+/**
+ * Oyun güncelleme için DTO
+ * Tüm alanlar opsiyonel - sadece değiştirilmek istenen alanlar gönderilir
+ */
 export class UpdateGameDto {
   @ApiProperty({
     example: 'Elden Ring',

@@ -1,20 +1,38 @@
+/**
+ * Ürün Servisi
+ * 
+ * Ürün CRUD işlemleri için API fonksiyonları.
+ * Resim yükleme ile birlikte FormData kullanır.
+ */
 import axiosInstance from './axios';
 import type { Product, CreateProductDto, UpdateProductDto } from '../types';
 
 export const productService = {
-  // Tüm ürünleri getir
+  /**
+   * Tüm ürünleri getir
+   * @returns Ürünler listesi
+   */
   async getAll(): Promise<Product[]> {
     const response = await axiosInstance.get<Product[]>('/products');
     return response.data;
   },
 
-  // ID'ye göre ürün getir
+  /**
+   * ID'ye göre ürün getir
+   * @param id - Ürün ID'si
+   * @returns Ürün detayları
+   */
   async getById(id: number): Promise<Product> {
     const response = await axiosInstance.get<Product>(`/products/${id}`);
     return response.data;
   },
 
-  // Yeni ürün oluştur (resim ile)
+  /**
+   * Yeni ürün oluştur (resim dosyası ile)
+   * FormData kullanarak multipart/form-data olarak gönderir
+   * @param data - Ürün bilgileri ve resim dosyası
+   * @returns Oluşturulan ürün
+   */
   async create(data: CreateProductDto): Promise<Product> {
     const formData = new FormData();
     formData.append('title', data.title);
@@ -33,7 +51,12 @@ export const productService = {
     return response.data;
   },
 
-  // Ürün güncelle
+  /**
+   * Ürün güncelle (resim güncellemesi dahil)
+   * @param id - Güncellenecek ürün ID'si
+   * @param data - Güncellenmiş ürün bilgileri
+   * @returns Güncellenen ürün
+   */
   async update(id: number, data: UpdateProductDto): Promise<Product> {
     const formData = new FormData();
     if (data.title) formData.append('title', data.title);
@@ -52,7 +75,10 @@ export const productService = {
     return response.data;
   },
 
-  // Ürün sil
+  /**
+   * Ürünü sil
+   * @param id - Silinecek ürün ID'si
+   */
   async delete(id: number): Promise<void> {
     await axiosInstance.delete(`/products/${id}`);
   },
