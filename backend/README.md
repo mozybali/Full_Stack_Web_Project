@@ -1,6 +1,6 @@
 # 🎮 GamerMarkt Backend API
 
-Oyun hesapları ve oyun lisans anahtarlarının satışı yapılan modern e-ticaret platformunun RESTful API backend'i. NestJS, TypeScript, PostgreSQL ve TypeORM ile geliştirilmiştir.
+Oyun hesapları ve oyun lisans anahtarlarının satışı yapılan modern e-ticaret platformunun RESTful API backend'i. NestJS 11, TypeScript 5.4, PostgreSQL ve TypeORM 0.3 ile geliştirilmiştir.
 
 ## 📋 İçindekiler
 
@@ -9,21 +9,25 @@ Oyun hesapları ve oyun lisans anahtarlarının satışı yapılan modern e-tica
 - [Gereksinimler](#-gereksinimler)
 - [Kurulum](#-kurulum)
 - [Yapılandırma](#-yapılandırma)
+- [Veritabanı](#-veritabanı)
 - [Proje Yapısı](#-proje-yapısı)
 - [API Dokümantasyonu](#-api-dokümantasyonu)
-- [Veritabanı](#-veritabanı)
 - [Geliştirme](#-geliştirme)
+- [Güvenlik](#-güvenlik)
 
 ## ✨ Özellikler
 
-### Kimlik Doğrulama
+### Kimlik Doğrulama & Yetkilendirme
 - JWT tabanlı stateless authentication
 - Kullanıcı kaydı ve girişi
 - Şifre hashleme (bcrypt)
+- Rol tabanlı yetkilendirme (RBAC)
+- Guard'lar ile endpoint koruması
 
 ### Kullanıcı Yönetimi
-- Rol tabanlı yetkilendirme (Admin, Seller, Buyer)
+- Kullanıcı CRUD işlemleri
 - Kullanıcı profil yönetimi
+- Rol atama ve yönetimi
 - Kullanıcı listesi ve detayları
 
 ### Ürün Yönetimi
@@ -33,14 +37,16 @@ Oyun hesapları ve oyun lisans anahtarlarının satışı yapılan modern e-tica
 - Stok takibi
 
 ### Sipariş Sistemi
-- Sipariş oluşturma
+- Sipariş oluşturma ve yönetimi
 - Sipariş durumu takibi (Pending, Completed, Cancelled)
 - Sipariş geçmişi
-- Satıcı yönetim paneli
+- Sipariş detayları ve sipariş kalemleri
+- Kullanıcı bazlı sipariş filtreleme
 
-### Oyun Katalogu
-- Oyun listesi yönetimi
-- Platform ve tür bilgileri
+### Oyun Kataloğu
+- Oyun listesi yönetimi (CRUD)
+- Oyun bilgileri (platform, tür, açıklama)
+- Oyun bazlı ürün organizasyonu
 
 ### Dosya Yönetimi
 - Güvenli dosya yükleme (Multer)
@@ -102,7 +108,7 @@ DB_LOGGING=false
 
 ### 3. Veritabanını Oluşturun
 ```bash
-createdb gamevault_db
+createdb gamermarkt_db
 ```
 
 ### 4. Migration'ları Çalıştırın
@@ -131,31 +137,107 @@ Uygulama `http://localhost:3000` adresinde çalışacaktır.
 | `PORT` | Sunucu portu | `3000` |
 | `NODE_ENV` | Ortam (development/production) | `development` |
 | `DB_HOST` | Veritabanı host | `localhost` |
+| `DB_PORT` | Veritabanı port | `5432` |
 | `DB_USER` | Veritabanı kullanıcısı | `postgres` |
 | `DB_PASS` | Veritabanı şifresi | `secure_password` |
-| `DB_NAME` | Veritabanı adı | `gamevault_db` |
+| `DB_NAME` | Veritabanı adı | `gamermarkt_db` |
 | `JWT_SECRET` | JWT şifreleme anahtarı (min 32 char) | `your_secret...` |
 | `JWT_EXPIRES_IN` | Token geçerlilik süresi | `7d` |
 | `CORS_ORIGIN` | Frontend URL (CORS) | `http://localhost:5173` |
+| `DB_LOGGING` | SQL query logları | `false` |
 
 ## 📁 Proje Yapısı
 
 ```
-src/
-├── auth/                 # Kimlik doğrulama
-├── users/                # Kullanıcı yönetimi
-├── roles/                # Rol yönetimi
-├── games/                # Oyun yönetimi
-├── products/             # Ürün yönetimi
-├── orders/               # Sipariş yönetimi
-├── upload/               # Dosya yükleme
-├── common/               # Paylaşılan modüller
-├── config/               # Yapılandırma
-├── migrations/           # Database migration'ları
-├── data-source.ts
-├── app.module.ts
-└── main.ts
+backend/
+├── src/
+│   ├── auth/                      # Kimlik doğrulama modülü
+│   │   ├── guards/               # JWT ve Roles guard'ları
+│   │   ├── strategies/           # Passport JWT stratejisi
+│   │   ├── dto/                  # Login/Register DTO'ları
+│   │   ├── interfaces/           # Auth interface'leri
+│   │   ├── auth.controller.ts    # Auth endpoint'leri
+│   │   ├── auth.service.ts       # Auth business logic
+│   │   └── auth.module.ts
+│   │
+│   ├── users/                     # Kullanıcı yönetimi
+│   │   ├── dto/                  # User DTO'ları
+│   │   ├── user.entity.ts        # User entity
+│   │   ├── users.controller.ts
+│   │   ├── users.service.ts
+│   │   └── users.module.ts
+│   │
+│   ├── roles/                     # Rol yönetimi
+│   │   ├── dto/                  # Role DTO'ları
+│   │   ├── role.entity.ts        # Role entity
+│   │   ├── roles.controller.ts
+│   │   ├── roles.service.ts
+│   │   └── roles.module.ts
+│   │
+│   ├── games/                     # Oyun kataloğu
+│   │   ├── dto/                  # Game DTO'ları
+│   │   ├── game.entity.ts        # Game entity
+│   │   ├── games.controller.ts
+│   │   ├── games.service.ts
+│   │   └── games.module.ts
+│   │
+│   ├── products/                  # Ürün yönetimi
+│   │   ├── dto/                  # Product DTO'ları
+│   │   ├── product.entity.ts     # Product entity
+│   │   ├── products.controller.ts
+│   │   ├── products.service.ts
+│   │   └── products.module.ts
+│   │
+│   ├── orders/                    # Sipariş sistemi
+│   │   ├── dto/                  # Order DTO'ları
+│   │   ├── order.entity.ts       # Order entity
+│   │   ├── order-item.entity.ts  # OrderItem entity
+│   │   ├── orders.controller.ts
+│   │   ├── orders.service.ts
+│   │   └── orders.module.ts
+│   │
+│   ├── upload/                    # Dosya yükleme servisi
+│   │   ├── upload.service.ts     # File upload logic
+│   │   └── upload.module.ts
+│   │
+│   ├── common/                    # Paylaşılan modüller
+│   │   ├── decorators/           # Custom decorator'lar (Roles, Public)
+│   │   ├── guards/               # Custom guard'lar
+│   │   ├── interceptors/         # Global interceptor'lar
+│   │   ├── filters/              # Exception filter'ları
+│   │   ├── enums/                # Enum tanımları (OrderStatus, etc.)
+│   │   └── utils/                # Yardımcı fonksiyonlar
+│   │
+│   ├── config/                    # Yapılandırma
+│   │   ├── env.config.ts         # Environment variable config
+│   │   └── multer.config.ts      # File upload config
+│   │
+│   ├── migrations/                # TypeORM migration'ları
+│   │   ├── 1765030683564-InitialSchema.ts
+│   │   └── 1765216021828-AddCascadeDeleteConstraints.ts
+│   │
+│   ├── scripts/                   # Yardımcı script'ler
+│   ├── data-source.ts            # TypeORM DataSource
+│   ├── app.module.ts             # Ana uygulama modülü
+│   └── main.ts                   # Uygulama giriş noktası
+│
+├── uploads/                       # Yüklenen dosyalar
+│   └── products/                 # Ürün görselleri
+├── package.json
+├── tsconfig.json
+├── tsconfig.build.json
+├── nest-cli.json
+└── README.md
 ```
+
+### Modül Yapısı
+
+Her feature modülü aşağıdaki yapıyı takip eder:
+- **Entity**: TypeORM veritabanı entity'si
+- **DTO**: Data Transfer Objects (validation ile)
+- **Service**: Business logic ve veritabanı işlemleri
+- **Controller**: HTTP endpoint'ler ve routing
+- **Module**: Dependency injection container
 
 ## 🚀 API Dokümantasyonu
 
@@ -284,12 +366,24 @@ nest generate service module-name
 
 ## 🔒 Güvenlik
 
-- ✅ Şifreler bcrypt ile hashlenir
-- ✅ JWT token'lar güvenli secret key ile şifrelenir
-- ✅ Input validasyonu class-validator ile yapılır
-- ✅ SQL injection'a karşı parametreli sorgular
-- ✅ CORS sadece belirtilen frontend URL'ine izin verir
-- ✅ Hassas veriler response'larından çıkarılır
+### Uygulanan Güvenlik Önlemleri
+
+- ✅ **Şifre Hashleme**: bcrypt ile güvenli şifre saklama
+- ✅ **JWT Authentication**: Token tabanlı stateless oturum yönetimi
+- ✅ **Role-Based Access Control**: Guard'lar ile endpoint koruması
+- ✅ **Input Validation**: class-validator ile DTO validasyonu
+- ✅ **SQL Injection Koruması**: TypeORM parametreli sorgular
+- ✅ **CORS Yapılandırması**: Sadece belirtilen origin'e izin
+- ✅ **Hassas Veri Koruması**: Response'lardan password gibi alanlar çıkarılır
+- ✅ **File Upload Güvenliği**: Multer ile dosya tipi ve boyut kontrolü
+- ✅ **Global Exception Handling**: Standardize hata yönetimi
+
+### Best Practices
+
+- JWT secret key minimum 32 karakter olmalıdır
+- Production ortamında DB_LOGGING kapatılmalıdır
+- .env dosyası asla git'e commit edilmemelidir
+- CORS_ORIGIN production URL'i ile değiştirilmelidir
 
 ---
 

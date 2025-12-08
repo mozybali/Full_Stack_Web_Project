@@ -1,6 +1,6 @@
 # 🎮 GamerMarkt - Oyun Hesabı ve Lisans Satış Platformu
 
-GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekilde alınıp satılabildiği modern bir e-ticaret platformudur. React ve TypeScript tabanlı frontend ile NestJS framework'ü ile geliştirilmiş RESTful API backend'ine sahiptir.
+GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekilde alınıp satılabildiği modern bir full-stack e-ticaret platformudur. React 19 ve TypeScript tabanlı frontend ile NestJS framework'ü ile geliştirilmiş RESTful API backend'ine sahiptir.
 
 ## 📋 İçindekiler
 
@@ -9,10 +9,11 @@ GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekild
 - [Kurulum](#-kurulum)
 - [Yapılandırma](#-yapılandırma)
 - [Veritabanı](#-veritabanı)
-- [API Kullanımı](#-api-kullanımı)
+- [API Dokümantasyonu](#-api-dokümantasyonu)
 - [Proje Yapısı](#-proje-yapısı)
 - [Geliştirme](#-geliştirme)
 - [Güvenlik](#-güvenlik)
+- [Lisans](#-lisans)
 
 ## ✨ Özellikler
 
@@ -61,11 +62,12 @@ GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekild
 ### Frontend
 - **React** (v19.2+) - UI framework
 - **TypeScript** (v5.9+) - Tip güvenli JavaScript
-- **Vite** (v7.2+) - Build tool
-- **React Router** (v7.10+) - Routing
-- **Axios** - HTTP client
-- **Tailwind CSS** (v3.4+) - Styling
-- **React Icons** - Icon library
+- **Vite** (v7.2+) - Build tool ve dev server
+- **React Router** (v7.10+) - Client-side routing
+- **Axios** (v1.13+) - HTTP client
+- **Tailwind CSS** (v3.4+) - Utility-first CSS framework
+- **React Icons** (v5.5+) - Icon library
+- **ESLint** (v9.39+) - Code linting
 
 ## 📦 Kurulum
 
@@ -79,7 +81,7 @@ GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekild
 
 1. **Backend dizinine gidin**
 ```bash
-cd web_proje/backend
+cd backend
 ```
 
 2. **Bağımlılıkları yükleyin**
@@ -92,10 +94,15 @@ npm install
 4. **Veritabanını oluşturun**
 ```bash
 # PostgreSQL'e bağlanıp veritabanı oluşturun
-createdb gamevault_db
+createdb gamermarkt_db
 ```
 
-5. **Uygulamayı başlatın**
+5. **Migration'ları çalıştırın**
+```bash
+npm run migration:run
+```
+
+6. **Uygulamayı başlatın**
 ```bash
 # Development modu (hot reload aktif)
 npm run start:dev
@@ -111,7 +118,7 @@ Backend varsayılan olarak `http://localhost:3000` adresinde çalışır.
 
 1. **Frontend dizinine gidin**
 ```bash
-cd web_proje/frontend
+cd frontend
 ```
 
 2. **Bağımlılıkları yükleyin**
@@ -140,7 +147,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASS=your_password
-DB_NAME=your_db_name
+DB_NAME=gamermarkt_db
 
 # JWT
 JWT_SECRET=your_secret_key_min_32_chars
@@ -209,17 +216,19 @@ npm run migration:show
 
 Uygulama ilk başlatıldığında varsayılan roller otomatik olarak oluşturulur:
 - **Admin** - Tam yönetim yetkisi
-- **Moderator** - Moderation işlemleri
-- **User** - Standart kullanıcı
+- **Seller** - Ürün satış yetkisi
+- **Buyer** - Standart kullanıcı (alıcı)
 
-## 🚀 API Kullanımı
+## 📚 API Dokümantasyonu
 
-### API Dokümantasyonu
+### Swagger UI
 
 Swagger UI ile interaktif API dokümantasyonuna erişin:
 ```
 http://localhost:3000/api
 ```
+
+Swagger arayüzünde tüm endpoint'leri test edebilir, request/response örneklerini görebilir ve API'yi interaktif olarak keşfedebilirsiniz.
 
 ### Ana Endpoint'ler
 
@@ -248,9 +257,9 @@ DELETE /roles/:id         - Rol sil (Admin)
 #### 🎮 Games
 ```
 GET    /games             - Tüm oyunları listele
-POST   /games             - Yeni oyun ekle (Admin/Moderator)
+POST   /games             - Yeni oyun ekle (Admin)
 GET    /games/:id         - Oyun detayı
-PATCH  /games/:id         - Oyun güncelle (Admin/Moderator)
+PATCH  /games/:id         - Oyun güncelle (Admin)
 DELETE /games/:id         - Oyun sil (Admin)
 ```
 
@@ -287,14 +296,15 @@ Authorization: Bearer <your_access_token>
 ## 📁 Proje Yapısı
 
 ```
-web_proje/
+Full_Stack_Web_Project/
 │
-├── backend/                     # NestJS Backend
+├── backend/                     # NestJS Backend API
 │   ├── src/
 │   │   ├── auth/                # Kimlik doğrulama modülü
 │   │   │   ├── guards/         # JWT, Roles guard'ları
-│   │   │   ├── strategies/     # Passport stratejileri
+│   │   │   ├── strategies/     # Passport JWT stratejisi
 │   │   │   ├── dto/            # Login/Register DTO'ları
+│   │   │   ├── interfaces/     # Auth interface'leri
 │   │   │   ├── auth.controller.ts
 │   │   │   ├── auth.service.ts
 │   │   │   └── auth.module.ts
@@ -313,7 +323,7 @@ web_proje/
 │   │   │   ├── roles.service.ts
 │   │   │   └── roles.module.ts
 │   │   │
-│   │   ├── games/               # Oyun yönetimi
+│   │   ├── games/               # Oyun kataloğu
 │   │   │   ├── game.entity.ts
 │   │   │   ├── dto/
 │   │   │   ├── games.controller.ts
@@ -327,7 +337,7 @@ web_proje/
 │   │   │   ├── products.service.ts
 │   │   │   └── products.module.ts
 │   │   │
-│   │   ├── orders/              # Sipariş yönetimi
+│   │   ├── orders/              # Sipariş sistemi
 │   │   │   ├── order.entity.ts
 │   │   │   ├── order-item.entity.ts
 │   │   │   ├── dto/
@@ -335,41 +345,58 @@ web_proje/
 │   │   │   ├── orders.service.ts
 │   │   │   └── orders.module.ts
 │   │   │
+│   │   ├── upload/              # Dosya yükleme servisi
+│   │   │   ├── upload.service.ts
+│   │   │   └── upload.module.ts
+│   │   │
 │   │   ├── common/              # Paylaşılan modüller
-│   │   │   ├── decorators/     # Custom decorator'lar
+│   │   │   ├── decorators/     # Custom decorator'lar (Roles, Public)
 │   │   │   ├── guards/         # Custom guard'lar
 │   │   │   ├── interceptors/   # Global interceptor'lar
-│   │   │   ├── filters/        # Exception handler'ları
-│   │   │   ├── enums/          # Enum tanımları
+│   │   │   ├── filters/        # Exception filter'ları
+│   │   │   ├── enums/          # Enum tanımları (OrderStatus, UserRole)
 │   │   │   └── utils/          # Yardımcı fonksiyonlar
 │   │   │
 │   │   ├── config/              # Yapılandırma
-│   │   │   ├── env.config.ts
-│   │   │   └── multer.config.ts
+│   │   │   ├── env.config.ts   # Environment config
+│   │   │   └── multer.config.ts # File upload config
 │   │   │
-│   │   ├── upload/              # Dosya yükleme servisi
-│   │   ├── migrations/          # Database migration'ları
-│   │   ├── app.module.ts        # Ana modül
-│   │   ├── data-source.ts       # TypeORM config
-│   │   └── main.ts              # Giriş noktası
+│   │   ├── migrations/          # TypeORM migration'ları
+│   │   │   ├── 1765030683564-InitialSchema.ts
+│   │   │   └── 1765216021828-AddCascadeDeleteConstraints.ts
+│   │   │
+│   │   ├── scripts/             # Yardımcı script'ler
+│   │   ├── app.module.ts        # Ana uygulama modülü
+│   │   ├── data-source.ts       # TypeORM DataSource config
+│   │   └── main.ts              # Uygulama giriş noktası
 │   │
 │   ├── uploads/                 # Yüklenen dosyalar
+│   │   └── products/           # Ürün görselleri
 │   ├── package.json
 │   ├── tsconfig.json
-│   └── nest-cli.json
+│   ├── tsconfig.build.json
+│   ├── nest-cli.json
+│   └── README.md
 │
 └── frontend/                    # React Frontend
     ├── src/
-    │   ├── components/          # React komponenti
-    │   │   ├── ui/             # UI komponenti
-    │   │   ├── admin/          # Admin paneli
+    │   ├── components/          # React bileşenleri
+    │   │   ├── ui/             # Genel UI bileşenleri
+    │   │   ├── admin/          # Admin panel bileşenleri
+    │   │   │   ├── Dashboard.tsx
+    │   │   │   ├── AdminUsers.tsx
+    │   │   │   ├── AdminRoles.tsx
+    │   │   │   ├── AdminGames.tsx
+    │   │   │   ├── AdminProducts.tsx
+    │   │   │   └── AdminOrders.tsx
     │   │   ├── Footer.tsx
     │   │   ├── Navbar.tsx
     │   │   ├── ProductCard.tsx
     │   │   ├── LoadingScreen.tsx
-    │   │   └── ProtectedRoute.tsx
+    │   │   ├── ProtectedRoute.tsx
+    │   │   └── index.ts
     │   │
-    │   ├── pages/              # Sayfalar
+    │   ├── pages/              # Sayfa bileşenleri
     │   │   ├── Home.tsx
     │   │   ├── Products.tsx
     │   │   ├── ProductDetail.tsx
@@ -378,54 +405,83 @@ web_proje/
     │   │   ├── Admin.tsx
     │   │   ├── Login.tsx
     │   │   ├── Register.tsx
-    │   │   └── NotFound.tsx
-    │   │
-    │   ├── services/           # API servisleri
-    │   │   ├── auth.service.ts
-    │   │   ├── product.service.ts
-    │   │   ├── order.service.ts
-    │   │   ├── game.service.ts
-    │   │   ├── user.service.ts
-    │   │   ├── axios.ts        # Axios config
+    │   │   ├── NotFound.tsx
     │   │   └── index.ts
     │   │
-    │   ├── hooks/              # Custom React hook'ları
-    │   │   ├── useProducts.ts
-    │   │   ├── useOrders.ts
-    │   │   ├── useGames.ts
-    │   │   ├── useFilter.ts
+    │   ├── services/           # API servis katmanı
+    │   │   ├── axios.ts        # Axios instance ve interceptor'lar
+    │   │   ├── auth.service.ts # Authentication servisi
+    │   │   ├── user.service.ts # User CRUD servisi
+    │   │   ├── product.service.ts # Product CRUD servisi
+    │   │   ├── order.service.ts # Order servisi
+    │   │   ├── game.service.ts # Game servisi
     │   │   └── index.ts
     │   │
-    │   ├── context/            # React Context
-    │   │   ├── AuthContext.tsx
-    │   │   └── CartContext.tsx
-    │   │
-    │   ├── layouts/            # Layout komponenti
-    │   │   ├── MainLayout.tsx
-    │   │   ├── PageContainer.tsx
+    │   ├── hooks/              # Custom React Hook'ları
+    │   │   ├── useProducts.ts  # Ürün yönetimi hook'u
+    │   │   ├── useOrders.ts    # Sipariş yönetimi hook'u
+    │   │   ├── useGames.ts     # Oyun listesi hook'u
+    │   │   ├── useFilter.ts    # Filtreleme hook'u
     │   │   └── index.ts
     │   │
-    │   ├── config/             # Konfigürasyon
-    │   │   ├── constants.ts
+    │   ├── context/            # React Context API
+    │   │   ├── AuthContext.tsx # Kullanıcı auth state
+    │   │   ├── CartContext.tsx # Sepet state yönetimi
+    │   │   └── ThemeContext.tsx # Tema yönetimi
+    │   │
+    │   ├── layouts/            # Layout bileşenleri
+    │   │   ├── MainLayout.tsx  # Ana sayfa layout'u
+    │   │   ├── PageContainer.tsx # Sayfa wrapper
     │   │   └── index.ts
     │   │
-    │   ├── types/              # TypeScript type'ları
+    │   ├── features/           # Feature modülleri
+    │   │   └── products/
+    │   │
+    │   ├── config/             # Frontend konfigürasyonu
+    │   │   ├── constants.ts    # Sabitler (API URL, vs.)
     │   │   └── index.ts
     │   │
-    │   ├── assets/             # Statik dosyalar
-    │   ├── App.tsx
+    │   ├── types/              # TypeScript type tanımları
+    │   │   └── index.ts        # Global type'lar
+    │   │
+    │   ├── assets/             # Statik varlıklar (görseller, vs.)
+    │   ├── App.tsx             # Ana App bileşeni
     │   ├── App.css
-    │   ├── index.css
-    │   └── main.tsx
+    │   ├── index.css           # Global stiller
+    │   └── main.tsx            # React giriş noktası
     │
-    ├── public/                 # Statik public dosyalar
+    ├── public/                 # Public statik dosyalar
     ├── package.json
-    ├── vite.config.ts
-    ├── tailwind.config.js
-    ├── tsconfig.json
-    ├── eslint.config.js
-    └── postcss.config.js
+    ├── vite.config.ts          # Vite yapılandırması
+    ├── tailwind.config.js      # Tailwind CSS config
+    ├── postcss.config.js       # PostCSS config
+    ├── tsconfig.json           # TypeScript config
+    ├── tsconfig.app.json
+    ├── tsconfig.node.json
+    ├── eslint.config.js        # ESLint config
+    ├── index.html              # HTML template
+    └── README.md
+
+├── LICENSE                     # MIT Lisans
+└── README.md                   # Ana README dosyası
 ```
+
+### Backend Modül Yapısı
+
+Her modül MVC benzeri pattern'i takip eder:
+- **Entity**: TypeORM veritabanı modeli
+- **DTO**: Data Transfer Objects (validation ile)
+- **Service**: Business logic
+- **Controller**: HTTP endpoint'ler
+- **Module**: Dependency injection container
+
+### Frontend Mimari
+
+- **Component-Based**: Yeniden kullanılabilir React bileşenleri
+- **Context API**: Global state yönetimi (Auth, Cart, Theme)
+- **Custom Hooks**: İş mantığının ayrıştırılması
+- **Service Layer**: API çağrıları için merkezi servis katmanı
+- **Type-Safe**: TypeScript ile tam tip güvenliği
 
 ## 🔧 Geliştirme
 

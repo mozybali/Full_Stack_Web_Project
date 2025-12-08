@@ -1,6 +1,6 @@
 # 🎮 GamerMarkt Frontend
 
-Modern bir oyun hesabı ve key marketplace frontend uygulaması. React 19, TypeScript, Tailwind CSS, Vite ve React Router ile geliştirilmiştir.
+Modern bir oyun hesabı ve key marketplace frontend uygulaması. React 19, TypeScript, Tailwind CSS ve Vite ile geliştirilmiştir.
 
 ## 📋 İçindekiler
 
@@ -12,6 +12,7 @@ Modern bir oyun hesabı ve key marketplace frontend uygulaması. React 19, TypeS
 - [Proje Yapısı](#-proje-yapısı)
 - [Geliştirme](#-geliştirme)
 - [Build ve Deploy](#-build-ve-deploy)
+- [Kullanılan Kütüphaneler](#-kullanılan-kütüphaneler)
 
 ## ✨ Özellikler
 
@@ -40,15 +41,19 @@ Modern bir oyun hesabı ve key marketplace frontend uygulaması. React 19, TypeS
 
 ### Admin Paneli
 - 📦 Ürün yönetimi (Ekle, Düzenle, Sil)
-- 🎮 Oyun yönetimi
+- 🎮 Oyun kataloğu yönetimi
 - 👥 Kullanıcı yönetimi
-- 📋 Sipariş yönetimi
+- 🎭 Rol yönetimi
+- 📋 Sipariş yönetimi ve durum güncellemeleri
+- 📊 Dashboard ve istatistikler
 
 ### Kullanıcı Arayüzü
 - 📱 Responsive tasarım (Mobil, Tablet, Masaüstü)
-- 🎨 Modern ve kullanıcı dostu interface
+- 🎨 Modern ve kullanıcı dostu arayüz
 - ⚡ Hızlı yükleme (Vite optimize edilmiş)
-- 🌓 Dinamik tema desteği
+- 🌓 Tema desteği (Light/Dark mode)
+- 🔄 Loading state'leri
+- ⚠️ Hata yönetimi ve bildirimleri
 
 ## 🛠 Teknolojiler
 
@@ -95,15 +100,17 @@ npm install
 
 ### 2. Ortam Değişkenlerini Yapılandırın
 
-`.env.local` dosyası oluşturun (Development için):
+`.env.local` dosyası oluşturun:
 
 ```env
-# API
+# API Base URL
 VITE_API_URL=http://localhost:3000
 
-# App
+# App Config
 VITE_APP_NAME=GamerMarkt
 ```
+
+> **Not**: Backend API'nin `http://localhost:3000` adresinde çalışıyor olması gerekir.
 
 ### 3. Geliştirme Sunucusunu Başlatın
 ```bash
@@ -111,8 +118,6 @@ npm run dev
 ```
 
 Uygulama `http://localhost:5173` adresinde çalışacaktır.
-
-### 4. Production Build Oluşturun
 ```bash
 npm run build
 npm run preview
@@ -142,67 +147,100 @@ npm run preview
 ## 📁 Proje Yapısı
 
 ```
-src/
-├── components/                 # React Komponenti
-│   ├── ui/                    # Tekrar kullanılabilir UI komponenti
-│   ├── admin/                 # Admin paneli komponenti
-│   ├── Footer.tsx
-│   ├── Navbar.tsx
-│   ├── ProductCard.tsx
-│   ├── LoadingScreen.tsx
-│   └── ProtectedRoute.tsx
+frontend/
+├── src/
+│   ├── components/                 # React Bileşenleri
+│   │   ├── ui/                    # Genel UI bileşenleri
+│   │   ├── admin/                 # Admin panel bileşenleri
+│   │   │   ├── Dashboard.tsx     # Admin dashboard
+│   │   │   ├── AdminUsers.tsx    # Kullanıcı yönetimi
+│   │   │   ├── AdminRoles.tsx    # Rol yönetimi
+│   │   │   ├── AdminGames.tsx    # Oyun yönetimi
+│   │   │   ├── AdminProducts.tsx # Ürün yönetimi
+│   │   │   └── AdminOrders.tsx   # Sipariş yönetimi
+│   │   ├── Footer.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── ProductCard.tsx
+│   │   ├── LoadingScreen.tsx
+│   │   ├── ProtectedRoute.tsx
+│   │   └── index.ts
+│   │
+│   ├── pages/                     # Sayfa Bileşenleri
+│   │   ├── Home.tsx              # Ana sayfa
+│   │   ├── Products.tsx          # Ürün listesi
+│   │   ├── ProductDetail.tsx     # Ürün detay
+│   │   ├── Cart.tsx              # Sepet
+│   │   ├── Orders.tsx            # Sipariş geçmişi
+│   │   ├── Admin.tsx             # Admin paneli
+│   │   ├── Login.tsx             # Giriş sayfası
+│   │   ├── Register.tsx          # Kayıt sayfası
+│   │   ├── NotFound.tsx          # 404 sayfası
+│   │   └── index.ts
+│   │
+│   ├── services/                  # API Servis Katmanı
+│   │   ├── axios.ts              # Axios instance & interceptor'lar
+│   │   ├── auth.service.ts       # Authentication API
+│   │   ├── user.service.ts       # User CRUD API
+│   │   ├── product.service.ts    # Product CRUD API
+│   │   ├── order.service.ts      # Order API
+│   │   ├── game.service.ts       # Game API
+│   │   └── index.ts
+│   │
+│   ├── hooks/                     # Custom React Hook'ları
+│   │   ├── useProducts.ts        # Ürün yönetimi hook
+│   │   ├── useOrders.ts          # Sipariş yönetimi hook
+│   │   ├── useGames.ts           # Oyun listesi hook
+│   │   ├── useFilter.ts          # Filtreleme hook
+│   │   └── index.ts
+│   │
+│   ├── context/                   # React Context API
+│   │   ├── AuthContext.tsx       # Kullanıcı auth state
+│   │   ├── CartContext.tsx       # Sepet state yönetimi
+│   │   └── ThemeContext.tsx      # Tema yönetimi
+│   │
+│   ├── layouts/                   # Layout Bileşenleri
+│   │   ├── MainLayout.tsx        # Ana layout (navbar + footer)
+│   │   ├── PageContainer.tsx     # Sayfa wrapper
+│   │   └── index.ts
+│   │
+│   ├── features/                  # Feature Modülleri
+│   │   └── products/             # Ürün özel modülleri
+│   │
+│   ├── config/                    # Frontend Konfigürasyonu
+│   │   ├── constants.ts          # Sabitler (API URL, vs.)
+│   │   └── index.ts
+│   │
+│   ├── types/                     # TypeScript Type Tanımları
+│   │   └── index.ts              # Global type'lar (User, Product, Order, vs.)
+│   │
+│   ├── assets/                    # Statik Varlıklar
+│   ├── App.tsx                    # Ana App bileşeni
+│   ├── App.css
+│   ├── index.css                  # Global stiller
+│   └── main.tsx                   # React giriş noktası
 │
-├── pages/                     # Sayfa komponenti
-│   ├── Home.tsx
-│   ├── Products.tsx
-│   ├── ProductDetail.tsx
-│   ├── Cart.tsx
-│   ├── Orders.tsx
-│   ├── Admin.tsx
-│   ├── Login.tsx
-│   ├── Register.tsx
-│   └── NotFound.tsx
-│
-├── services/                  # API servisleri
-│   ├── auth.service.ts       # Authentication API
-│   ├── product.service.ts    # Product API
-│   ├── order.service.ts      # Order API
-│   ├── game.service.ts       # Game API
-│   ├── user.service.ts       # User API
-│   ├── axios.ts              # Axios konfigürasyonu
-│   └── index.ts
-│
-├── hooks/                     # Custom React Hook'ları
-│   ├── useProducts.ts        # Ürün fetch hook'u
-│   ├── useOrders.ts          # Sipariş fetch hook'u
-│   ├── useGames.ts           # Oyun fetch hook'u
-│   ├── useFilter.ts          # Filtreleme hook'u
-│   └── index.ts
-│
-├── context/                   # React Context
-│   ├── AuthContext.tsx       # Kimlik doğrulama context
-│   └── CartContext.tsx       # Sepet context
-│
-├── layouts/                   # Layout Komponenti
-│   ├── MainLayout.tsx
-│   ├── PageContainer.tsx
-│   └── index.ts
-│
-├── config/                    # Yapılandırma
-│   ├── constants.ts          # Sabit değerler
-│   └── index.ts
-│
-├── types/                     # TypeScript Type Tanımları
-│   └── index.ts
-│
-├── assets/                    # Statik Dosyalar
-│   └── (resimler, fontlar, vb.)
-│
-├── App.tsx                   # Ana App Component
-├── App.css                   # App stili
-├── index.css                 # Global stili
-└── main.tsx                  # React DOM mount noktası
+├── public/                         # Public Statik Dosyalar
+├── package.json
+├── vite.config.ts                 # Vite yapılandırması
+├── tailwind.config.js             # Tailwind CSS config
+├── postcss.config.js              # PostCSS config
+├── tsconfig.json                  # TypeScript config (base)
+├── tsconfig.app.json              # TypeScript config (app)
+├── tsconfig.node.json             # TypeScript config (node)
+├── eslint.config.js               # ESLint config
+├── index.html                     # HTML template
+└── README.md
 ```
+
+### Klasör Yapısı Açıklaması
+
+- **components/**: Yeniden kullanılabilir React bileşenleri
+- **pages/**: Route bazlı sayfa bileşenleri
+- **services/**: Backend API ile iletişim katmanı
+- **hooks/**: Custom React Hook'ları (state ve side-effect yönetimi)
+- **context/**: Global state yönetimi (Auth, Cart, Theme)
+- **layouts/**: Sayfa düzenleri (header, footer, container)
+- **types/**: TypeScript type ve interface tanımları
 
 ## 🚀 Geliştirme
 
@@ -302,24 +340,77 @@ Build sonucu `dist/` klasöründe oluşturulur.
 
 ## 🔐 Güvenlik
 
-- ✅ JWT token'lar localStorage'da güvenli şekilde saklanır
-- ✅ Protected routes ile yetkisiz erişim engellenir
-- ✅ CORS policy'si backend tarafından kontrol edilir
-- ✅ Hassas bilgiler (şifre) asla client tarafında saklanmaz
-- ✅ XSS koruması için React built-in sanitization
+### Uygulanan Güvenlik Önlemleri
 
-## 📚 Context API Kullanımı
+- ✅ **JWT Authentication**: Token'lar localStorage'da saklanır
+- ✅ **Protected Routes**: Yetkisiz erişim otomatik olarak engellenir
+- ✅ **CORS Policy**: Backend tarafından yönetilir
+- ✅ **Hassas Bilgi Koruması**: Şifreler client-side'da saklanmaz
+- ✅ **XSS Koruması**: React'ın built-in sanitization'ı
+- ✅ **Input Validation**: Form validasyonları
+- ✅ **Axios Interceptors**: Otomatik token ekleme ve hata yönetimi
+
+### Best Practices
+
+- Token'lar HTTP-only olmayan localStorage'da saklanır (istemci taraflı SPA için)
+- Logout durumunda tüm auth bilgileri temizlenir
+- API isteklerinde otomatik Authorization header eklenir
+- Hatalı isteklerde kullanıcı bilgilendirilir
+
+## 📚 Kullanılan Kütüphaneler
+
+### Core Dependencies
+
+| Kütüphane | Versiyon | Açıklama |
+|-----------|----------|----------|
+| `react` | 19.2.0 | UI framework |
+| `react-dom` | 19.2.0 | DOM rendering |
+| `react-router-dom` | 7.10.1 | Client-side routing |
+| `axios` | 1.13.2 | HTTP client |
+| `react-icons` | 5.5.0 | Icon library |
+
+### Dev Dependencies
+
+| Kütüphane | Versiyon | Açıklama |
+|-----------|----------|----------|
+| `vite` | 7.2.4 | Build tool ve dev server |
+| `typescript` | 5.9.3 | Type system |
+| `tailwindcss` | 3.4.18 | CSS framework |
+| `eslint` | 9.39.1 | Code linting |
+| `@vitejs/plugin-react` | 5.1.1 | React plugin for Vite |
+
+## 🎯 Context API Kullanımı
 
 ### AuthContext
 
 ```typescript
 const { user, login, logout, isAuthenticated } = useContext(AuthContext);
+
+// Kullanıcı giriş durumunu kontrol et
+if (isAuthenticated) {
+  console.log('Kullanıcı:', user.username);
+}
 ```
 
 ### CartContext
 
 ```typescript
-const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
+const { cart, addToCart, removeFromCart, clearCart, totalPrice } = useContext(CartContext);
+
+// Sepete ürün ekle
+addToCart(product);
+
+// Toplam fiyat
+console.log('Toplam:', totalPrice);
+```
+
+### ThemeContext
+
+```typescript
+const { theme, toggleTheme } = useContext(ThemeContext);
+
+// Temayı değiştir
+toggleTheme(); // light <-> dark
 ```
 
 ## 🔗 Backend Bağlantısı
@@ -327,9 +418,20 @@ const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
 Frontend, Backend API'ye şu URL'de bağlanır:
 
 - **Development**: `http://localhost:3000`
-- **Production**: Backend sunucunuzun domain'i
+- **Production**: Environment variable ile belirlenir (`VITE_API_URL`)
 
-API documentation: `http://localhost:3000/api` (Swagger)
+### API Endpoints
+
+Tüm API endpoint'leri için:
+- **Swagger UI**: `http://localhost:3000/api`
+- **API Base URL**: `http://localhost:3000`
+
+### Axios Configuration
+
+Axios instance otomatik olarak:
+- Authorization header'ı ekler (JWT token)
+- Error handling yapar
+- Request/Response interceptor'ları çalıştırır
 
 ---
 
