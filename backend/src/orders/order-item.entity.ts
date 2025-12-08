@@ -17,9 +17,10 @@ export class OrderItem {
   order: Order;
 
   // Sipariş içindeki ürün
-  @ManyToOne(() => Product, { onDelete: 'RESTRICT' })
+  // onDelete: SET NULL - Ürün silinirse sipariş geçmişinde null kalır
+  @ManyToOne(() => Product, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'product_id' })
-  product: Product;
+  product: Product | null;
 
   @Column({ default: 1 })
   quantity: number;
