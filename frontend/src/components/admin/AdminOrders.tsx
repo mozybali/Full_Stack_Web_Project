@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { orderService } from '../../services/order.service';
+import { useToast } from '../ui/ToastContainer';
 import type { Order, OrderStatus } from '../../types';
+import { FaEye } from 'react-icons/fa';
 
 const AdminOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState<OrderStatus | ''>('');
+  const { addToast } = useToast();
 
   useEffect(() => {
     loadOrders();
@@ -24,9 +30,12 @@ const AdminOrders: React.FC = () => {
   const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
     try {
       await orderService.updateStatus(orderId, { status: newStatus });
+      addToast('Sipariş durumu güncellendi', 'success');
       loadOrders();
+      setSelectedOrder(null);
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Durum güncellenemedi');
+      const message = error.response?.data?.message || 'Durum güncellenemedi';
+      addToast(message, 'error');
     }
   };
 
@@ -49,12 +58,49 @@ const AdminOrders: React.FC = () => {
     return <div className="text-center py-8">Yükleniyor...</div>;
   }
 
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearch = order.buyer.username.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filterStatus === '' || order.status === filterStatus;
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Siparişler</h2>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
+      {/* Filtreleme */}
+      <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Alıcı Adı Ara</label>
+            <input
+              type="text"
+              placeholder="Kullanıcı adı..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input-field"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Durum Filtresi</label>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value === '' ? '' : (e.target.value as OrderStatus))}
+              className="input-field"
+            >
+              <option value="">Tüm Durumlar</option>
+              <option value="PENDING">Beklemede</option>
+              <option value="PAID">Ödendi</option>
+              <option value="COMPLETED">Tamamlandı</option>
+              <option value="CANCELLED">İptal</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Siparişler Tablosu */}
+      <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+        <table className="min-w-full">
           <thead className="bg-gray-100">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
@@ -67,7 +113,7 @@ const AdminOrders: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {orders.map((order) => (
+            {filteredOrders.map((order) => (
               <tr key={order.id}>
                 <td className="px-6 py-4">#{order.id}</td>
                 <td className="px-6 py-4">{order.buyer.username}</td>
@@ -82,22 +128,96 @@ const AdminOrders: React.FC = () => {
                   {new Date(order.createdAt).toLocaleDateString('tr-TR')}
                 </td>
                 <td className="px-6 py-4">
-                  <select
-                    value={order.status}
-                    onChange={(e) => handleStatusChange(order.id, e.target.value as OrderStatus)}
-                    className="text-sm border border-gray-300 rounded px-2 py-1"
+                  <button
+                    onClick={() => setSelectedOrder(order)}
+                    className="text-blue-600 hover:text-blue-800 flex items-center gap-2"
                   >
-                    <option value="PENDING">Beklemede</option>
-                    <option value="PAID">Ödendi</option>
-                    <option value="COMPLETED">Tamamlandı</option>
-                    <option value="CANCELLED">İptal</option>
-                  </select>
+                    <FaEye /> Detay
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        {filteredOrders.length === 0 && (
+          <div className="text-center py-8 text-gray-500">Sipariş bulunamadı</div>
+        )}
       </div>
+
+      {/* Sipariş Detayları Modal */}
+      {selectedOrder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h3 className="text-2xl font-bold mb-4">Sipariş #{selectedOrder.id} Detayları</h3>
+            
+            {/* Sipariş Bilgileri */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <p className="text-sm text-gray-500">Alıcı</p>
+                <p className="font-semibold">{selectedOrder.buyer.username}</p>
+                <p className="text-sm text-gray-600">{selectedOrder.buyer.email}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Sipariş Tarihi</p>
+                <p className="font-semibold">{new Date(selectedOrder.createdAt).toLocaleDateString('tr-TR')}</p>
+                <p className="text-sm text-gray-600">{new Date(selectedOrder.createdAt).toLocaleTimeString('tr-TR')}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Toplam Tutar</p>
+                <p className="font-semibold text-lg">₺{selectedOrder.totalPrice.toFixed(2)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Durum</p>
+                <span className={`px-3 py-1 rounded text-sm ${getStatusColor(selectedOrder.status)}`}>
+                  {selectedOrder.status}
+                </span>
+              </div>
+            </div>
+
+            {/* Sipariş Öğeleri */}
+            <div className="mb-6">
+              <h4 className="font-semibold mb-3">Ürünler</h4>
+              <div className="space-y-3">
+                {selectedOrder.items.map((item) => (
+                  <div key={item.id} className="flex justify-between items-start bg-gray-50 p-3 rounded">
+                    <div>
+                      <p className="font-medium">{item.product.title}</p>
+                      <p className="text-sm text-gray-600">{item.product.game.name}</p>
+                      <p className="text-sm text-gray-600">Tip: {item.product.type}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600">Miktar: {item.quantity}</p>
+                      <p className="font-semibold">₺{item.price.toFixed(2)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Durum Güncelleme */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2">Durum Güncelle</label>
+              <select
+                value={selectedOrder.status}
+                onChange={(e) => handleStatusChange(selectedOrder.id, e.target.value as OrderStatus)}
+                className="input-field"
+              >
+                <option value="PENDING">Beklemede</option>
+                <option value="PAID">Ödendi</option>
+                <option value="COMPLETED">Tamamlandı</option>
+                <option value="CANCELLED">İptal</option>
+              </select>
+            </div>
+
+            <button
+              onClick={() => setSelectedOrder(null)}
+              className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 rounded"
+            >
+              Kapat
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

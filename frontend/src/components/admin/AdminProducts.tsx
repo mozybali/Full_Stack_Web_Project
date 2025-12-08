@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { productService } from '../../services/product.service';
 import { gameService } from '../../services/game.service';
+import { useToast } from '../ui/ToastContainer';
 import type { Product, Game, CreateProductDto, ProductType } from '../../types';
-import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus, FaSearch } from 'react-icons/fa';
 
 const AdminProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -10,6 +11,11 @@ const AdminProducts: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterGameId, setFilterGameId] = useState<number | ''>('');
+  const [filterType, setFilterType] = useState<ProductType | ''>('');
+  const { addToast } = useToast();
+  
   const [formData, setFormData] = useState<CreateProductDto>({
     title: '',
     description: '',
@@ -46,15 +52,18 @@ const AdminProducts: React.FC = () => {
       
       if (editingProduct) {
         await productService.update(editingProduct.id, dataToSend);
+        addToast('Ürün başarıyla güncellendi', 'success');
       } else {
         await productService.create(dataToSend);
+        addToast('Ürün başarıyla oluşturuldu', 'success');
       }
       
       setShowModal(false);
       resetForm();
       loadData();
     } catch (error: any) {
-      alert(error.response?.data?.message || 'İşlem başarısız');
+      const message = error.response?.data?.message || 'İşlem başarısız';
+      addToast(message, 'error');
     }
   };
 
@@ -63,9 +72,11 @@ const AdminProducts: React.FC = () => {
     
     try {
       await productService.delete(id);
+      addToast('Ürün başarıyla silindi', 'success');
       loadData();
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Silme başarısız');
+      const message = error.response?.data?.message || 'Silme başarısız';
+      addToast(message, 'error');
     }
   };
 
@@ -103,6 +114,15 @@ const AdminProducts: React.FC = () => {
     return <div className="text-center py-8">Yükleniyor...</div>;
   }
 
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.game.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesGame = filterGameId === '' || product.game.id === filterGameId;
+    const matchesType = filterType === '' || product.type === filterType;
+    return matchesSearch && matchesGame && matchesType;
+  });
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -113,8 +133,60 @@ const AdminProducts: React.FC = () => {
         </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
+      {/* Arama ve Filtreleme */}
+      <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Arama */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Ara (Başlık, Oyun)</label>
+            <div className="flex items-center bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
+              <FaSearch className="text-gray-400 mr-2" />
+              <input
+                type="text"
+                placeholder="Ürün veya oyun adı..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="bg-gray-50 flex-1 outline-none text-sm"
+              />
+            </div>
+          </div>
+
+          {/* Oyun Filtresi */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Oyun Filtresi</label>
+            <select
+              value={filterGameId}
+              onChange={(e) => setFilterGameId(e.target.value === '' ? '' : Number(e.target.value))}
+              className="input-field"
+            >
+              <option value="">Tüm Oyunlar</option>
+              {games.map((game) => (
+                <option key={game.id} value={game.id}>
+                  {game.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Tip Filtresi */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Tip Filtresi</label>
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value === '' ? '' : (e.target.value as ProductType))}
+              className="input-field"
+            >
+              <option value="">Tüm Tipler</option>
+              <option value="KEY">Key</option>
+              <option value="ACCOUNT">Hesap</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Ürünler Tablosu */}
+      <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+        <table className="min-w-full">
           <thead className="bg-gray-100">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Resim</th>
@@ -127,7 +199,7 @@ const AdminProducts: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <tr key={product.id}>
                 <td className="px-6 py-4">
                   <img
@@ -159,6 +231,9 @@ const AdminProducts: React.FC = () => {
             ))}
           </tbody>
         </table>
+        {filteredProducts.length === 0 && (
+          <div className="text-center py-8 text-gray-500">Ürün bulunamadı</div>
+        )}
       </div>
 
       {/* Modal */}

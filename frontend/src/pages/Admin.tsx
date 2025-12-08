@@ -1,27 +1,31 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { RoleNames } from '../types';
-import { FaBox, FaGamepad, FaUsers, FaShoppingBag } from 'react-icons/fa';
+import { FaBox, FaGamepad, FaUsers, FaShoppingBag, FaTachometerAlt, FaShieldAlt } from 'react-icons/fa';
 
 // Admin panelinin alt bileşenleri
+import Dashboard from '../components/admin/Dashboard';
 import AdminProducts from '../components/admin/AdminProducts.tsx';
 import AdminGames from '../components/admin/AdminGames.tsx';
 import AdminOrders from '../components/admin/AdminOrders.tsx';
 import AdminUsers from '../components/admin/AdminUsers.tsx';
+import AdminRoles from '../components/admin/AdminRoles.tsx';
 
-type TabType = 'products' | 'games' | 'orders' | 'users';
+type TabType = 'dashboard' | 'products' | 'games' | 'orders' | 'users' | 'roles';
 
 const Admin: React.FC = () => {
   const { hasRole } = useAuth();
-  const [activeTab, setActiveTab] = useState<TabType>('products');
+  const [activeTab, setActiveTab] = useState<TabType>('dashboard');
 
   const isAdmin = hasRole(RoleNames.ADMIN);
 
   const tabs = [
+    { id: 'dashboard' as TabType, label: 'Dashboard', icon: FaTachometerAlt, adminOnly: false },
     { id: 'products' as TabType, label: 'Ürünler', icon: FaShoppingBag, adminOnly: false },
     { id: 'games' as TabType, label: 'Oyunlar', icon: FaGamepad, adminOnly: true },
     { id: 'orders' as TabType, label: 'Siparişler', icon: FaBox, adminOnly: true },
     { id: 'users' as TabType, label: 'Kullanıcılar', icon: FaUsers, adminOnly: true },
+    { id: 'roles' as TabType, label: 'Roller', icon: FaShieldAlt, adminOnly: true },
   ].filter(tab => !tab.adminOnly || isAdmin);
 
   return (
@@ -56,10 +60,12 @@ const Admin: React.FC = () => {
           </div>
 
           <div className="p-6">
+            {activeTab === 'dashboard' && <Dashboard />}
             {activeTab === 'products' && <AdminProducts />}
             {activeTab === 'games' && isAdmin && <AdminGames />}
             {activeTab === 'orders' && isAdmin && <AdminOrders />}
             {activeTab === 'users' && isAdmin && <AdminUsers />}
+            {activeTab === 'roles' && isAdmin && <AdminRoles />}
           </div>
         </div>
       </div>

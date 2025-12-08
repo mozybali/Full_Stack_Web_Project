@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { gameService } from '../../services/game.service';
+import { useToast } from '../ui/ToastContainer';
 import type { Game, CreateGameDto } from '../../types';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 
@@ -8,6 +9,8 @@ const AdminGames: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const { addToast } = useToast();
   const [formData, setFormData] = useState<CreateGameDto>({
     name: '',
     platform: '',
@@ -34,15 +37,18 @@ const AdminGames: React.FC = () => {
     try {
       if (editingGame) {
         await gameService.update(editingGame.id, formData);
+        addToast('Oyun başarıyla güncellendi', 'success');
       } else {
         await gameService.create(formData);
+        addToast('Oyun başarıyla oluşturuldu', 'success');
       }
       
       setShowModal(false);
       resetForm();
       loadGames();
     } catch (error: any) {
-      alert(error.response?.data?.message || 'İşlem başarısız');
+      const message = error.response?.data?.message || 'İşlem başarısız';
+      addToast(message, 'error');
     }
   };
 
@@ -51,9 +57,11 @@ const AdminGames: React.FC = () => {
     
     try {
       await gameService.delete(id);
+      addToast('Oyun başarıyla silindi', 'success');
       loadGames();
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Silme başarısız');
+      const message = error.response?.data?.message || 'Silme başarısız';
+      addToast(message, 'error');
     }
   };
 
@@ -84,6 +92,11 @@ const AdminGames: React.FC = () => {
     return <div className="text-center py-8">Yükleniyor...</div>;
   }
 
+  const filteredGames = games.filter((game) =>
+    game.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    game.platform.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -94,8 +107,19 @@ const AdminGames: React.FC = () => {
         </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
+      {/* Arama */}
+      <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <input
+          type="text"
+          placeholder="Oyun adı veya platform ara..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="input-field w-full md:w-96"
+        />
+      </div>
+
+      <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+        <table className="min-w-full">
           <thead className="bg-gray-100">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
@@ -106,7 +130,7 @@ const AdminGames: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {games.map((game) => (
+            {filteredGames.map((game) => (
               <tr key={game.id}>
                 <td className="px-6 py-4">{game.id}</td>
                 <td className="px-6 py-4 font-semibold">{game.name}</td>
@@ -126,6 +150,9 @@ const AdminGames: React.FC = () => {
             ))}
           </tbody>
         </table>
+        {filteredGames.length === 0 && (
+          <div className="text-center py-8 text-gray-500">Oyun bulunamadı</div>
+        )}
       </div>
 
       {/* Modal */}

@@ -15,6 +15,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { ToastProvider } from './components/ui/ToastContainer';
 import { MainLayout } from './layouts';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingScreen from './components/LoadingScreen';
@@ -85,7 +86,9 @@ function App() {
     <Router>
       <AuthProvider>
         <CartProvider>
-          <AppContent />
+          <ToastProvider>
+            <AppContent />
+          </ToastProvider>
         </CartProvider>
       </AuthProvider>
     </Router>
