@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, ParseIntPipe, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { GamesService } from './games.service';
 import { CreateGameDto, UpdateGameDto } from './dto/create-game.dto';
@@ -6,9 +6,11 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RoleNames } from '../common/enums/role-names.enum';
+import { TransformInterceptor } from '../common/interceptors/transform.interceptor';
 
 // Oyun kataloğu yönetimi ile ilgili tüm endpoint'ler
 @ApiTags('Oyunlar')
+@UseInterceptors(TransformInterceptor)
 @Controller('games')
 export class GamesController {
   constructor(private readonly gamesService: GamesService) {}

@@ -35,7 +35,12 @@ const Products: React.FC = () => {
 
   // Tüm filtreleri uygula (memoized)
   const filteredProducts = useMemo(() => {
+    if (!activeProducts?.length) return [];
+    
     return activeProducts.filter(product => {
+      // Güvenlik kontrolü
+      if (!product?.game?.name || !product?.title) return false;
+      
       // 1. Metin araması kontrolü
       const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.game.name.toLowerCase().includes(searchTerm.toLowerCase());

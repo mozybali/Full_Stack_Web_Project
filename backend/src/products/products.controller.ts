@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request, ParseIntPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request, ParseIntPipe, UseInterceptors, UploadedFile, ClassSerializerInterceptor } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
@@ -8,9 +8,11 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RoleNames } from '../common/enums/role-names.enum';
 import { multerMemoryOptions } from '../config/multer.config';
+import { TransformInterceptor } from '../common/interceptors/transform.interceptor';
 
 // Ürün yönetimi ile ilgili tüm endpoint'ler
 @ApiTags('Ürünler')
+@UseInterceptors(TransformInterceptor)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

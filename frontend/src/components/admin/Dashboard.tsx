@@ -137,7 +137,7 @@ const Dashboard: React.FC = () => {
                     <p className="text-sm text-gray-600">{order.buyer.username}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">₺{order.totalPrice.toFixed(2)}</p>
+                    <p className="font-semibold">₺{Number(order.totalPrice).toFixed(2)}</p>
                     <span
                       className={`text-xs px-2 py-1 rounded ${
                         order.status === 'COMPLETED'
@@ -170,7 +170,7 @@ const Dashboard: React.FC = () => {
                     <p className="text-sm text-gray-600">{product.game.name}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">₺{product.price.toFixed(2)}</p>
+                    <p className="font-semibold">₺{Number(product.price).toFixed(2)}</p>
                     <p className="text-xs text-gray-600">Stok: {product.stock}</p>
                   </div>
                 </div>

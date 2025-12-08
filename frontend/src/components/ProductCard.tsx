@@ -32,22 +32,21 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  // Sepet fonksiyonunu context'ten al
   const { addToCart } = useCart();
 
-  /**
-   * Sepete ekleme işlemini yönet
-   * Link tıklamasını engelle ve sepete ekle
-   */
+  // Product validasyonu
+  if (!product || !product.game) {
+    return null;
+  }
+
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Link'e tıklamayı engelle
+    e.preventDefault();
     addToCart(product);
   };
 
-  // Ürün görselinin tam URL'ini oluştur
   const imageUrl = product.imageUrl 
     ? `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.imageUrl}`
-    : 'https://via.placeholder.com/300x200?text=No+Image'; // Varsayılan görsel
+    : 'https://via.placeholder.com/300x200?text=No+Image';
 
   return (
     <div className="card">
@@ -89,7 +88,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="flex items-center justify-between mt-4">
             <div>
               <span className="text-2xl font-bold text-primary-600">
-                ₺{product.price.toFixed(2)}
+                ₺{Number(product.price).toFixed(2)}
               </span>
               <p className="text-xs text-gray-500">Stok: {product.stock}</p>
             </div>

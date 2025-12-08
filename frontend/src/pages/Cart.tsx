@@ -163,7 +163,7 @@ const Cart: React.FC = () => {
                     {/* Satır Toplam Fiyatı */}
                     <div className="w-24 text-right">
                       <p className="text-lg font-bold text-primary-600">
-                        ₺{(item.product.price * item.quantity).toFixed(2)}
+                        ₺{(Number(item.product.price) * item.quantity).toFixed(2)}
                       </p>
                     </div>
 

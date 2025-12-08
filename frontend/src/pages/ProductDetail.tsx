@@ -122,7 +122,7 @@ const ProductDetail: React.FC = () => {
               <div className="border-t pt-6">
                 <div className="mb-4">
                   <span className="text-4xl font-bold text-primary-600">
-                    ₺{product.price.toFixed(2)}
+                    ₺{Number(product.price).toFixed(2)}
                   </span>
                 </div>
 

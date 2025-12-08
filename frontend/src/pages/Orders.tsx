@@ -187,7 +187,7 @@ const Orders: React.FC = () => {
                       </div>
                       {/* Sağ Taraf: Fiyat Bilgisi */}
                       <div className="text-right">
-                        <p className="font-bold text-primary-600">₺{item.price.toFixed(2)}</p>
+                        <p className="font-bold text-primary-600">₺{Number(item.price).toFixed(2)}</p>
                         <p className="text-sm text-gray-500">
                           Birim: ₺{(item.price / item.quantity).toFixed(2)}
                         </p>
@@ -201,7 +201,7 @@ const Orders: React.FC = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-semibold text-gray-900">Toplam Tutar</span>
                     <span className="text-2xl font-bold text-primary-600">
-                      ₺{order.totalPrice.toFixed(2)}
+                      ₺{Number(order.totalPrice).toFixed(2)}
                     </span>
                   </div>
                 </div>

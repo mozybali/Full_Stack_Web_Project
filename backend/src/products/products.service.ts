@@ -23,10 +23,24 @@ export class ProductsService {
    * Tüm ürünleri getir
    * @returns Ürünler listesi
    */
-  findAll() {
-    return this.productsRepo.find({
-      relations: ['seller', 'game'],
-    });
+  async findAll() {
+    const products = await this.productsRepo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.game', 'game')
+      .leftJoinAndSelect('product.seller', 'seller')
+      .leftJoinAndSelect('seller.roles', 'roles')
+      .select([
+        'product',
+        'game',
+        'seller.id',
+        'seller.username',
+        'seller.email',
+        'roles.id',
+        'roles.name',
+      ])
+      .getMany();
+    
+    return products;
   }
 
   /**
@@ -34,11 +48,25 @@ export class ProductsService {
    * @param id - Ürün ID'si
    * @returns Ürün detayları
    */
-  findOne(id: number) {
-    return this.productsRepo.findOne({
-      where: { id },
-      relations: ['seller', 'game'],
-    });
+  async findOne(id: number) {
+    const product = await this.productsRepo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.game', 'game')
+      .leftJoinAndSelect('product.seller', 'seller')
+      .leftJoinAndSelect('seller.roles', 'roles')
+      .select([
+        'product',
+        'game',
+        'seller.id',
+        'seller.username',
+        'seller.email',
+        'roles.id',
+        'roles.name',
+      ])
+      .where('product.id = :id', { id })
+      .getOne();
+    
+    return product;
   }
 
   /**

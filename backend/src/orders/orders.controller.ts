@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, Req, UseGuards, ParseIntPipe, Query, DefaultValuePipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Req, UseGuards, ParseIntPipe, Query, DefaultValuePipe, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto, UpdateOrderDto } from './dto/create-order.dto';
@@ -6,10 +6,12 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RoleNames } from '../common/enums/role-names.enum';
+import { TransformInterceptor } from '../common/interceptors/transform.interceptor';
 
 // Sipariş yönetimi ile ilgili tüm endpoint'ler
 @ApiTags('Siparişler')
 @ApiBearerAuth('JWT')
+@UseInterceptors(TransformInterceptor)
 @Controller('orders')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class OrdersController {

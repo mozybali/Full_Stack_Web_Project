@@ -1,18 +1,11 @@
 /**
  * Ana Uygulama Component'i
- * 
- * Tüm uygulamanın giriş noktası.
- * Router, Context Provider'lar ve Layout yapılandırması burada yapılır.
- * 
- * Yapı:
- * - Router: URL yönetimi için React Router
- * - AuthProvider: Kimlik doğrulama context'i
- * - CartProvider: Sepet yönetimi context'i
- * - MainLayout: Navbar ve Footer wrapper
- * - Routes: Tüm sayfa route'ları
+ *
+ * Uygulamanın giriş noktası - Router, Provider'lar ve Route yapılandırması.
  */
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ToastProvider } from './components/ui/ToastContainer';
@@ -20,8 +13,9 @@ import { MainLayout } from './layouts';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingScreen from './components/LoadingScreen';
 import { ROUTES } from './config';
+import { RoleNames } from './types';
 
-// Sayfa Component'leri
+// Sayfa Imports
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -32,55 +26,59 @@ import Orders from './pages/Orders';
 import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 
-import { RoleNames } from './types';
-import { useAuth } from './context/AuthContext';
-
+/**
+ * AppContent - İç content yapısı
+ */
 function AppContent() {
   const { isLoading } = useAuth();
 
-  // Auth yüklenirken loading ekranı göster
   if (isLoading) {
-    return <LoadingScreen message="Oturum açılıyor..." />;
+    return <LoadingScreen message="Yükleniyor..." />;
   }
 
   return (
     <MainLayout>
       <Routes>
-              {/* Genel erişilebilir sayfalar */}
-              <Route path={ROUTES.HOME} element={<Home />} />
-              <Route path={ROUTES.LOGIN} element={<Login />} />
-              <Route path={ROUTES.REGISTER} element={<Register />} />
-              <Route path={ROUTES.PRODUCTS} element={<Products />} />
-              <Route path="/products/:id" element={<ProductDetail />} />
-              <Route path={ROUTES.CART} element={<Cart />} />
-              
-              {/* Korumalı sayfa - Sadece giriş yapmış kullanıcılar */}
-              <Route
-                path={ROUTES.ORDERS}
-                element={
-                  <ProtectedRoute>
-                    <Orders />
-                  </ProtectedRoute>
-                }
-              />
-              
-              {/* Korumalı sayfa - Sadece ADMIN veya SELLER rolüne sahip kullanıcılar */}
-              <Route
-                path={ROUTES.ADMIN}
-                element={
-                  <ProtectedRoute requireRole={[RoleNames.ADMIN, RoleNames.SELLER]}>
-                    <Admin />
-                  </ProtectedRoute>
-                }
-              />
-              
-              {/* 404 - Bulunamadı sayfası */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </MainLayout>
+        {/* Herkese Açık Routes */}
+        <Route path={ROUTES.HOME} element={<Home />} />
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.REGISTER} element={<Register />} />
+        <Route path={ROUTES.PRODUCTS} element={<Products />} />
+        <Route path={`${ROUTES.PRODUCTS}/:id`} element={<ProductDetail />} />
+        <Route path={ROUTES.CART} element={<Cart />} />
+
+        {/* Giriş Yapan Kullanıcılar İçin */}
+        <Route
+          path={ROUTES.ORDERS}
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin/Seller Routes */}
+        <Route
+          path={ROUTES.ADMIN}
+          element={
+            <ProtectedRoute
+              requireRole={[RoleNames.ADMIN, RoleNames.SELLER]}
+            >
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </MainLayout>
   );
 }
 
+/**
+ * App - Root Component
+ */
 function App() {
   return (
     <Router>

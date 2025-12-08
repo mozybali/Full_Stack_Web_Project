@@ -215,7 +215,7 @@ const AdminProducts: React.FC = () => {
                     {product.type}
                   </span>
                 </td>
-                <td className="px-6 py-4">₺{product.price.toFixed(2)}</td>
+                <td className="px-6 py-4">₺{Number(product.price).toFixed(2)}</td>
                 <td className="px-6 py-4">{product.stock}</td>
                 <td className="px-6 py-4">
                   <div className="flex space-x-2">

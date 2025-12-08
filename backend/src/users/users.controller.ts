@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete, UseGuards, Body, Put, Req, ParseIntPipe, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Param, Delete, UseGuards, Body, Put, Req, ParseIntPipe, ForbiddenException, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -7,10 +7,12 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserRolesDto } from './dto/update-user-roles.dto';
 import { RoleNames } from '../common/enums/role-names.enum';
+import { TransformInterceptor } from '../common/interceptors/transform.interceptor';
 
 // Kullanıcı yönetimi ile ilgili tüm endpoint'ler
 @ApiTags('Kullanıcılar')
 @ApiBearerAuth('JWT')
+@UseInterceptors(TransformInterceptor)
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {

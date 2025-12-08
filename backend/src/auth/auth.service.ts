@@ -103,7 +103,7 @@ export class AuthService {
    * @param user - Kullanıcı nesnesi
    * @returns JWT token ve kullanıcı bilgileri
    */
-  private buildToken(user: User) {
+  private buildToken(user: User): { access_token: string; user: Partial<User> } {
     // JWT payload'ı (kullanıcı ID'si ve rolleri)
     const payload: JwtPayload = { 
       sub: user.id, 
@@ -111,12 +111,14 @@ export class AuthService {
     };
     
     return {
-      accessToken: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload),
       user: {
         id: user.id,
         email: user.email,
         username: user.username,
-        roles: user.roles.map((r) => r.name),
+        roles: user.roles,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
     };
   }

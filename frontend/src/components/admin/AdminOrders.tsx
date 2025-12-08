@@ -118,7 +118,7 @@ const AdminOrders: React.FC = () => {
                 <td className="px-6 py-4">#{order.id}</td>
                 <td className="px-6 py-4">{order.buyer.username}</td>
                 <td className="px-6 py-4">{order.items.length} ürün</td>
-                <td className="px-6 py-4 font-semibold">₺{order.totalPrice.toFixed(2)}</td>
+                <td className="px-6 py-4 font-semibold">₺{Number(order.totalPrice).toFixed(2)}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded text-xs ${getStatusColor(order.status)}`}>
                     {order.status}
@@ -164,7 +164,7 @@ const AdminOrders: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Toplam Tutar</p>
-                <p className="font-semibold text-lg">₺{selectedOrder.totalPrice.toFixed(2)}</p>
+                <p className="font-semibold text-lg">₺{Number(selectedOrder.totalPrice).toFixed(2)}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Durum</p>
@@ -187,7 +187,7 @@ const AdminOrders: React.FC = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-600">Miktar: {item.quantity}</p>
-                      <p className="font-semibold">₺{item.price.toFixed(2)}</p>
+                      <p className="font-semibold">₺{Number(item.price).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}

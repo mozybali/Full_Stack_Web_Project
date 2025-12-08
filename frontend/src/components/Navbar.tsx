@@ -1,18 +1,11 @@
 /**
  * Navbar Component
- * 
+ *
  * Uygulamanın üst navigasyon çubuğu.
- * 
- * Özellikler:
- * - Logo ve ana navigasyon linkleri
- * - Kullanıcı durumuna göre dinamik menü (giriş yapmış/yapmamış)
- * - Sepet ikonu ve ürün sayısı
- * - Admin paneli erişimi (SELLER rolü için)
+ * - Dinamik kullanıcı menüsü
+ * - Sepet yönetimi
+ * - Rol bazlı erişim (Admin/Seller)
  * - Responsive tasarım
- * 
- * Kullanılan Context'ler:
- * - useAuth: Kullanıcı bilgisi ve yetkilendirme
- * - useCart: Sepet bilgisi
  */
 
 import React from 'react';
@@ -21,77 +14,109 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { FaShoppingCart, FaUser, FaSignOutAlt, FaHome, FaGamepad, FaShoppingBag, FaCog } from 'react-icons/fa';
 import { RoleNames } from '../types';
+import { ROUTES } from '../config';
 
 const Navbar: React.FC = () => {
-  // Auth context'ten kullanıcı bilgisi ve fonksiyonları al
   const { user, isAuthenticated, logout, hasRole } = useAuth();
-  // Cart context'ten sepet bilgilerini al
   const { getTotalItems } = useCart();
+  const cartItems = getTotalItems();
 
   return (
-    <nav className="bg-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+    <nav className="bg-white shadow-lg sticky top-0 z-50">
+      <div className="container-custom">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo ve Sol Menü */}
           <div className="flex items-center space-x-8">
-            <Link to="/" className="flex items-center space-x-2 text-2xl font-bold text-primary-600">
-              <FaGamepad />
+            <Link
+              to={ROUTES.HOME}
+              className="flex items-center space-x-2 text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors"
+            >
+              <FaGamepad className="text-3xl" />
               <span>GamerMarkt</span>
             </Link>
-            
-            <div className="hidden md:flex space-x-4">
-              <Link to="/" className="flex items-center space-x-1 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary-600 transition-colors">
+
+            {/* Desktop Navigasyon */}
+            <div className="hidden md:flex items-center space-x-1">
+              <Link
+                to={ROUTES.HOME}
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all"
+              >
                 <FaHome />
                 <span>Ana Sayfa</span>
               </Link>
-              <Link to="/products" className="flex items-center space-x-1 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary-600 transition-colors">
+              <Link
+                to={ROUTES.PRODUCTS}
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all"
+              >
                 <FaShoppingBag />
                 <span>Ürünler</span>
               </Link>
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          {/* Sağ Menü */}
+          <div className="flex items-center space-x-3">
             {isAuthenticated ? (
               <>
-                <Link to="/cart" className="relative p-2 text-gray-700 hover:text-primary-600 transition-colors">
-                  <FaShoppingCart size={24} />
-                  {getTotalItems() > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {getTotalItems()}
+                {/* Sepet */}
+                <Link
+                  to={ROUTES.CART}
+                  className="relative p-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+                >
+                  <FaShoppingCart className="text-2xl" />
+                  {cartItems > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex-center animate-scale-in">
+                      {cartItems}
                     </span>
                   )}
                 </Link>
 
-                <Link to="/orders" className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary-600 transition-colors">
+                {/* Siparişlerim */}
+                <Link
+                  to={ROUTES.ORDERS}
+                  className="hidden sm:block px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all font-medium"
+                >
                   Siparişlerim
                 </Link>
 
+                {/* Admin/Seller Paneli */}
                 {(hasRole(RoleNames.ADMIN) || hasRole(RoleNames.SELLER)) && (
-                  <Link to="/admin" className="flex items-center space-x-1 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary-600 transition-colors">
+                  <Link
+                    to={ROUTES.ADMIN}
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all font-medium"
+                  >
                     <FaCog />
-                    <span>Yönetim</span>
+                    <span className="hidden lg:block">Yönetim</span>
                   </Link>
                 )}
 
-                <div className="flex items-center space-x-2 px-3 py-2 rounded-md bg-gray-100">
-                  <FaUser />
-                  <span className="text-sm font-medium">{user?.username}</span>
+                {/* Kullanıcı Bilgisi */}
+                <div className="hidden md:flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-100 text-gray-800">
+                  <FaUser className="text-primary-600" />
+                  <span className="text-sm font-semibold">{user?.username}</span>
                 </div>
 
+                {/* Çıkış Butonu */}
                 <button
                   onClick={logout}
-                  className="flex items-center space-x-1 px-3 py-2 rounded-md text-white bg-red-500 hover:bg-red-600 transition-colors"
+                  className="btn-danger flex items-center space-x-2"
+                  aria-label="Çıkış Yap"
                 >
                   <FaSignOutAlt />
-                  <span>Çıkış</span>
+                  <span className="hidden sm:block">Çıkış</span>
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" className="px-4 py-2 rounded-md text-gray-700 hover:bg-gray-100 transition-colors">
+                {/* Giriş Yap */}
+                <Link
+                  to={ROUTES.LOGIN}
+                  className="px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-all font-medium"
+                >
                   Giriş Yap
                 </Link>
-                <Link to="/register" className="btn-primary">
+                {/* Kayıt Ol */}
+                <Link to={ROUTES.REGISTER} className="btn-primary">
                   Kayıt Ol
                 </Link>
               </>

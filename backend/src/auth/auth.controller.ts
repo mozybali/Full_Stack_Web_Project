@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -9,9 +9,11 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RoleNames } from '../common/enums/role-names.enum';
+import { TransformInterceptor } from '../common/interceptors/transform.interceptor';
 
 // Kimlik doğrulama ile ilgili tüm endpoint'ler
 @ApiTags('Kimlik Doğrulama')
+@UseInterceptors(TransformInterceptor)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
