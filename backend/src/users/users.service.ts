@@ -46,7 +46,9 @@ export class UsersService {
    * @returns Tüm kullanıcıların listesi
    */
   findAll() {
-    return this.usersRepo.find();
+    return this.usersRepo.find({
+      relations: ['roles']
+    });
   }
 
   /**
@@ -56,7 +58,10 @@ export class UsersService {
    * @returns Kullanıcı nesnesi veya null (bulunamazsa)
    */
   findByEmail(email: string) {
-    return this.usersRepo.findOne({ where: { email } });
+    return this.usersRepo.findOne({ 
+      where: { email },
+      relations: ['roles']
+    });
   }
 
   /**
@@ -66,7 +71,10 @@ export class UsersService {
    * @returns Kullanıcı nesnesi veya null (bulunamazsa)
    */
   findByUsername(username: string) {
-    return this.usersRepo.findOne({ where: { username } });
+    return this.usersRepo.findOne({ 
+      where: { username },
+      relations: ['roles']
+    });
   }
 
   /**
@@ -76,7 +84,10 @@ export class UsersService {
    * @returns Kullanıcı nesnesi veya null (bulunamazsa)
    */
   findOne(id: number) {
-    return this.usersRepo.findOne({ where: { id } });
+    return this.usersRepo.findOne({ 
+      where: { id },
+      relations: ['roles']
+    });
   }
 
   /**
