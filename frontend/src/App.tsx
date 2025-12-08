@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './components/ui/ToastContainer';
 import { MainLayout } from './layouts';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -82,13 +83,15 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <CartProvider>
-          <ToastProvider>
-            <AppContent />
-          </ToastProvider>
-        </CartProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <CartProvider>
+            <ToastProvider>
+              <AppContent />
+            </ToastProvider>
+          </CartProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }

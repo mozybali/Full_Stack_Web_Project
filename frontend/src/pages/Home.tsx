@@ -38,9 +38,9 @@ const Home: React.FC = () => {
   const featuredProducts = filteredProducts.slice(0, 8);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 text-white py-24">
+      <section className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 dark:from-primary-700 dark:via-primary-800 dark:to-primary-900 text-white py-24">
         <div className="container-custom">
           <div className="text-center">
             <h1 className="text-6xl font-bold mb-6 animate-fade-in">
@@ -58,7 +58,7 @@ const Home: React.FC = () => {
                   placeholder="Oyun ara..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-6 py-4 rounded-lg text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-white/50 shadow-xl transition-all"
+                  className="w-full px-6 py-4 rounded-lg text-gray-900 dark:text-gray-100 dark:bg-gray-800 text-lg focus:outline-none focus:ring-4 focus:ring-white/50 dark:focus:ring-primary-400/50 shadow-xl transition-all"
                 />
                 <FaSearch className="absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
               </div>
@@ -68,12 +68,12 @@ const Home: React.FC = () => {
       </section>
 
       {/* Ürünler Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-800">
         <div className="container-custom">
           <div className="flex justify-between items-center mb-12">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900">Öne Çıkan Ürünler</h2>
-              <p className="text-gray-600 mt-2">En popüler oyun hesapları ve key'ler</p>
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Öne Çıkan Ürünler</h2>
+              <p className="text-gray-600 dark:text-gray-400 mt-2">En popüler oyun hesapları ve key'ler</p>
             </div>
             <Link
               to={ROUTES.PRODUCTS}
@@ -85,9 +85,9 @@ const Home: React.FC = () => {
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-8 rounded">
-              <p className="text-red-700 font-medium">Hata</p>
-              <p className="text-red-600 text-sm">{error}</p>
+            <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-400 p-4 mb-8 rounded">
+              <p className="text-red-700 dark:text-red-400 font-medium">Hata</p>
+              <p className="text-red-600 dark:text-red-300 text-sm">{error}</p>
             </div>
           )}
 
@@ -101,9 +101,9 @@ const Home: React.FC = () => {
       </section>
 
       {/* Neden Bizi Seçmelisiniz */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
         <div className="container-custom">
-          <h2 className="text-4xl font-bold text-center mb-16 text-gray-900">
+          <h2 className="text-4xl font-bold text-center mb-16 text-gray-900 dark:text-gray-100">
             Neden GamerMarkt?
           </h2>
 
@@ -111,14 +111,14 @@ const Home: React.FC = () => {
             {/* Feature 1 */}
             <div className="card p-8 text-center hover:shadow-xl transition-shadow">
               <div className="flex justify-center mb-6">
-                <div className="bg-blue-100 p-4 rounded-full">
-                  <FaShieldAlt className="text-3xl text-blue-600" />
+                <div className="bg-blue-100 dark:bg-blue-900/30 p-4 rounded-full">
+                  <FaShieldAlt className="text-3xl text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
                 Güvenli Alışveriş
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Tüm işlemleriniz SSL şifrelemesi ile korunmaktadır
               </p>
             </div>
@@ -126,14 +126,14 @@ const Home: React.FC = () => {
             {/* Feature 2 */}
             <div className="card p-8 text-center hover:shadow-xl transition-shadow">
               <div className="flex justify-center mb-6">
-                <div className="bg-green-100 p-4 rounded-full">
-                  <FaRocket className="text-3xl text-green-600" />
+                <div className="bg-green-100 dark:bg-green-900/30 p-4 rounded-full">
+                  <FaRocket className="text-3xl text-green-600 dark:text-green-400" />
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
                 Hızlı Teslimat
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Ürünleriniz ödemenin ardından anında teslim edilir
               </p>
             </div>
@@ -141,14 +141,14 @@ const Home: React.FC = () => {
             {/* Feature 3 */}
             <div className="card p-8 text-center hover:shadow-xl transition-shadow">
               <div className="flex justify-center mb-6">
-                <div className="bg-yellow-100 p-4 rounded-full">
-                  <FaCheckCircle className="text-3xl text-yellow-600" />
+                <div className="bg-yellow-100 dark:bg-yellow-900/30 p-4 rounded-full">
+                  <FaCheckCircle className="text-3xl text-yellow-600 dark:text-yellow-400" />
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
                 %100 Garantili
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Tüm ürünlerimiz kapsamlı şekilde test edilmiştir
               </p>
             </div>
