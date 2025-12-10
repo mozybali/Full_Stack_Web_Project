@@ -42,6 +42,14 @@ tmp/
 .env
 .env.local
 .env.*.local
+# Backend env files
+backend/.env
+backend/.env.local
+backend/.env.*
+# Frontend env files
+frontend/.env
+frontend/.env.local
+frontend/.env.*
 
 # Uploads
 uploads/
