@@ -4,7 +4,6 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class', // Dark mode için class stratejisi kullan
   theme: {
     extend: {
       colors: {
@@ -23,5 +22,4 @@ export default {
       },
     },
   },
-  plugins: [],
 }

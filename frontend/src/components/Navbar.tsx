@@ -24,14 +24,14 @@ const Navbar: React.FC = () => {
   const cartItems = getTotalItems();
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50 transition-colors">
+    <nav className="bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-50 transition-colors">
       <div className="container-custom">
         <div className="flex justify-between items-center h-16">
           {/* Logo ve Sol Menü */}
           <div className="flex items-center space-x-8">
             <Link
               to={ROUTES.HOME}
-              className="flex items-center space-x-2 text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+              className="flex items-center space-x-2 text-2xl font-bold text-primary-600 dark:text-primary-300 hover:text-primary-700 dark:hover:text-primary-200 transition-colors"
             >
               <FaGamepad className="text-3xl" />
               <span>GamerMarkt</span>
@@ -41,14 +41,14 @@ const Navbar: React.FC = () => {
             <div className="hidden md:flex items-center space-x-1">
               <Link
                 to={ROUTES.HOME}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-all"
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-900 dark:text-gray-50 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-300 transition-all"
               >
                 <FaHome />
                 <span>Ana Sayfa</span>
               </Link>
               <Link
                 to={ROUTES.PRODUCTS}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-all"
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-900 dark:text-gray-50 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-300 transition-all"
               >
                 <FaShoppingBag />
                 <span>Ürünler</span>
@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
             {/* Tema Toggle Butonu */}
             <button
               onClick={toggleTheme}
-              className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-gray-700 rounded-lg transition-all"
+              className="p-2 text-gray-900 dark:text-gray-50 hover:text-primary-600 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-gray-800 rounded-lg transition-all"
               aria-label="Tema Değiştir"
             >
               {theme === 'light' ? <FaMoon className="text-xl" /> : <FaSun className="text-xl" />}
@@ -72,7 +72,7 @@ const Navbar: React.FC = () => {
                 {/* Sepet */}
                 <Link
                   to={ROUTES.CART}
-                  className="relative p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-gray-700 rounded-lg transition-all"
+                  className="relative p-2 text-gray-900 dark:text-gray-50 hover:text-primary-600 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-gray-800 rounded-lg transition-all"
                 >
                   <FaShoppingCart className="text-2xl" />
                   {cartItems > 0 && (
@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
                 {/* Siparişlerim */}
                 <Link
                   to={ROUTES.ORDERS}
-                  className="hidden sm:block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-all font-medium"
+                  className="hidden sm:block px-4 py-2 rounded-lg text-gray-900 dark:text-gray-50 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-300 transition-all font-medium"
                 >
                   Siparişlerim
                 </Link>
@@ -94,7 +94,7 @@ const Navbar: React.FC = () => {
                 {(hasRole(RoleNames.ADMIN) || hasRole(RoleNames.SELLER)) && (
                   <Link
                     to={ROUTES.ADMIN}
-                    className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-all font-medium"
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-900 dark:text-gray-50 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-300 transition-all font-medium"
                   >
                     <FaCog />
                     <span className="hidden lg:block">Yönetim</span>
@@ -102,8 +102,8 @@ const Navbar: React.FC = () => {
                 )}
 
                 {/* Kullanıcı Bilgisi */}
-                <div className="hidden md:flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                  <FaUser className="text-primary-600 dark:text-primary-400" />
+                <div className="hidden md:flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-50">
+                  <FaUser className="text-primary-600 dark:text-primary-300" />
                   <span className="text-sm font-semibold">{user?.username}</span>
                 </div>
 
@@ -122,7 +122,7 @@ const Navbar: React.FC = () => {
                 {/* Giriş Yap */}
                 <Link
                   to={ROUTES.LOGIN}
-                  className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium"
+                  className="px-4 py-2 rounded-lg text-gray-900 dark:text-gray-50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all font-medium"
                 >
                   Giriş Yap
                 </Link>
