@@ -106,11 +106,11 @@ npm install
 # API Base URL
 VITE_API_URL=http://localhost:3000
 
-# App Config
-VITE_APP_NAME=GamerMarkt
+# App Config (İsteğe bağlı)
+VITE_APP_NAME=YourAppName
 ```
 
-> **Not**: Backend API'nin `http://localhost:3000` adresinde çalışıyor olması gerekir.
+> **Not**: Backend API'nin çalışıyor olması gerekir. Development ortamında varsayılan adres `http://localhost:3000`'dir.
 
 ### 3. Geliştirme Sunucusunu Başlatın
 ```bash
@@ -130,7 +130,7 @@ npm run preview
 | Değişken | Açıklama | Örnek |
 |----------|---------|--------|
 | `VITE_API_URL` | Backend API URL | `http://localhost:3000` |
-| `VITE_APP_NAME` | Uygulama adı | `GamerMarkt` |
+| `VITE_APP_NAME` | Uygulama adı | `YourAppName` |
 
 ### Vite Konfigürasyonu
 
