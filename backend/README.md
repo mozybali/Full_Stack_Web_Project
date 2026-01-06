@@ -91,12 +91,12 @@ NODE_ENV=development
 # Veritabanı
 DB_HOST=localhost
 DB_PORT=5432
-DB_USER=postgres
-DB_PASS=your_password
-DB_NAME=gamevault_db
+DB_USER=your_database_user
+DB_PASS=your_secure_database_password
+DB_NAME=your_database_name
 
 # JWT
-JWT_SECRET=your_secret_key_min_32_chars
+JWT_SECRET=your_secure_jwt_secret_key_minimum_32_characters
 JWT_EXPIRES_IN=7d
 
 # CORS
@@ -106,9 +106,11 @@ CORS_ORIGIN=http://localhost:5173
 DB_LOGGING=false
 ```
 
+**Güvenlik Uyarısı**: `.env` dosyasını asla git repository'sine commit etmeyin!
+
 ### 3. Veritabanını Oluşturun
 ```bash
-createdb gamermarkt_db
+createdb your_database_name
 ```
 
 ### 4. Migration'ları Çalıştırın
@@ -138,10 +140,10 @@ Uygulama `http://localhost:3000` adresinde çalışacaktır.
 | `NODE_ENV` | Ortam (development/production) | `development` |
 | `DB_HOST` | Veritabanı host | `localhost` |
 | `DB_PORT` | Veritabanı port | `5432` |
-| `DB_USER` | Veritabanı kullanıcısı | `postgres` |
-| `DB_PASS` | Veritabanı şifresi | `secure_password` |
-| `DB_NAME` | Veritabanı adı | `gamermarkt_db` |
-| `JWT_SECRET` | JWT şifreleme anahtarı (min 32 char) | `your_secret...` |
+| `DB_USER` | Veritabanı kullanıcısı | `your_db_user` |
+| `DB_PASS` | Veritabanı şifresi | `your_secure_password` |
+| `DB_NAME` | Veritabanı adı | `your_database_name` |
+| `JWT_SECRET` | JWT şifreleme anahtarı (min 32 char) | `your_jwt_secret_min_32_chars` |
 | `JWT_EXPIRES_IN` | Token geçerlilik süresi | `7d` |
 | `CORS_ORIGIN` | Frontend URL (CORS) | `http://localhost:5173` |
 | `DB_LOGGING` | SQL query logları | `false` |
@@ -380,10 +382,12 @@ nest generate service module-name
 
 ### Best Practices
 
-- JWT secret key minimum 32 karakter olmalıdır
+- JWT secret key minimum 32 karakter uzunluğunda, rastgele ve güçlü olmalıdır
+- Veritabanı şifreleri güçlü olmalı ve düzenli olarak değiştirilmelidir
 - Production ortamında DB_LOGGING kapatılmalıdır
-- .env dosyası asla git'e commit edilmemelidir
+- .env dosyası asla git'e commit edilmemelidir (`.gitignore`'a eklenmelidir)
 - CORS_ORIGIN production URL'i ile değiştirilmelidir
+- Production ortamında hassas bilgiler environment variables olarak yönetilmelidir
 
 ---
 
