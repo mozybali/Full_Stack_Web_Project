@@ -94,7 +94,7 @@ npm install
 4. **Veritabanını oluşturun**
 ```bash
 # PostgreSQL'e bağlanıp veritabanı oluşturun
-createdb gamermarkt_db
+createdb your_database_name
 ```
 
 5. **Migration'ları çalıştırın**
@@ -145,12 +145,12 @@ NODE_ENV=development
 # Veritabanı
 DB_HOST=localhost
 DB_PORT=5432
-DB_USER=postgres
-DB_PASS=your_password
+DB_USER=your_database_user
+DB_PASS=your_secure_database_password
 DB_NAME=gamermarkt_db
 
 # JWT
-JWT_SECRET=your_secret_key_min_32_chars
+JWT_SECRET=your_secure_jwt_secret_key_minimum_32_characters
 JWT_EXPIRES_IN=7d
 
 # CORS
@@ -162,10 +162,12 @@ DB_LOGGING=false
 
 ### Önemli Notlar
 
-- `JWT_SECRET`: En az 32 karakter uzunluğunda güçlü bir şifre kullanın
-- `NODE_ENV`: Production ortamında `production` olarak ayarlayın
-- `CORS_ORIGIN`: Frontend uygulamanızın URL'ini belirtin
+- `JWT_SECRET`: En az 32 karakter uzunluğunda güçlü ve rastgele bir anahtar kullanın
+- `DB_PASS`: Güçlü bir veritabanı şifresi oluşturun
+- `NODE_ENV`: Production ortamında mutlaka `production` olarak ayarlayın
+- `CORS_ORIGIN`: Frontend uygulamanızın gerçek URL'ini belirtin
 - `.env` dosyasını **asla** git repository'sine commit etmeyin
+- Production ortamında environment değişkenlerini güvenli bir şekilde (örn: GitHub Secrets, server environment variables) yönetin
 
 ## 🗄️ Veritabanı
 
