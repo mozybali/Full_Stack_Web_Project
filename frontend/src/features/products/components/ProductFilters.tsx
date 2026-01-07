@@ -42,13 +42,13 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Oyun
         </label>
         <select
           value={selectedGame || ''}
           onChange={(e) => onGameChange(e.target.value ? Number(e.target.value) : null)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           <option value="">Tüm Oyunlar</option>
           {games.map(game => (
@@ -60,13 +60,13 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Tip
         </label>
         <select
           value={selectedType}
           onChange={(e) => onTypeChange(e.target.value as ProductType | 'ALL')}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           <option value="ALL">Hepsi</option>
           <option value="ACCOUNT">Hesap</option>

@@ -116,12 +116,12 @@ const Orders: React.FC = () => {
   // Sipariş yoksa boş durum göster
   if (orders.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <FaBox size={64} className="mx-auto text-gray-400 mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Henüz Siparişiniz Yok</h2>
-            <p className="text-gray-600">Sipariş geçmişiniz burada görünecektir.</p>
+            <FaBox size={64} className="mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Henüz Siparişiniz Yok</h2>
+            <p className="text-gray-600 dark:text-gray-400">Sipariş geçmişiniz burada görünecektir.</p>
           </div>
         </div>
       </div>
@@ -130,23 +130,23 @@ const Orders: React.FC = () => {
 
   // Sipariş listesi
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Siparişlerim</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-50 mb-8">Siparişlerim</h1>
 
         <div className="space-y-6">
           {/* Her sipariş için kart */}
           {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div key={order.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
               {/* Sipariş Başlık Bölümü */}
-              <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+              <div className="bg-gray-50 dark:bg-gray-700 px-6 py-4 border-b dark:border-gray-600 flex justify-between items-center">
                 <div>
                   {/* Sipariş Numarası */}
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Sipariş No: <span className="font-semibold">#{order.id}</span>
                   </p>
                   {/* Sipariş Tarihi */}
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Tarih: {new Date(order.createdAt).toLocaleDateString('tr-TR')}
                   </p>
                 </div>
@@ -180,15 +180,15 @@ const Orders: React.FC = () => {
                         />
                         {/* Ürün Bilgileri */}
                         <div>
-                          <h3 className="font-semibold text-gray-900">{item.product.title}</h3>
-                          <p className="text-sm text-gray-600">{item.product.game.name}</p>
-                          <p className="text-sm text-gray-500">Miktar: {item.quantity}</p>
+                          <h3 className="font-semibold text-gray-900 dark:text-gray-50">{item.product.title}</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{item.product.game.name}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-500">Miktar: {item.quantity}</p>
                         </div>
                       </div>
                       {/* Sağ Taraf: Fiyat Bilgisi */}
                       <div className="text-right">
-                        <p className="font-bold text-primary-600">₺{(Number(item.unitPrice) * item.quantity).toFixed(2)}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-bold text-primary-600 dark:text-primary-400">₺{(Number(item.unitPrice) * item.quantity).toFixed(2)}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-500">
                           Birim: ₺{Number(item.unitPrice).toFixed(2)}
                         </p>
                       </div>
@@ -197,10 +197,10 @@ const Orders: React.FC = () => {
                 </div>
 
                 {/* Sipariş Toplamı */}
-                <div className="border-t mt-6 pt-6">
+                <div className="border-t dark:border-gray-700 mt-6 pt-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-gray-900">Toplam Tutar</span>
-                    <span className="text-2xl font-bold text-primary-600">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-50">Toplam Tutar</span>
+                    <span className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                       ₺{Number(order.totalPrice).toFixed(2)}
                     </span>
                   </div>

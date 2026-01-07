@@ -111,7 +111,7 @@ const AdminProducts: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Yükleniyor...</div>;
+    return <div className="text-center py-8 text-gray-900 dark:text-gray-100">Yükleniyor...</div>;
   }
 
   const filteredProducts = products.filter((product) => {
@@ -126,7 +126,7 @@ const AdminProducts: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Ürünler</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Ürünler</h2>
         <button onClick={() => openModal()} className="btn-primary flex items-center space-x-2">
           <FaPlus />
           <span>Yeni Ürün</span>
@@ -134,26 +134,26 @@ const AdminProducts: React.FC = () => {
       </div>
 
       {/* Arama ve Filtreleme */}
-      <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Arama */}
           <div>
-            <label className="block text-sm font-medium mb-2">Ara (Başlık, Oyun)</label>
-            <div className="flex items-center bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
-              <FaSearch className="text-gray-400 mr-2" />
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Ara (Başlık, Oyun)</label>
+            <div className="flex items-center bg-gray-50 dark:bg-gray-700 rounded-lg px-3 py-2 border border-gray-200 dark:border-gray-600">
+              <FaSearch className="text-gray-400 dark:text-gray-500 mr-2" />
               <input
                 type="text"
                 placeholder="Ürün veya oyun adı..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-gray-50 flex-1 outline-none text-sm"
+                className="bg-gray-50 dark:bg-gray-700 flex-1 outline-none text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
           </div>
 
           {/* Oyun Filtresi */}
           <div>
-            <label className="block text-sm font-medium mb-2">Oyun Filtresi</label>
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Oyun Filtresi</label>
             <select
               value={filterGameId}
               onChange={(e) => setFilterGameId(e.target.value === '' ? '' : Number(e.target.value))}
@@ -170,7 +170,7 @@ const AdminProducts: React.FC = () => {
 
           {/* Tip Filtresi */}
           <div>
-            <label className="block text-sm font-medium mb-2">Tip Filtresi</label>
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Tip Filtresi</label>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value === '' ? '' : (e.target.value as ProductType))}
@@ -185,22 +185,22 @@ const AdminProducts: React.FC = () => {
       </div>
 
       {/* Ürünler Tablosu */}
-      <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+      <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <table className="min-w-full">
-          <thead className="bg-gray-100">
+          <thead className="bg-gray-100 dark:bg-gray-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Resim</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Başlık</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Oyun</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tip</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fiyat</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stok</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">İşlemler</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Resim</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Başlık</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Oyun</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Tip</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Fiyat</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Stok</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">İşlemler</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {filteredProducts.map((product) => (
-              <tr key={product.id}>
+              <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                 <td className="px-6 py-4">
                   <img
                     src={product.imageUrl ? `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.imageUrl}` : 'https://via.placeholder.com/50'}
@@ -208,21 +208,21 @@ const AdminProducts: React.FC = () => {
                     className="w-12 h-12 object-cover rounded"
                   />
                 </td>
-                <td className="px-6 py-4">{product.title}</td>
-                <td className="px-6 py-4">{product.game.name}</td>
+                <td className="px-6 py-4 text-gray-900 dark:text-gray-100">{product.title}</td>
+                <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{product.game.name}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded text-xs ${product.type === 'KEY' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                  <span className={`px-2 py-1 rounded text-xs ${product.type === 'KEY' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}`}>
                     {product.type}
                   </span>
                 </td>
-                <td className="px-6 py-4">₺{Number(product.price).toFixed(2)}</td>
-                <td className="px-6 py-4">{product.stock}</td>
+                <td className="px-6 py-4 text-gray-900 dark:text-gray-100">₺{Number(product.price).toFixed(2)}</td>
+                <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{product.stock}</td>
                 <td className="px-6 py-4">
                   <div className="flex space-x-2">
-                    <button onClick={() => openModal(product)} className="text-blue-600 hover:text-blue-800">
+                    <button onClick={() => openModal(product)} className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
                       <FaEdit />
                     </button>
-                    <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:text-red-800">
+                    <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
                       <FaTrash />
                     </button>
                   </div>
@@ -232,20 +232,20 @@ const AdminProducts: React.FC = () => {
           </tbody>
         </table>
         {filteredProducts.length === 0 && (
-          <div className="text-center py-8 text-gray-500">Ürün bulunamadı</div>
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">Ürün bulunamadı</div>
         )}
       </div>
 
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <h3 className="text-2xl font-bold mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-50">
               {editingProduct ? 'Ürün Düzenle' : 'Yeni Ürün'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Başlık</label>
+                <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Başlık</label>
                 <input
                   type="text"
                   required
@@ -255,7 +255,7 @@ const AdminProducts: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Açıklama</label>
+                <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Açıklama</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -264,7 +264,7 @@ const AdminProducts: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Oyun</label>
+                <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Oyun</label>
                 <select
                   required
                   value={formData.gameId}
@@ -280,7 +280,7 @@ const AdminProducts: React.FC = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Tip</label>
+                <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Tip</label>
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value as ProductType })}
@@ -291,7 +291,7 @@ const AdminProducts: React.FC = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Fiyat (₺)</label>
+                <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Fiyat (₺)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -302,7 +302,7 @@ const AdminProducts: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Stok</label>
+                <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Stok</label>
                 <input
                   type="number"
                   required
@@ -312,7 +312,7 @@ const AdminProducts: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Resim</label>
+                <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Resim</label>
                 <input
                   type="file"
                   accept="image/*"

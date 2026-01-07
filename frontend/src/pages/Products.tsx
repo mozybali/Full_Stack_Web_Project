@@ -57,9 +57,9 @@ const Products: React.FC = () => {
   const loading = productsLoading || gamesLoading;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <PageContainer>
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">Tüm Ürünler</h1>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-50 mb-8">Tüm Ürünler</h1>
 
         {(productsError || gamesError) && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -72,7 +72,7 @@ const Products: React.FC = () => {
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8 space-y-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8 space-y-4">
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
@@ -90,7 +90,7 @@ const Products: React.FC = () => {
 
         {/* Results */}
         {!loading && filteredProducts.length > 0 && (
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
             {filteredProducts.length} ürün bulundu
           </p>
         )}

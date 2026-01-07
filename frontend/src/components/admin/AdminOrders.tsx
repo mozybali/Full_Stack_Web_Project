@@ -55,7 +55,7 @@ const AdminOrders: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Yükleniyor...</div>;
+    return <div className="text-center py-8 text-gray-900 dark:text-gray-100">Yükleniyor...</div>;
   }
 
   const filteredOrders = orders.filter((order) => {
@@ -66,13 +66,13 @@ const AdminOrders: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Siparişler</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-50">Siparişler</h2>
 
       {/* Filtreleme */}
-      <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Alıcı Adı Ara</label>
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Alıcı Adı Ara</label>
             <input
               type="text"
               placeholder="Kullanıcı adı..."
@@ -82,7 +82,7 @@ const AdminOrders: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Durum Filtresi</label>
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Durum Filtresi</label>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value === '' ? '' : (e.target.value as OrderStatus))}
@@ -99,38 +99,38 @@ const AdminOrders: React.FC = () => {
       </div>
 
       {/* Siparişler Tablosu */}
-      <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+      <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <table className="min-w-full">
-          <thead className="bg-gray-100">
+          <thead className="bg-gray-100 dark:bg-gray-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Alıcı</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ürün Sayısı</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Toplam</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Durum</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tarih</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">İşlemler</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">ID</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Alıcı</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Ürün Sayısı</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Toplam</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Durum</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Tarih</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">İşlemler</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {filteredOrders.map((order) => (
-              <tr key={order.id}>
-                <td className="px-6 py-4">#{order.id}</td>
-                <td className="px-6 py-4">{order.buyer.username}</td>
-                <td className="px-6 py-4">{order.items.length} ürün</td>
-                <td className="px-6 py-4 font-semibold">₺{Number(order.totalPrice).toFixed(2)}</td>
+              <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <td className="px-6 py-4 text-gray-900 dark:text-gray-100">#{order.id}</td>
+                <td className="px-6 py-4 text-gray-900 dark:text-gray-100">{order.buyer.username}</td>
+                <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{order.items.length} ürün</td>
+                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-gray-100">₺{Number(order.totalPrice).toFixed(2)}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded text-xs ${getStatusColor(order.status)}`}>
                     {order.status}
                   </span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-gray-700 dark:text-gray-300">
                   {new Date(order.createdAt).toLocaleDateString('tr-TR')}
                 </td>
                 <td className="px-6 py-4">
                   <button
                     onClick={() => setSelectedOrder(order)}
-                    className="text-blue-600 hover:text-blue-800 flex items-center gap-2"
+                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-2"
                   >
                     <FaEye /> Detay
                   </button>
@@ -140,34 +140,34 @@ const AdminOrders: React.FC = () => {
           </tbody>
         </table>
         {filteredOrders.length === 0 && (
-          <div className="text-center py-8 text-gray-500">Sipariş bulunamadı</div>
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">Sipariş bulunamadı</div>
         )}
       </div>
 
       {/* Sipariş Detayları Modal */}
       {selectedOrder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <h3 className="text-2xl font-bold mb-4">Sipariş #{selectedOrder.id} Detayları</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-50">Sipariş #{selectedOrder.id} Detayları</h3>
             
             {/* Sipariş Bilgileri */}
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
-                <p className="text-sm text-gray-500">Alıcı</p>
-                <p className="font-semibold">{selectedOrder.buyer.username}</p>
-                <p className="text-sm text-gray-600">{selectedOrder.buyer.email}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Alıcı</p>
+                <p className="font-semibold text-gray-900 dark:text-gray-100">{selectedOrder.buyer.username}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{selectedOrder.buyer.email}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Sipariş Tarihi</p>
-                <p className="font-semibold">{new Date(selectedOrder.createdAt).toLocaleDateString('tr-TR')}</p>
-                <p className="text-sm text-gray-600">{new Date(selectedOrder.createdAt).toLocaleTimeString('tr-TR')}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Sipariş Tarihi</p>
+                <p className="font-semibold text-gray-900 dark:text-gray-100">{new Date(selectedOrder.createdAt).toLocaleDateString('tr-TR')}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{new Date(selectedOrder.createdAt).toLocaleTimeString('tr-TR')}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Toplam Tutar</p>
-                <p className="font-semibold text-lg">₺{Number(selectedOrder.totalPrice).toFixed(2)}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Toplam Tutar</p>
+                <p className="font-semibold text-lg text-gray-900 dark:text-gray-100">₺{Number(selectedOrder.totalPrice).toFixed(2)}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Durum</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Durum</p>
                 <span className={`px-3 py-1 rounded text-sm ${getStatusColor(selectedOrder.status)}`}>
                   {selectedOrder.status}
                 </span>
@@ -176,18 +176,18 @@ const AdminOrders: React.FC = () => {
 
             {/* Sipariş Öğeleri */}
             <div className="mb-6">
-              <h4 className="font-semibold mb-3">Ürünler</h4>
+              <h4 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Ürünler</h4>
               <div className="space-y-3">
                 {selectedOrder.items.map((item) => (
-                  <div key={item.id} className="flex justify-between items-start bg-gray-50 p-3 rounded">
+                  <div key={item.id} className="flex justify-between items-start bg-gray-50 dark:bg-gray-700 p-3 rounded">
                     <div>
-                      <p className="font-medium">{item.product.title}</p>
-                      <p className="text-sm text-gray-600">{item.product.game.name}</p>
-                      <p className="text-sm text-gray-600">Tip: {item.product.type}</p>
+                      <p className="font-medium text-gray-900 dark:text-gray-100">{item.product.title}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{item.product.game.name}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Tip: {item.product.type}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">Miktar: {item.quantity}</p>
-                      <p className="font-semibold">₺{Number(item.price).toFixed(2)}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Miktar: {item.quantity}</p>
+                      <p className="font-semibold text-gray-900 dark:text-gray-100">₺{Number(item.price).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
@@ -196,7 +196,7 @@ const AdminOrders: React.FC = () => {
 
             {/* Durum Güncelleme */}
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-2">Durum Güncelle</label>
+              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Durum Güncelle</label>
               <select
                 value={selectedOrder.status}
                 onChange={(e) => handleStatusChange(selectedOrder.id, e.target.value as OrderStatus)}
@@ -211,7 +211,7 @@ const AdminOrders: React.FC = () => {
 
             <button
               onClick={() => setSelectedOrder(null)}
-              className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 rounded"
+              className="w-full bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-100 font-medium py-2 rounded"
             >
               Kapat
             </button>

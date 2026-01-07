@@ -50,7 +50,7 @@ const Dashboard: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Yükleniyor...</div>;
+    return <div className="text-center py-8 text-gray-900 dark:text-gray-100">Yükleniyor...</div>;
   }
 
   const totalRevenue = orders
@@ -65,28 +65,28 @@ const Dashboard: React.FC = () => {
       title: 'Toplam Gelir',
       value: `₺${totalRevenue.toFixed(2)}`,
       icon: <FaDollarSign className="text-3xl" />,
-      color: 'bg-green-50 border-green-200',
+      color: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
       subtext: 'Tamamlanan siparişlar',
     },
     {
       title: 'Toplam Siparişler',
       value: orders.length,
       icon: <FaShoppingCart className="text-3xl" />,
-      color: 'bg-blue-50 border-blue-200',
+      color: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
       subtext: `${pendingOrders} beklemede`,
     },
     {
       title: 'Toplam Ürünler',
       value: products.length,
       icon: <FaBox className="text-3xl" />,
-      color: 'bg-purple-50 border-purple-200',
+      color: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800',
       subtext: `${games.length} oyun`,
     },
     {
       title: 'Toplam Kullanıcılar',
       value: users.length,
       icon: <FaUsers className="text-3xl" />,
-      color: 'bg-orange-50 border-orange-200',
+      color: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800',
       subtext: 'Platform üyeleri',
     },
   ];
@@ -99,7 +99,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-50">Dashboard</h2>
 
       {/* İstatistik Kartları */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -110,13 +110,13 @@ const Dashboard: React.FC = () => {
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-gray-600 text-sm">{stat.title}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-2">{stat.value}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">{stat.title}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{stat.value}</p>
                 {stat.subtext && (
-                  <p className="text-xs text-gray-500 mt-2">{stat.subtext}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{stat.subtext}</p>
                 )}
               </div>
-              <div className="text-gray-400 opacity-50">{stat.icon}</div>
+              <div className="text-gray-400 dark:text-gray-500 opacity-50">{stat.icon}</div>
             </div>
           </div>
         ))}
@@ -124,27 +124,27 @@ const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Son Siparişler */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-xl font-bold mb-4">Son Siparişler</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-50">Son Siparişler</h3>
           <div className="space-y-3">
             {recentOrders.length === 0 ? (
-              <p className="text-gray-500 text-sm">Sipariş bulunmamaktadır</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Sipariş bulunmamaktadır</p>
             ) : (
               recentOrders.map((order) => (
-                <div key={order.id} className="flex justify-between items-center pb-3 border-b last:border-b-0">
+                <div key={order.id} className="flex justify-between items-center pb-3 border-b dark:border-gray-700 last:border-b-0">
                   <div>
-                    <p className="font-medium">#{order.id}</p>
-                    <p className="text-sm text-gray-600">{order.buyer.username}</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">#{order.id}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{order.buyer.username}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">₺{Number(order.totalPrice).toFixed(2)}</p>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">₺{Number(order.totalPrice).toFixed(2)}</p>
                     <span
                       className={`text-xs px-2 py-1 rounded ${
                         order.status === 'COMPLETED'
-                          ? 'bg-green-100 text-green-800'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                           : order.status === 'PENDING'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-gray-100 text-gray-800'
+                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
                       }`}
                     >
                       {order.status}
@@ -157,21 +157,21 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* En Çok Satılan Ürünler */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-xl font-bold mb-4">Ürünler</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-50">Ürünler</h3>
           <div className="space-y-3">
             {topProducts.length === 0 ? (
-              <p className="text-gray-500 text-sm">Ürün bulunmamaktadır</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Ürün bulunmamaktadır</p>
             ) : (
               topProducts.map((product) => (
-                <div key={product.id} className="flex justify-between items-center pb-3 border-b last:border-b-0">
+                <div key={product.id} className="flex justify-between items-center pb-3 border-b dark:border-gray-700 last:border-b-0">
                   <div>
-                    <p className="font-medium">{product.title}</p>
-                    <p className="text-sm text-gray-600">{product.game.name}</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">{product.title}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{product.game.name}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">₺{Number(product.price).toFixed(2)}</p>
-                    <p className="text-xs text-gray-600">Stok: {product.stock}</p>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">₺{Number(product.price).toFixed(2)}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Stok: {product.stock}</p>
                   </div>
                 </div>
               ))
@@ -181,24 +181,24 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Hızlı İstatistikler */}
-      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold mb-4 text-blue-900">Sistem İstatistikleri</h3>
+      <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+        <h3 className="text-lg font-semibold mb-4 text-blue-900 dark:text-blue-200">Sistem İstatistikleri</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
-            <p className="text-2xl font-bold text-blue-600">{completedOrders}</p>
-            <p className="text-sm text-gray-600">Tamamlanan Sipariş</p>
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{completedOrders}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Tamamlanan Sipariş</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-blue-600">{pendingOrders}</p>
-            <p className="text-sm text-gray-600">Beklemede</p>
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{pendingOrders}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Beklemede</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-blue-600">{products.filter((p) => p.stock === 0).length}</p>
-            <p className="text-sm text-gray-600">Tükenen Ürün</p>
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{products.filter((p) => p.stock === 0).length}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Tükenen Ürün</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-blue-600">{games.length}</p>
-            <p className="text-sm text-gray-600">Toplam Oyun</p>
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{games.length}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Toplam Oyun</p>
           </div>
         </div>
       </div>

@@ -99,12 +99,12 @@ const Cart: React.FC = () => {
   // Sepet boşsa boş durum göster
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <FaShoppingCart size={64} className="mx-auto text-gray-400 mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Sepetiniz Boş</h2>
-            <p className="text-gray-600 mb-8">Sepetinizde henüz ürün bulunmamaktadır.</p>
+            <FaShoppingCart size={64} className="mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Sepetiniz Boş</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-8">Sepetinizde henüz ürün bulunmamaktadır.</p>
             <button onClick={() => navigate('/products')} className="btn-primary">
               Alışverişe Başla
             </button>
@@ -115,18 +115,18 @@ const Cart: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Alışveriş Sepeti</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-50 mb-8">Alışveriş Sepeti</h1>
 
         {/* Sepet grid layout: Sol taraf ürün listesi, sağ taraf sipariş özeti */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Ürün Listesi (2 sütun) */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
               {/* Sepetteki her ürün için başlı başına satır */}
               {items.map((item) => (
-                <div key={item.product.id} className="flex items-center p-6 border-b last:border-b-0">
+                <div key={item.product.id} className="flex items-center p-6 border-b dark:border-gray-700 last:border-b-0">
                   {/* Ürün Resmi */}
                   <img
                     src={imageUrl(item.product.imageUrl)}
@@ -140,9 +140,9 @@ const Cart: React.FC = () => {
 
                   {/* Ürün Bilgileri */}
                   <div className="flex-1 ml-6">
-                    <h3 className="text-lg font-semibold text-gray-900">{item.product.title}</h3>
-                    <p className="text-sm text-gray-600">{item.product.game.name}</p>
-                    <p className="text-sm text-gray-500">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-50">{item.product.title}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{item.product.game.name}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-500">
                       {item.product.type === 'ACCOUNT' ? 'Hesap' : 'Key'}
                     </p>
                   </div>
@@ -172,7 +172,7 @@ const Cart: React.FC = () => {
 
                     {/* Satır Toplam Fiyatı */}
                     <div className="w-24 text-right">
-                      <p className="text-lg font-bold text-primary-600">
+                      <p className="text-lg font-bold text-primary-600 dark:text-primary-400">
                         ₺{(Number(item.product.price) * item.quantity).toFixed(2)}
                       </p>
                     </div>
@@ -180,7 +180,7 @@ const Cart: React.FC = () => {
                     {/* Ürünü Sepetten Kaldır */}
                     <button
                       onClick={() => removeFromCart(item.product.id)}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded"
+                      className="p-2 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
                     >
                       <FaTrash />
                     </button>
@@ -192,24 +192,24 @@ const Cart: React.FC = () => {
 
           {/* Sipariş Özeti (1 sütun) */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Sipariş Özeti</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sticky top-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-50 mb-4">Sipariş Özeti</h2>
 
               {/* Fiyat Hesaplamalar */}
               <div className="space-y-3 mb-6">
                 {/* Ara Toplam */}
-                <div className="flex justify-between text-gray-600">
+                <div className="flex justify-between text-gray-600 dark:text-gray-400">
                   <span>Ara Toplam</span>
                   <span>₺{getTotalPrice().toFixed(2)}</span>
                 </div>
                 {/* KDV (%18) */}
-                <div className="flex justify-between text-gray-600">
+                <div className="flex justify-between text-gray-600 dark:text-gray-400">
                   <span>KDV (%18)</span>
                   <span>₺{(getTotalPrice() * 0.18).toFixed(2)}</span>
                 </div>
                 {/* Genel Toplam */}
-                <div className="border-t pt-3">
-                  <div className="flex justify-between text-xl font-bold text-gray-900">
+                <div className="border-t dark:border-gray-700 pt-3">
+                  <div className="flex justify-between text-xl font-bold text-gray-900 dark:text-gray-50">
                     <span>Toplam</span>
                     <span>₺{(getTotalPrice() * 1.18).toFixed(2)}</span>
                   </div>
@@ -227,7 +227,7 @@ const Cart: React.FC = () => {
 
               {/* Giriş Yapılmamışsa Uyarı */}
               {!isAuthenticated && (
-                <p className="text-sm text-gray-600 mt-4 text-center">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-4 text-center">
                   Sipariş vermek için giriş yapmalısınız
                 </p>
               )}

@@ -141,44 +141,44 @@ const AdminRoles: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Yükleniyor...</div>;
+    return <div className="text-center py-8 text-gray-900 dark:text-gray-100">Yükleniyor...</div>;
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Roller</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Roller</h2>
         <button onClick={() => openModal()} className="btn-primary flex items-center space-x-2">
           <FaPlus />
           <span>Yeni Rol</span>
         </button>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+      <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <table className="min-w-full">
-          <thead className="bg-gray-100">
+          <thead className="bg-gray-100 dark:bg-gray-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rol Adı</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Açıklama</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Oluşturma Tarihi</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">İşlemler</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">ID</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Rol Adı</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Açıklama</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Oluşturma Tarihi</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">İşlemler</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {roles.map((role) => (
-              <tr key={role.id}>
-                <td className="px-6 py-4">{role.id}</td>
-                <td className="px-6 py-4 font-semibold">{role.name}</td>
-                <td className="px-6 py-4">{role.description || '-'}</td>
-                <td className="px-6 py-4 text-sm">
+              <tr key={role.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <td className="px-6 py-4 text-gray-900 dark:text-gray-100">{role.id}</td>
+                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-gray-100">{role.name}</td>
+                <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{role.description || '-'}</td>
+                <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
                   {new Date(role.createdAt).toLocaleDateString('tr-TR')}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex space-x-2">
                     <button
                       onClick={() => openModal(role)}
-                      className="text-blue-600 hover:text-blue-800"
+                      className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                       disabled={['ADMIN', 'SELLER', 'BUYER'].includes(role.name)}
                       title={['ADMIN', 'SELLER', 'BUYER'].includes(role.name) ? 'Sistem rolü düzenlenemez' : 'Düzenle'}
                     >
@@ -186,7 +186,7 @@ const AdminRoles: React.FC = () => {
                     </button>
                     <button
                       onClick={() => handleDelete(role.id)}
-                      className="text-red-600 hover:text-red-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={['ADMIN', 'SELLER', 'BUYER'].includes(role.name)}
                       title={['ADMIN', 'SELLER', 'BUYER'].includes(role.name) ? 'Sistem rolü silinemez' : 'Sil'}
                     >
@@ -199,20 +199,20 @@ const AdminRoles: React.FC = () => {
           </tbody>
         </table>
         {roles.length === 0 && (
-          <div className="text-center py-8 text-gray-500">Rol bulunamadı</div>
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">Rol bulunamadı</div>
         )}
       </div>
 
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-md w-full">
-            <h3 className="text-2xl font-bold mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-md w-full">
+            <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-50">
               {editingRole ? 'Rol Düzenle' : 'Yeni Rol'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Rol Adı</label>
+                <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Rol Adı</label>
                 <input
                   type="text"
                   required
@@ -223,7 +223,7 @@ const AdminRoles: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Açıklama</label>
+                <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Açıklama</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
