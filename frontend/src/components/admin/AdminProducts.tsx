@@ -199,13 +199,24 @@ const AdminProducts: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {filteredProducts.map((product) => (
+            {filteredProducts.map((product) => {
+              // imageUrl'i düzgün işle
+              const getImageUrl = (url: string | undefined) => {
+                if (!url) return 'https://via.placeholder.com/50';
+                if (url.startsWith('http://') || url.startsWith('https://')) return url;
+                return `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${url}`;
+              };
+
+              return (
               <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                 <td className="px-6 py-4">
                   <img
-                    src={product.imageUrl ? `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.imageUrl}` : 'https://via.placeholder.com/50'}
+                    src={getImageUrl(product.imageUrl)}
                     alt={product.title}
                     className="w-12 h-12 object-cover rounded"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://via.placeholder.com/50';
+                    }}
                   />
                 </td>
                 <td className="px-6 py-4 text-gray-900 dark:text-gray-100">{product.title}</td>
@@ -228,7 +239,8 @@ const AdminProducts: React.FC = () => {
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
         {filteredProducts.length === 0 && (

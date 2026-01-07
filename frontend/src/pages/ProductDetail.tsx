@@ -58,9 +58,20 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  const imageUrl = product.imageUrl 
-    ? `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.imageUrl}`
-    : 'https://via.placeholder.com/600x400?text=No+Image';
+  // imageUrl'i düzgün şekilde işle
+  const getImageUrl = () => {
+    if (!product.imageUrl) {
+      return 'https://via.placeholder.com/600x400?text=No+Image';
+    }
+    
+    if (product.imageUrl.startsWith('http://') || product.imageUrl.startsWith('https://')) {
+      return product.imageUrl;
+    }
+    
+    return `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.imageUrl}`;
+  };
+
+  const imageUrl = getImageUrl();
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">

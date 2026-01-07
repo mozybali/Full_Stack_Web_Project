@@ -8,6 +8,7 @@
  * - orderService: Sipariş API'leri
  * - userService: Kullanıcı API'leri
  * - authService: Kimlik doğrulama API'leri
+ * - roleService: Rol yönetimi API'leri
  * - axiosInstance: Konfigüre edilmiş axios instance
  * 
  * Kullanım:
@@ -19,4 +20,5 @@ export { gameService } from './game.service';
 export { orderService } from './order.service';
 export { userService } from './user.service';
 export { authService } from './auth.service';
+export { roleService } from './role.service';
 export { default as axiosInstance } from './axios';

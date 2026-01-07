@@ -44,9 +44,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     addToCart(product);
   };
 
-  const imageUrl = product.imageUrl 
-    ? `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.imageUrl}`
-    : 'https://via.placeholder.com/300x200?text=No+Image';
+  // imageUrl'i düzgün şekilde işle
+  // Eğer URL http veya https ile başlıyorsa, harici URL'dir, olduğu gibi kullan
+  // Eğer / ile başlıyorsa, local dosyadır, API_URL ekle
+  const getImageUrl = () => {
+    if (!product.imageUrl) {
+      return 'https://via.placeholder.com/300x200?text=No+Image';
+    }
+    
+    if (product.imageUrl.startsWith('http://') || product.imageUrl.startsWith('https://')) {
+      return product.imageUrl;
+    }
+    
+    return `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.imageUrl}`;
+  };
+
+  const imageUrl = getImageUrl();
 
   return (
     <div className="card">

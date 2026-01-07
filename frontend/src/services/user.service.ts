@@ -24,4 +24,10 @@ export const userService = {
   async delete(id: number): Promise<void> {
     await axiosInstance.delete(`/users/${id}`);
   },
+
+  // Kullanıcıya rolleri ata (Admin)
+  async updateRoles(id: number, roleIds: number[]): Promise<User> {
+    const response = await axiosInstance.put<User>(`/users/${id}/roles`, { roleIds });
+    return response.data;
+  },
 };

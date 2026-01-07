@@ -3,36 +3,12 @@
  * Sistem rollerini yönet (CRUD işlemleri)
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useToast } from '../ui/ToastContainer';
+import { roleService } from '../../services/role.service';
 import type { Role } from '../../types';
 import { RoleNames } from '../../types';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
-
-// Mock data - Backend API'si implemente edilmediyse
-const mockRoles: Role[] = [
-  {
-    id: 1,
-    name: RoleNames.ADMIN,
-    description: 'Tam yönetim yetkisi, tüm işlemleri yapabilir',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    name: RoleNames.SELLER,
-    description: 'Satıcı, ürünlerini yönetebilir',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 3,
-    name: RoleNames.BUYER,
-    description: 'Alıcı, ürün satın alabilir',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
 
 interface RoleFormData {
   name: string;
@@ -40,8 +16,8 @@ interface RoleFormData {
 }
 
 const AdminRoles: React.FC = () => {
-  const [roles, setRoles] = useState<Role[]>(mockRoles);
-  const [loading] = useState(false);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
   const { addToast } = useToast();
@@ -51,19 +27,22 @@ const AdminRoles: React.FC = () => {
     description: '',
   });
 
-  // TODO: Backend API'si hazır olunca bu fonksiyonları implement et
-  // const loadRoles = async () => {
-  //   try {
-  //     setLoading(true);
-  //     // const response = await rolesService.getAll();
-  //     // setRoles(response);
-  //     setRoles(mockRoles);
-  //   } catch (error) {
-  //     addToast('Roller yüklenemedi', 'error');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  useEffect(() => {
+    loadRoles();
+  }, []);
+
+  const loadRoles = async () => {
+    try {
+      setLoading(true);
+      const data = await roleService.getAll();
+      setRoles(data);
+    } catch (error: any) {
+      const message = error.response?.data?.message || 'Roller yüklenemedi';
+      addToast(message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,27 +54,24 @@ const AdminRoles: React.FC = () => {
 
     try {
       if (editingRole) {
-        // await rolesService.update(editingRole.id, formData);
+        // Rol güncelle
+        const updated = await roleService.update(editingRole.id, {
+          description: formData.description,
+        });
         setRoles(
           roles.map((role) =>
-            role.id === editingRole.id
-              ? {
-                  ...role,
-                  name: role.name,
-                  description: formData.description,
-                  updatedAt: new Date().toISOString(),
-                }
-              : role
+            role.id === editingRole.id ? updated : role
           )
         );
         addToast('Rol başarıyla güncellendi', 'success');
       } else {
-        // await rolesService.create(formData);
-        // Mock: Gerçek backend'e yazılmadığı için basit bir rol oluşturma
-        addToast('Yeni roller backend entegrasyonu sonrası eklenebilecek', 'info');
-        resetForm();
-        setShowModal(false);
-        return;
+        // Yeni rol oluştur
+        const newRole = await roleService.create({
+          name: formData.name,
+          description: formData.description,
+        });
+        setRoles([...roles, newRole]);
+        addToast('Rol başarıyla oluşturuldu', 'success');
       }
       
       setShowModal(false);
@@ -110,7 +86,7 @@ const AdminRoles: React.FC = () => {
     if (!confirm('Bu rolü silmek istediğinizden emin misiniz?')) return;
 
     try {
-      // await rolesService.delete(id);
+      await roleService.delete(id);
       setRoles(roles.filter((role) => role.id !== id));
       addToast('Rol başarıyla silindi', 'success');
     } catch (error: any) {
