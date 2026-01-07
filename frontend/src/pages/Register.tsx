@@ -100,13 +100,13 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
           {/* Sayfa Başlığı */}
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Kayıt Ol</h2>
-            <p className="mt-2 text-gray-600">GamerMarkt'a katılın</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Kayıt Ol</h2>
+            <p className="mt-2 text-gray-600 dark:text-gray-300">GamerMarkt'a katılın</p>
           </div>
 
           {/* Hata Mesajı (varsa göster) */}
@@ -120,12 +120,12 @@ const Register: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Kullanıcı Adı */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Kullanıcı Adı
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaUser className="text-gray-400" />
+                  <FaUser className="text-gray-400 dark:text-gray-500" />
                 </div>
                 <input
                   id="username"
@@ -142,12 +142,12 @@ const Register: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 E-posta
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="text-gray-400" />
+                  <FaEnvelope className="text-gray-400 dark:text-gray-500" />
                 </div>
                 <input
                   id="email"
@@ -164,12 +164,12 @@ const Register: React.FC = () => {
 
             {/* Şifre */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Şifre
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="text-gray-400" />
+                  <FaLock className="text-gray-400 dark:text-gray-500" />
                 </div>
                 <input
                   id="password"
@@ -186,12 +186,12 @@ const Register: React.FC = () => {
 
             {/* Şifre Doğrulama */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Şifre Tekrar
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="text-gray-400" />
+                  <FaLock className="text-gray-400 dark:text-gray-500" />
                 </div>
                 <input
                   id="confirmPassword"
@@ -218,9 +218,9 @@ const Register: React.FC = () => {
 
           {/* Giriş Sayfasına Yönlendirme */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               Zaten hesabınız var mı?{' '}
-              <Link to="/login" className="text-primary-600 hover:text-primary-700 font-semibold">
+              <Link to="/login" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold">
                 Giriş Yap
               </Link>
             </p>

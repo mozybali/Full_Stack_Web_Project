@@ -58,9 +58,9 @@ const Home: React.FC = () => {
                   placeholder="Oyun ara..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-6 py-4 rounded-lg text-gray-900 dark:text-gray-100 dark:bg-gray-800 text-lg focus:outline-none focus:ring-4 focus:ring-white/50 dark:focus:ring-primary-400/50 shadow-xl transition-all"
+                  className="w-full px-6 py-4 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-2 border-gray-200 dark:border-gray-700 text-lg focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-400/50 focus:border-primary-500 dark:focus:border-primary-400 shadow-xl transition-all placeholder-gray-400 dark:placeholder-gray-500"
                 />
-                <FaSearch className="absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
+                <FaSearch className="absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 text-xl" />
               </div>
             </div>
           </div>

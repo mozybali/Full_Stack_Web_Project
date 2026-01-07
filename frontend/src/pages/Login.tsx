@@ -69,12 +69,12 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Giriş Yap</h2>
-            <p className="mt-2 text-gray-600">GamerMarkt hesabınıza giriş yapın</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Giriş Yap</h2>
+            <p className="mt-2 text-gray-600 dark:text-gray-300">GamerMarkt hesabınıza giriş yapın</p>
           </div>
 
           {error && (
@@ -85,12 +85,12 @@ const Login: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 E-posta
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="text-gray-400" />
+                  <FaEnvelope className="text-gray-400 dark:text-gray-500" />
                 </div>
                 <input
                   id="email"
@@ -106,12 +106,12 @@ const Login: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Şifre
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="text-gray-400" />
+                  <FaLock className="text-gray-400 dark:text-gray-500" />
                 </div>
                 <input
                   id="password"
@@ -136,9 +136,9 @@ const Login: React.FC = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               Hesabınız yok mu?{' '}
-              <Link to="/register" className="text-primary-600 hover:text-primary-700 font-semibold">
+              <Link to="/register" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold">
                 Kayıt Ol
               </Link>
             </p>
