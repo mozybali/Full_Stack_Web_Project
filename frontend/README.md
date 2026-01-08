@@ -1,6 +1,6 @@
-# 🎮 GamerMarkt Frontend
+# 🎮 Frontend
 
-Modern bir oyun hesabı ve key marketplace frontend uygulaması. React 19, TypeScript, Tailwind CSS ve Vite ile geliştirilmiştir.
+Modern bir oyun hesabı ve oyun lisans anahtarları satış platformunun frontend uygulaması. React 19, TypeScript, Tailwind CSS ve Vite ile geliştirilmiştir.
 
 ## 📋 İçindekiler
 
@@ -23,7 +23,7 @@ Modern bir oyun hesabı ve key marketplace frontend uygulaması. React 19, TypeS
 - 🚪 Güvenli logout
 
 ### Ürün Katalogu
-- 🎮 Oyun hesapları ve key'leri listeleme
+- 🎮 Oyun hesapları ve lisans anahtarları listeleme
 - 🔍 Ürün filtreleme ve arama
 - 🖼️ Ürün detay sayfası
 - ⭐ Ürün bilgileri ve açıklaması
@@ -105,9 +105,6 @@ npm install
 ```env
 # API Base URL
 VITE_API_URL=http://localhost:3000
-
-# App Config (İsteğe bağlı)
-VITE_APP_NAME=YourAppName
 ```
 
 > **Not**: Backend API'nin çalışıyor olması gerekir. Development ortamında varsayılan adres `http://localhost:3000`'dir.
@@ -127,10 +124,9 @@ npm run preview
 
 ### Environment Değişkenleri
 
-| Değişken | Açıklama | Örnek |
-|----------|---------|--------|
+| Değişken | Açıklama | Varsayılan |
+|----------|---------|------------|
 | `VITE_API_URL` | Backend API URL | `http://localhost:3000` |
-| `VITE_APP_NAME` | Uygulama adı | `YourAppName` |
 
 ### Vite Konfigürasyonu
 
@@ -435,4 +431,4 @@ Axios instance otomatik olarak:
 
 ---
 
-**Son Güncelleme**: Aralık 2025
+**Son Güncelleme**: Ocak 2026
