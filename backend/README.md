@@ -1,6 +1,6 @@
-# 🎮 GamerMarkt Backend API
+# 🎮 Backend API
 
-Oyun hesapları ve oyun lisans anahtarlarının satışı yapılan modern e-ticaret platformunun RESTful API backend'i. NestJS 11, TypeScript 5.4, PostgreSQL ve TypeORM 0.3 ile geliştirilmiştir.
+Modern oyun hesabı ve oyun lisans anahtarları satış platformunun RESTful API backend'i. NestJS 11, TypeScript 5.4, PostgreSQL ve TypeORM 0.3 ile geliştirilmiştir.
 
 ## 📋 İçindekiler
 
@@ -391,4 +391,4 @@ nest generate service module-name
 
 ---
 
-**Son Güncelleme**: Aralık 2025
+**Son Güncelleme**: Ocak 2026
