@@ -21,7 +21,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 import { orderService } from '../services/order.service';
 import { useToast } from '../components/ui/ToastContainer';
 import { FaTrash, FaMinus, FaPlus, FaShoppingCart } from 'react-icons/fa';
@@ -29,9 +28,8 @@ import { FaTrash, FaMinus, FaPlus, FaShoppingCart } from 'react-icons/fa';
 const Cart: React.FC = () => {
   const navigate = useNavigate();
   const toast = useToast();
-  // Context'lerden sepet ve auth verilerini al
+  // Context'lerden sepet verilerini al
   const { items, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
-  const { isAuthenticated } = useAuth();
   // Sipariş oluşturma sırasında yükleme durumu
   const [loading, setLoading] = React.useState(false);
 
@@ -224,13 +222,6 @@ const Cart: React.FC = () => {
               >
                 {loading ? 'İşleniyor...' : 'Siparişi Tamamla'}
               </button>
-
-              {/* Giriş Yapılmamışsa Uyarı */}
-              {!isAuthenticated && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-4 text-center">
-                  Sipariş vermek için giriş yapmalısınız
-                </p>
-              )}
 
               {/* Sepeti Temizle Butonu */}
               <button

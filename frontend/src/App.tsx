@@ -46,9 +46,16 @@ function AppContent() {
         <Route path={ROUTES.REGISTER} element={<Register />} />
         <Route path={ROUTES.PRODUCTS} element={<Products />} />
         <Route path={`${ROUTES.PRODUCTS}/:id`} element={<ProductDetail />} />
-        <Route path={ROUTES.CART} element={<Cart />} />
 
         {/* Giriş Yapan Kullanıcılar İçin */}
+        <Route
+          path={ROUTES.CART}
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path={ROUTES.ORDERS}
           element={

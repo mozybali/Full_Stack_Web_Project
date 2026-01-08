@@ -15,14 +15,18 @@
  * - useAuth: Kimlik doğrulama işlemleri
  */
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import type { LoginDto } from '../types';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, isAuthenticated } = useAuth();
+  
+  // Yönlendirme sonrası dönülecek sayfa
+  const from = (location.state as any)?.from || '/';
   
   // Form state'leri
   const [formData, setFormData] = useState<LoginDto>({
@@ -35,9 +39,9 @@ const Login: React.FC = () => {
   // Zaten giriş yapmışsa ana sayfaya yönlendir
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/', { replace: true });
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, from]);
 
   /**
    * Input değişikliklerini yakalayıp state'e kaydet
@@ -51,7 +55,7 @@ const Login: React.FC = () => {
 
   /**
    * Form gönderildiğinde login işlemi yap
-   * Başarılı olursa ana sayfaya yönlendir
+   * Başarılı olursa önceki sayfaya veya ana sayfaya yönlendir
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +64,7 @@ const Login: React.FC = () => {
 
     try {
       await login(formData);
-      navigate('/');
+      navigate(from, { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message || 'Giriş yapılırken bir hata oluştu');
     } finally {

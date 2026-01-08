@@ -19,9 +19,10 @@
  */
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { FaShoppingCart } from 'react-icons/fa';
 
 /**
@@ -32,7 +33,9 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
 
   // Product validasyonu
   if (!product || !product.game) {
@@ -41,6 +44,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+    
+    // Giriş yapılmamışsa login sayfasına yönlendir
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/products' } });
+      return;
+    }
+    
     addToCart(product);
   };
 

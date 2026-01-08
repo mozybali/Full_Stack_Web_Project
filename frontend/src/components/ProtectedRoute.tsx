@@ -19,7 +19,7 @@
  * </ProtectedRoute>
  */
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LoadingScreen from './LoadingScreen';
 
@@ -33,15 +33,16 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireRole }) => {
   const { isAuthenticated, hasRole, isLoading } = useAuth();
+  const location = useLocation();
 
   // Kimlik doğrulama kontrolü yüklenirken loading göster
   if (isLoading) {
     return <LoadingScreen message="Erişim kontrol ediliyor..." />;
   }
 
-  // Giriş yapılmamışsa login sayfasına yönlendir
+  // Giriş yapılmamışsa login sayfasına yönlendir ve önceki sayfayı kaydet
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
   // Belirli bir rol gerekiyorsa kontrol et
