@@ -1,6 +1,6 @@
-# 🎮 GamerMarkt - Oyun Hesabı ve Lisans Satış Platformu
+# 🎮 Full Stack Web Project - Modern E-Ticaret Platformu
 
-GamerMarkt, oyun hesapları ve oyun lisans anahtarlarının güvenli bir şekilde alınıp satılabildiği modern bir full-stack e-ticaret platformudur. React 19 ve TypeScript tabanlı frontend ile NestJS framework'ü ile geliştirilmiş RESTful API backend'ine sahiptir.
+Modern bir oyun hesabı ve oyun lisans anahtarları satış platformu. React 19 ve TypeScript tabanlı frontend ile NestJS framework'ü ile geliştirilmiş RESTful API backend'ine sahip full-stack e-ticaret uygulaması.
 
 ## 📋 İçindekiler
 
@@ -147,7 +147,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=your_database_user
 DB_PASS=your_secure_database_password
-DB_NAME=gamermarkt_db
+DB_NAME=your_database_name
 
 # JWT
 JWT_SECRET=your_secure_jwt_secret_key_minimum_32_characters
@@ -564,31 +564,9 @@ Frontend, Vite ile optimize edilmiş build'ler oluşturur:
 
 ## 📝 Lisans
 
-Bu proje **MIT Lisansı** altında yayımlanmıştır.
-
-### MIT Lisansı Özeti
-
-MIT Lisansı, açık kaynak yazılımlar için en permissif lisanslardan biridir. Temel haklarınız:
-
-- ✅ **Ticari Kullanım**: Projeyi ticari amaçlar için kullanabilirsiniz
-- ✅ **Değişiklik**: Kodu değiştirebilir ve kustomize edebilirsiniz
-- ✅ **Dağıtım**: Projeyi başka kişilere veya kuruluşlara dağıtabilirsiniz
-- ✅ **Özel Kullanım**: Kapalı kaynak olarak kullanabilirsiniz
-
-### Şartlar
-
-- ⚠️ **Lisans ve Copyright Notu**: MIT lisans metnini ve copyright bildirimi orijinal dağıtımda bulundurmalısınız
-- ⚠️ **Sorumluluk Reddi**: Yazılım "olduğu gibi" sağlanır, herhangi bir garantisi yoktur
-
-### Daha Fazla Bilgi
-
-Tam lisans metni için: [MIT License](https://opensource.org/licenses/MIT)
-
-## 👨‍💻 Katkıda Bulunma
-
-Herhangi bir soru, hata raporlaması veya öneriniz için lütfen issue açın.
+Bu proje **MIT Lisansı** altında yayımlanmıştır. Detaylı bilgi için [LICENSE](LICENSE) dosyasına bakınız.
 
 ---
 
-**Son Güncelleme**: Aralık 2025
+**Son Güncelleme**: Ocak 2026
 
