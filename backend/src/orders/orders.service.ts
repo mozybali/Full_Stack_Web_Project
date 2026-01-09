@@ -108,6 +108,26 @@ export class OrdersService {
   }
 
   /**
+   * Satıcının ürünlerine ait siparişleri getir
+   * @param sellerId - Satıcı ID'si
+   * @returns Satıcının ürünlerine ait siparişler
+   */
+  async findSellerOrders(sellerId: number) {
+    const orders = await this.ordersRepo
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.buyer', 'buyer')
+      .leftJoinAndSelect('order.items', 'items')
+      .leftJoinAndSelect('items.product', 'product')
+      .leftJoinAndSelect('product.game', 'game')
+      .leftJoinAndSelect('product.seller', 'seller')
+      .where('seller.id = :sellerId', { sellerId })
+      .orderBy('order.createdAt', 'DESC')
+      .getMany();
+
+    return orders;
+  }
+
+  /**
    * Tüm siparişleri getir (Admin)
    * @returns Tüm siparişler
    */
