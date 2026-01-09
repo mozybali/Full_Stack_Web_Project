@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { productService } from '../../services/product.service';
 import { gameService } from '../../services/game.service';
 import { useToast } from '../ui/ToastContainer';
+import { useAuth } from '../../context/AuthContext';
 import type { Product, Game, CreateProductDto, ProductType } from '../../types';
 import { FaEdit, FaTrash, FaPlus, FaSearch } from 'react-icons/fa';
+import { RoleNames } from '../../types';
 
 const AdminProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -14,7 +16,10 @@ const AdminProducts: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterGameId, setFilterGameId] = useState<number | ''>('');
   const [filterType, setFilterType] = useState<ProductType | ''>('');
+  const [viewMode, setViewMode] = useState<'all' | 'my'>('my');
   const { addToast } = useToast();
+  const { hasRole } = useAuth();
+  const isAdmin = hasRole(RoleNames.ADMIN);
   
   const [formData, setFormData] = useState<CreateProductDto>({
     title: '',
@@ -28,14 +33,15 @@ const AdminProducts: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [viewMode]);
 
   const loadData = async () => {
     try {
-      const [productsData, gamesData] = await Promise.all([
-        productService.getAll(),
-        gameService.getAll(),
-      ]);
+      const productsData = viewMode === 'my' 
+        ? await productService.getMyProducts()
+        : await productService.getAll();
+      const gamesData = await gameService.getAll();
+      
       setProducts(productsData);
       setGames(gamesData);
     } catch (error) {
@@ -126,7 +132,33 @@ const AdminProducts: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Ürünler</h2>
+        <div className="flex items-center space-x-4">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Ürünler</h2>
+          <div className="flex bg-gray-200 dark:bg-gray-700 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('my')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'my'
+                  ? 'bg-white dark:bg-gray-600 text-primary-600 dark:text-primary-400 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+              }`}
+            >
+              Ürünlerim
+            </button>
+            {isAdmin && (
+              <button
+                onClick={() => setViewMode('all')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  viewMode === 'all'
+                    ? 'bg-white dark:bg-gray-600 text-primary-600 dark:text-primary-400 shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+                }`}
+              >
+                Tüm Ürünler
+              </button>
+            )}
+          </div>
+        </div>
         <button onClick={() => openModal()} className="btn-primary flex items-center space-x-2">
           <FaPlus />
           <span>Yeni Ürün</span>

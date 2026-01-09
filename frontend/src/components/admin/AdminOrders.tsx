@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { orderService } from '../../services/order.service';
 import { useToast } from '../ui/ToastContainer';
+import { useAuth } from '../../context/AuthContext';
 import type { Order, OrderStatus } from '../../types';
 import { FaEye } from 'react-icons/fa';
+import { RoleNames } from '../../types';
 
 const AdminOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -10,15 +12,20 @@ const AdminOrders: React.FC = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<OrderStatus | ''>('');
+  const [viewMode, setViewMode] = useState<'seller' | 'all'>('seller');
   const { addToast } = useToast();
+  const { hasRole } = useAuth();
+  const isAdmin = hasRole(RoleNames.ADMIN);
 
   useEffect(() => {
     loadOrders();
-  }, []);
+  }, [viewMode]);
 
   const loadOrders = async () => {
     try {
-      const data = await orderService.getAll(0, 100);
+      const data = viewMode === 'seller'
+        ? await orderService.getSellerOrders()
+        : await orderService.getAll(0, 100);
       setOrders(data);
     } catch (error) {
       console.error('Siparişler yüklenirken hata:', error);
@@ -66,7 +73,35 @@ const AdminOrders: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-50">Siparişler</h2>
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center space-x-4">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Siparişler</h2>
+          <div className="flex bg-gray-200 dark:bg-gray-700 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('seller')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'seller'
+                  ? 'bg-white dark:bg-gray-600 text-primary-600 dark:text-primary-400 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+              }`}
+            >
+              Ürünlerimden Yapılan
+            </button>
+            {isAdmin && (
+              <button
+                onClick={() => setViewMode('all')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  viewMode === 'all'
+                    ? 'bg-white dark:bg-gray-600 text-primary-600 dark:text-primary-400 shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+                }`}
+              >
+                Tüm Siparişler
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
 
       {/* Filtreleme */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
@@ -195,19 +230,21 @@ const AdminOrders: React.FC = () => {
             </div>
 
             {/* Durum Güncelleme */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Durum Güncelle</label>
-              <select
-                value={selectedOrder.status}
-                onChange={(e) => handleStatusChange(selectedOrder.id, e.target.value as OrderStatus)}
-                className="input-field"
-              >
-                <option value="PENDING">Beklemede</option>
-                <option value="PAID">Ödendi</option>
-                <option value="COMPLETED">Tamamlandı</option>
-                <option value="CANCELLED">İptal</option>
-              </select>
-            </div>
+            {isAdmin && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Durum Güncelle</label>
+                <select
+                  value={selectedOrder.status}
+                  onChange={(e) => handleStatusChange(selectedOrder.id, e.target.value as OrderStatus)}
+                  className="input-field"
+                >
+                  <option value="PENDING">Beklemede</option>
+                  <option value="PAID">Ödendi</option>
+                  <option value="COMPLETED">Tamamlandı</option>
+                  <option value="CANCELLED">İptal</option>
+                </select>
+              </div>
+            )}
 
             <button
               onClick={() => setSelectedOrder(null)}
