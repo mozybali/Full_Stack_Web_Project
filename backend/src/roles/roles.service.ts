@@ -47,8 +47,14 @@ export class RolesService {
    * @param id - Rol ID'si
    * @returns Rol detayları
    */
-  findOne(id: number) {
-    return this.rolesRepo.findOne({ where: { id } });
+  async findOne(id: number) {
+    const role = await this.rolesRepo.findOne({ where: { id } });
+    
+    if (!role) {
+      throw new NotFoundException(`Rol ${id} bulunamadı`);
+    }
+    
+    return role;
   }
 
   /**
