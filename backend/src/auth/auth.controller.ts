@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -62,6 +62,7 @@ export class AuthController {
   @Post('admin/create')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleNames.ADMIN)
+  @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Yeni admin profili oluştur (sadece admin için)' })
   @ApiResponse({
     status: 201,
@@ -91,6 +92,7 @@ export class AuthController {
   @Post('seller/create')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleNames.ADMIN)
+  @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Yeni seller profili oluştur (sadece admin için)' })
   @ApiResponse({
     status: 201,
