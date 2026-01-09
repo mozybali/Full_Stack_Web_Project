@@ -22,8 +22,8 @@ const Admin: React.FC = () => {
   const tabs = [
     { id: 'dashboard' as TabType, label: 'Dashboard', icon: FaTachometerAlt, adminOnly: false },
     { id: 'products' as TabType, label: 'Ürünler', icon: FaShoppingBag, adminOnly: false },
+    { id: 'orders' as TabType, label: 'Siparişler', icon: FaBox, adminOnly: false },
     { id: 'games' as TabType, label: 'Oyunlar', icon: FaGamepad, adminOnly: true },
-    { id: 'orders' as TabType, label: 'Siparişler', icon: FaBox, adminOnly: true },
     { id: 'users' as TabType, label: 'Kullanıcılar', icon: FaUsers, adminOnly: true },
     { id: 'roles' as TabType, label: 'Roller', icon: FaShieldAlt, adminOnly: true },
   ].filter(tab => !tab.adminOnly || isAdmin);
