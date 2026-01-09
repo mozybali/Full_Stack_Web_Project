@@ -49,6 +49,20 @@ export class OrdersController {
   }
 
   /**
+   * Satıcının ürünlerine ait siparişleri getir
+   */
+  @Get('seller/my')
+  @Roles(RoleNames.SELLER, RoleNames.ADMIN)
+  @ApiOperation({ summary: 'Satıcının ürünlerine ait siparişleri getir' })
+  @ApiResponse({
+    status: 200,
+    description: 'Satıcının ürünlerine ait siparişler',
+  })
+  findSellerOrders(@Req() req: any) {
+    return this.ordersService.findSellerOrders(req.user.sub);
+  }
+
+  /**
    * Tüm siparişleri getir (Admin)
    * Pagination desteklidir
    */
