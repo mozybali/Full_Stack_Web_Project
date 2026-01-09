@@ -82,4 +82,13 @@ export const productService = {
   async delete(id: number): Promise<void> {
     await axiosInstance.delete(`/products/${id}`);
   },
+
+  /**
+   * Satıcının kendi ürünlerini getir
+   * @returns Satıcının ürünleri
+   */
+  async getMyProducts(): Promise<Product[]> {
+    const response = await axiosInstance.get<Product[]>('/products/my/products');
+    return response.data;
+  },
 };

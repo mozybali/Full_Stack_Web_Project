@@ -29,6 +29,15 @@ export const orderService = {
   },
 
   /**
+   * Satıcının ürünlerine ait siparişleri getir
+   * @returns Satıcının ürünlerine ait siparişler
+   */
+  async getSellerOrders(): Promise<Order[]> {
+    const response = await axiosInstance.get<Order[]>('/orders/seller/my');
+    return response.data;
+  },
+
+  /**
    * Tüm siparişleri getir (Admin yetkisi gerekli)
    * Sayfalama desteği ile tüm kullanıcıların siparişlerini getirir
    * @param skip - Atlanacak sipariş sayısı (pagination için)
