@@ -90,10 +90,6 @@ export class RolesService {
   async update(id: number, dto: UpdateRoleDto) {
     const role = await this.findOne(id);
 
-    if (!role) {
-      throw new NotFoundException(`Rol ${id} bulunamadı`);
-    }
-
     // Rol adını güncelliyorsak, benzersizlik kontrolü yap
     if (dto.name && dto.name !== role.name) {
       const exists = await this.findByName(dto.name);
@@ -102,7 +98,13 @@ export class RolesService {
       }
     }
 
-    await this.rolesRepo.update(id, dto);
+    const result = await this.rolesRepo.update(id, dto);
+    
+    // Güncelleme sonucunu kontrol et
+    if (result.affected === 0) {
+      throw new NotFoundException(`Rol ${id} bulunamadı veya güncellenemedi`);
+    }
+    
     return this.findOne(id);
   }
 
@@ -114,17 +116,19 @@ export class RolesService {
   async remove(id: number) {
     const role = await this.findOne(id);
 
-    if (!role) {
-      throw new NotFoundException(`Rol ${id} bulunamadı`);
-    }
-
     // Varsayılan roller silinemez (güvenlik için)
     const defaultRoles = [RoleNames.ADMIN, RoleNames.SELLER, RoleNames.BUYER];
     if (defaultRoles.includes(role.name as RoleNames)) {
       throw new ConflictException(`${role.name} varsayılan bir rol olduğu için silinemez`);
     }
 
-    await this.rolesRepo.delete(id);
+    const result = await this.rolesRepo.delete(id);
+    
+    // Silme sonucunu kontrol et
+    if (result.affected === 0) {
+      throw new NotFoundException(`Rol ${id} silinemedi`);
+    }
+    
     return { deleted: true };
   }
 }

@@ -47,6 +47,7 @@ export class ProductsService {
    * ID'ye göre ürün bul
    * @param id - Ürün ID'si
    * @returns Ürün detayları
+   * @throws NotFoundException - Ürün bulunamazsa
    */
   async findOne(id: number) {
     const product = await this.productsRepo
@@ -65,6 +66,10 @@ export class ProductsService {
       ])
       .where('product.id = :id', { id })
       .getOne();
+    
+    if (!product) {
+      throw new NotFoundException(`Ürün ${id} bulunamadı`);
+    }
     
     return product;
   }
@@ -115,55 +120,39 @@ export class ProductsService {
    * @returns Güncellenen ürün
    */
   async update(id: number, dto: UpdateProductDto, userId?: number, imageFile?: Express.Multer.File) {
-    // Transaction ile güncelleme yap ve race condition'ı önle
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    // Önce ürünü relations ile kontrol et
+    const product = await this.findOne(id);
 
-    try {
-      // Pessimistic write lock ile ürünü kilitle
-      const product = await queryRunner.manager.findOne(Product, {
-        where: { id },
-        relations: ['seller', 'game'],
-        lock: { mode: 'pessimistic_write' },
-      });
-      
-      if (!product) {
-        throw new NotFoundException(`Ürün ${id} bulunamadı`);
-      }
-
-      // Satıcı kendi ürününü güncelleyebilir veya admin güncelleyebilir
-      if (userId && product.seller.id !== userId) {
-        throw new ForbiddenException('Sadece ürün sahibi bu ürünü güncelleyebilir');
-      }
-
-      // Eğer yeni resim yüklendiyse, eski resmi sil ve yenisini kaydet
-      let imageUrl = dto.imageUrl;
-      if (imageFile) {
-        imageUrl = await this.uploadService.updateProductImage(product.imageUrl || '', imageFile);
-      }
-
-      // Güncelleme verilerini hazırla
-      const updateData: any = { ...dto };
-      if (imageFile || dto.imageUrl) {
-        updateData.imageUrl = imageUrl;
-      }
-      if (dto.gameId) {
-        updateData.game = { id: dto.gameId };
-      }
-      delete updateData.gameId;
-
-      // Lock tutulurken güncelle
-      await queryRunner.manager.update(Product, id, updateData);
-      
-      await queryRunner.commitTransaction();
-      return this.findOne(id);
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
+    // Satıcı kendi ürününü güncelleyebilir veya admin güncelleyebilir
+    if (userId && product.seller.id !== userId) {
+      throw new ForbiddenException('Sadece ürün sahibi bu ürünü güncelleyebilir');
     }
+
+    // Eğer yeni resim yüklendiyse, eski resmi sil ve yenisini kaydet
+    let imageUrl = dto.imageUrl;
+    if (imageFile) {
+      imageUrl = await this.uploadService.updateProductImage(product.imageUrl || '', imageFile);
+    }
+
+    // Güncelleme verilerini hazırla
+    const updateData: any = { ...dto };
+    if (imageFile || dto.imageUrl) {
+      updateData.imageUrl = imageUrl;
+    }
+    if (dto.gameId) {
+      updateData.game = { id: dto.gameId };
+    }
+    delete updateData.gameId;
+
+    // Güncelle
+    const result = await this.productsRepo.update(id, updateData);
+    
+    // Güncelleme sonucunu kontrol et
+    if (result.affected === 0) {
+      throw new NotFoundException(`Ürün ${id} güncellenemedi`);
+    }
+    
+    return this.findOne(id);
   }
 
   /**
@@ -178,7 +167,7 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException(`Ürün ${id} bulunamadı`);
     }
-
+    
     // Satıcı kendi ürününü silebilir veya admin silebilir
     if (userId && product.seller.id !== userId) {
       throw new ForbiddenException('Sadece ürün sahibi bu ürünü silebilir');
@@ -189,7 +178,13 @@ export class ProductsService {
       await this.uploadService.deleteProductImage(product.imageUrl);
     }
 
-    await this.productsRepo.delete(id);
+    const result = await this.productsRepo.delete(id);
+    
+    // Silme sonucunu kontrol et
+    if (result.affected === 0) {
+      throw new NotFoundException(`Ürün ${id} silinemedi`);
+    }
+    
     return { deleted: true };
   }
 
@@ -221,7 +216,12 @@ export class ProductsService {
       }
 
       // Lock tutulurken stok güncelle
-      await queryRunner.manager.update(Product, id, { stock: newStock });
+      const result = await queryRunner.manager.update(Product, id, { stock: newStock });
+      
+      // Güncelleme sonucunu kontrol et
+      if (result.affected === 0) {
+        throw new NotFoundException(`Ürün ${id} stoku güncellenemedi`);
+      }
       
       await queryRunner.commitTransaction();
       return this.findOne(id);

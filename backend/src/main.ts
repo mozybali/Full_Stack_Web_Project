@@ -74,7 +74,7 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, document);
 
   // Sunucuyu başlat
-  const port = configService.get<number>('port') || 3000;
+  const port = configService.get<number>('port') || 5173;
   await app.listen(port);
   
   logger.log(`Uygulama http://localhost:${port} adresinde çalışıyor`);
@@ -83,4 +83,5 @@ async function bootstrap() {
 
 // Bootstrap işlevini çalıştır
 bootstrap();
+
 

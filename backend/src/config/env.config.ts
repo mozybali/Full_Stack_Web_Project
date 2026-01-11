@@ -23,8 +23,8 @@ export const env = () => {
   }
 
   return {
-    // Sunucu portu (varsayılan: 3000)
-    port: parseInt(process.env.PORT ?? '3000', 10),
+    // Sunucu portu (varsayılan: 5173)
+    port: parseInt(process.env.PORT ?? '5173', 10),
     
     // JWT gizli anahtarı (production'da zorunlu, development'ta varsayılan değer kullanılabilir)
     jwtSecret: isProduction 

@@ -33,7 +33,7 @@ export class OrdersService {
       throw new BadRequestException('Sipariş en az bir öğe içermesi gereklidir');
     }
 
-    // Transaction ile siparişi oluştur ve stoğu güncelle (race condition önlemek için)
+    // Transaction ile siparişi oluştur ve stoğu güncelle (atomik işlem için)
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -42,12 +42,11 @@ export class OrdersService {
       let totalPrice = 0;
       const orderItems: Partial<OrderItem>[] = [];
 
-      // Tüm ürünleri kontrol et ve stokları pessimistic lock ile oku (race condition önleme)
+      // Tüm ürünleri kontrol et ve stokları güncelle
       for (const item of dto.items) {
-        // Pessimistic write lock ile ürünü kilitle - aynı anda başka transaction değiştiremez
+        // Ürünü getir - transaction içinde olduğumuz için atomik
         const product = await queryRunner.manager.findOne(Product, {
-          where: { id: item.productId },
-          lock: { mode: 'pessimistic_write' }
+          where: { id: item.productId }
         });
         
         if (!product) {
@@ -69,7 +68,7 @@ export class OrdersService {
           unitPrice: product.price,
         });
         
-        // Stoğu hemen güncelle (lock tutulurken)
+        // Stoğu güncelle - transaction içinde
         product.stock -= item.quantity;
         await queryRunner.manager.save(Product, product);
       }
@@ -178,7 +177,13 @@ export class OrdersService {
       throw new NotFoundException(`Sipariş ${id} bulunamadı`);
     }
 
-    await this.ordersRepo.update(id, { status: dto.status });
+    const result = await this.ordersRepo.update(id, { status: dto.status });
+    
+    // Güncelleme sonucunu kontrol et
+    if (result.affected === 0) {
+      throw new NotFoundException(`Sipariş ${id} güncellenemedi`);
+    }
+    
     return this.findOne(id);
   }
 }
