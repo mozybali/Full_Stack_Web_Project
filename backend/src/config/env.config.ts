@@ -23,8 +23,8 @@ export const env = () => {
   }
 
   return {
-    // Sunucu portu (varsayılan: 5173)
-    port: parseInt(process.env.PORT ?? '5173', 10),
+    // Sunucu portu (varsayılan: 3000)
+    port: parseInt(process.env.PORT ?? '3000', 10),
     
     // JWT gizli anahtarı (production'da zorunlu, development'ta varsayılan değer kullanılabilir)
     jwtSecret: isProduction 
@@ -41,7 +41,7 @@ export const env = () => {
       ? (process.env.FRONTEND_URL || (() => {
           throw new Error('🚨 CRITICAL: FRONTEND_URL environment variable zorunludur (production)');
         })())
-      : (process.env.FRONTEND_URL || true),
+      : (process.env.FRONTEND_URL || 'http://localhost:5173'),
     
     // Veritabanı konfigürasyonu
     db: {
