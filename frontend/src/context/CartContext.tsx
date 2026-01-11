@@ -18,6 +18,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { CartItem, Product } from '../types';
+import { useAuth } from './AuthContext';
 
 /**
  * Cart Context Type tanımı
@@ -37,29 +38,47 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 /**
+ * Kullanıcıya özel localStorage key'i oluştur
+ * @param userId - Kullanıcı ID'si
+ * @returns Kullanıcıya özel cart key'i
+ */
+const getCartKey = (userId: number | null): string => {
+  return userId ? `cart_user_${userId}` : 'cart_guest';
+};
+
+/**
  * Cart Provider Component
  * Uygulamanın herhangi bir yerinde <CartProvider> ile kullanılmalı
  */
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Sepetteki ürünlerin listesi
   const [items, setItems] = useState<CartItem[]>([]);
+  // Auth context'inden kullanıcı bilgisi
+  const { user } = useAuth();
 
-  // Component mount olduğunda localStorage'dan sepeti yükle
+  // Kullanıcı değiştiğinde sepeti yükle
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
+    const cartKey = getCartKey(user?.id || null);
+    const savedCart = localStorage.getItem(cartKey);
+    
     if (savedCart) {
       try {
         setItems(JSON.parse(savedCart));
       } catch (error) {
         console.error('Failed to parse cart from localStorage:', error);
+        setItems([]);
       }
+    } else {
+      // Kullanıcı değiştiğinde eski sepeti temizle
+      setItems([]);
     }
-  }, []);
+  }, [user?.id]);
 
   // Sepet değiştiğinde (items güncellendiğinde) localStorage'a kaydet
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
+    const cartKey = getCartKey(user?.id || null);
+    localStorage.setItem(cartKey, JSON.stringify(items));
+  }, [items, user?.id]);
 
   /**
    * Sepete yeni ürün ekle veya varsa miktarını artır
